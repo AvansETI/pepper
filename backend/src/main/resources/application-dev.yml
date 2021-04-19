@@ -1,0 +1,6 @@
+server.port: 6587
+
+spring.data.mongodb:
+  host: localhost
+  port: 27003
+  database: pepper
