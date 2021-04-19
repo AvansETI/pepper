@@ -4,15 +4,15 @@ services:
         image: mongo:4.4.5
         ports:
             - 27003:27017
-    # backend:
-    #     build: ./backend
-    #     ports:
-    #         - 6587:6587
-    #     depends_on:
-    #         - database
-    # frontend:
-    #     build: ./frontend
+    backend:
+        build: ./backend
+        ports:
+            - 6587:6587
+        depends_on:
+            - database
+    # zorgmedewerker_app:
+    #     build: ./zorgmedewerker-app
     #     ports: 
-    #         - 80:80
+    #         - 6588:6588
     #     depends_on:
     #         - backend
