@@ -4,6 +4,10 @@ services:
         image: mongo:4.4.5
         ports:
             - 27003:27017
+        environment:
+            - MONGO_INITDB_DATABASE=pepper
+            - MONGO_INITDB_ROOT_USERNAME=pepper
+            - MONGO_INITDB_ROOT_PASSWORD=pepper
     # backend:
     #     build: ./backend
     #     ports:
