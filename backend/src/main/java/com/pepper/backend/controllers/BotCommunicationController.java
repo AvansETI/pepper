@@ -19,6 +19,12 @@ public class BotCommunicationController implements MqttCallbackExtended {
     @Value("${mqtt.topic}")
     private String topic;
 
+    @Value("${mqtt.host}")
+    private String username;
+
+    @Value("${mqtt.topic}")
+    private String password;
+
     @Value("${encryption.password}")
     private String encryptionPassword;
 
@@ -34,6 +40,8 @@ public class BotCommunicationController implements MqttCallbackExtended {
     @PostConstruct
     public void connect() {
         MqttConnectOptions options = new MqttConnectOptions();
+        options.setUserName(this.username);
+        options.setPassword(this.password.toCharArray());
         options.setAutomaticReconnect(true);
         options.setCleanSession(true);
 

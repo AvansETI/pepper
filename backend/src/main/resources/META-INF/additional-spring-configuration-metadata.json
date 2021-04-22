@@ -14,6 +14,16 @@
       "name": "encryption.password",
       "type": "java.lang.String",
       "description": "Description for encryption.password."
+    },
+    {
+      "name": "mqtt.username",
+      "type": "java.lang.String",
+      "description": "Description for mqtt.username."
+    },
+    {
+      "name": "mqtt.password",
+      "type": "java.lang.String",
+      "description": "Description for mqtt.password."
     }
   ]
 }
