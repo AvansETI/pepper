@@ -1,6 +1,6 @@
-package com.pepper.backend.services;
+package com.pepper.backend.services.database;
 
-import com.pepper.backend.model.CustomSequences;
+import com.pepper.backend.model.database.CustomSequences;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;

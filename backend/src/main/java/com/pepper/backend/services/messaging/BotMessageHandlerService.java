@@ -1,9 +1,10 @@
-package com.pepper.backend.services;
+package com.pepper.backend.services.messaging;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.pepper.backend.controllers.BotCommunicationController;
 import com.pepper.backend.model.bot.BotMessage;
+import com.pepper.backend.services.database.DatabaseService;
 import org.springframework.stereotype.Service;
 
 @Service
