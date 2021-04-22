@@ -1,6 +1,6 @@
 package com.pepper.backend.controllers;
 
-import com.pepper.backend.services.BotMessageHandlerService;
+import com.pepper.backend.services.DatabaseService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,15 +9,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api")
 public class TestController {
 
-    private final BotMessageHandlerService messageHandler;
+    private final DatabaseService databaseService;
 
-    public TestController(BotMessageHandlerService messageHandler) {
-        this.messageHandler = messageHandler;
+    public TestController(DatabaseService databaseService) {
+
+        this.databaseService = databaseService;
     }
 
     @GetMapping("test")
     public void test() {
-        messageHandler.send("hoi");
+        System.out.println(this.databaseService.readAllBotMessages());
     }
 
 }

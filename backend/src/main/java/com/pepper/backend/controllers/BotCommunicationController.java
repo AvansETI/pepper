@@ -1,12 +1,14 @@
 package com.pepper.backend.controllers;
 
 import com.pepper.backend.services.BotMessageHandlerService;
+import com.pepper.backend.services.EncryptionService;
 import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
+import java.security.GeneralSecurityException;
 
 @Controller
 public class BotCommunicationController implements MqttCallbackExtended {
@@ -17,11 +19,16 @@ public class BotCommunicationController implements MqttCallbackExtended {
     @Value("${mqtt.topic}")
     private String topic;
 
+    @Value("${encryption.password}")
+    private String encryptionPassword;
+
     private IMqttClient client;
     private final BotMessageHandlerService messageHandler;
+    private final EncryptionService encryptionService;
 
-    public BotCommunicationController(@Lazy BotMessageHandlerService messageHandler) {
+    public BotCommunicationController(@Lazy BotMessageHandlerService messageHandler, EncryptionService encryptionService) {
         this.messageHandler = messageHandler;
+        this.encryptionService = encryptionService;
     }
 
     @PostConstruct
@@ -43,6 +50,14 @@ public class BotCommunicationController implements MqttCallbackExtended {
         if (!this.client.isConnected()) {
             return;
         }
+
+        try {
+            message = this.encryptionService.encrypt(message, this.encryptionPassword);
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+            return;
+        }
+
 
         MqttMessage mqttMessage = new MqttMessage(message.getBytes());
         mqttMessage.setQos(0);
@@ -75,7 +90,16 @@ public class BotCommunicationController implements MqttCallbackExtended {
 
     @Override
     public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-        this.messageHandler.handle(mqttMessage.toString());
+        String message;
+
+        try {
+            message = this.encryptionService.decrypt(mqttMessage.toString(), this.encryptionPassword);
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        this.messageHandler.handle(message);
     }
 
     @Override

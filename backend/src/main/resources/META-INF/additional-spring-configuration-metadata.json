@@ -1,14 +1,19 @@
 {
   "properties": [
     {
+      "name": "mqtt.host",
+      "type": "java.lang.String",
+      "description": "Description for mqtt.host."
+    },
+    {
       "name": "mqtt.topic",
       "type": "java.lang.String",
       "description": "Description for mqtt.topic."
     },
     {
-      "name": "mqtt.host",
+      "name": "encryption.password",
       "type": "java.lang.String",
-      "description": "Description for mqtt.host."
+      "description": "Description for encryption.password."
     }
   ]
 }
