@@ -11,3 +11,5 @@ spring.data.mongodb:
   database: pepper
   username: pepper
   password: pepper
+
+encryption.password: pepper

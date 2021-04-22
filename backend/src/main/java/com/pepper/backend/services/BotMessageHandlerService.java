@@ -25,7 +25,7 @@ public class BotMessageHandlerService {
         this.botCommunicationController.publish(message);
     }
 
-    public void handle(String message) {
+    public void handle(String message) throws Exception {
         BotMessage botMessage = this.gson.fromJson(message, BotMessage.class);
         this.databaseService.writeBotMessage(botMessage);
     }
