@@ -1,5 +1,9 @@
 server.port: 6587
 
+mqtt:
+  host: tcp://test.mosquitto.org:1883
+  topic: pepper-zorg-ti
+
 spring.data.mongodb:
   host: database
   port: 27017
