@@ -5,6 +5,7 @@
 
     <data>
         <import type="com.pepper.care.home.presenstation.viewmodels.HomeViewModel" />
+        <import type="android.view.View"/>
 
         <variable
             name="viewModel"
@@ -26,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:fontFamily="@font/montserrat_regular"
-                android:onClick="@{() -> viewModel.onButtonClick()}"
+                android:onClick="@{() -> viewModel.onButtonClick(exampleButton)}"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 android:text="@{viewModel.todaysDateText}"

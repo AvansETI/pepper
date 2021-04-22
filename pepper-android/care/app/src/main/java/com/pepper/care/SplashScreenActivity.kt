@@ -14,7 +14,7 @@ class SplashScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Thread.sleep(1250)
+        Thread.sleep(1750)
 
         val newIntent = Intent(this, MainActivity::class.java)
             .setAction(intent.action)
@@ -22,5 +22,4 @@ class SplashScreenActivity : AppCompatActivity() {
         startActivity(newIntent)
         finish()
     }
-
 }

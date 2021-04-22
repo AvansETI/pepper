@@ -7,52 +7,46 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
-import com.pepper.care.common.presentation.NavigateUpEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 
-class BaseFragment {
-    abstract class BaseFragment : Fragment {
+abstract class BaseFragment : Fragment {
 
-        constructor() : super()
+    constructor() : super()
 
-        constructor(@LayoutRes contentLayoutId: Int) : super(contentLayoutId)
+    constructor(@LayoutRes contentLayoutId: Int) : super(contentLayoutId)
 
-        abstract val navigationDestinationId: Int
-            @IdRes get
+    abstract val navigationDestinationId: Int
+        @IdRes get
 
-        private fun isCurrentDestination() = findNavController().currentDestination?.id == navigationDestinationId
+    private fun isCurrentDestination() =
+        findNavController().currentDestination?.id == navigationDestinationId
 
-        protected fun popBackStack() {
-            if (isCurrentDestination()) findNavController().popBackStack()
-        }
+    protected fun popBackStack() {
+        if (isCurrentDestination()) findNavController().popBackStack()
+    }
 
-        protected fun popBackStack(@IdRes destinationId: Int, inclusive: Boolean) {
-            if (isCurrentDestination()) findNavController().popBackStack(destinationId, inclusive)
-        }
+    protected fun popBackStack(@IdRes destinationId: Int, inclusive: Boolean) {
+        if (isCurrentDestination()) findNavController().popBackStack(destinationId, inclusive)
+    }
 
-        protected fun navigateUp() {
-            if (isCurrentDestination()) findNavController().navigateUp()
-        }
+    protected fun navigateUp() {
+        if (isCurrentDestination()) findNavController().navigateUp()
+    }
 
-        protected fun NavDirections.navigateToIt() {
-            if (isCurrentDestination()) findNavController().navigate(this)
-        }
+    protected fun NavDirections.navigateToIt() {
+        if (isCurrentDestination()) findNavController().navigate(this)
+    }
 
-        protected fun <T> Flow<T>.collectInLifecycleScope(action: suspend (T) -> Unit) {
-            lifecycleScope.launchWhenStarted {
-                collect { value ->
-                    action(value)
-                }
+    protected fun <T> Flow<T>.collectInLifecycleScope(action: suspend (T) -> Unit) {
+        lifecycleScope.launchWhenStarted {
+            collect { value ->
+                action(value)
             }
         }
+    }
 
-        protected fun <T> LiveData<T>.observeInLifecycleScope(observer: (T) -> Unit) {
-            observe(viewLifecycleOwner, observer)
-        }
-
-        protected fun Flow<NavigateUpEvent>.handleInLifecycleScope() {
-            collectInLifecycleScope { navigateUp() }
-        }
+    protected fun <T> LiveData<T>.observeInLifecycleScope(observer: (T) -> Unit) {
+        observe(viewLifecycleOwner, observer)
     }
 }

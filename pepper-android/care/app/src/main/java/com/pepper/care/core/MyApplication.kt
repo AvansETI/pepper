@@ -8,6 +8,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import com.pepper.care.ActivityLifecycle
 import com.pepper.care.common.di.commonModule
 import com.pepper.care.home.di.homeModule
+import com.pepper.care.order.di.orderModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -21,6 +22,7 @@ class MyApplication : Application(), LifecycleObserver {
             androidContext(this@MyApplication)
             modules(commonModule)
             modules(homeModule)
+            modules(orderModule)
         }
 
         registerActivityLifecycleCallbacks(ActivityLifecycle)

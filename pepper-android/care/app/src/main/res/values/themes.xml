@@ -28,6 +28,7 @@
 
     <style name="MaterialAlertDialog.Pepper.Care.Title.Text" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
         <item name="android:fontFamily">@font/montserrat_bold</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="MaterialAlertDialog.Pepper.Care.Body.Text" parent="MaterialAlertDialog.MaterialComponents.Body.Text">

@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks {
         }
 
         connectionResult.observe(this, Observer { result ->
-            Log.d("RESULT", result.toString())
+            Log.d(MainActivity::class.simpleName, result.toString())
             when (result) {
                 GetNetworkConnectionStateUseCase.ConnectionState.NO_INTERNET_CONNECTION -> setup()
                 GetNetworkConnectionStateUseCase.ConnectionState.CONNECTION_VERIFIED -> setup()
