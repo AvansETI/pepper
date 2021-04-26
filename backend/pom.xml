@@ -77,7 +77,7 @@
 					<target>16</target>
 				</configuration>
 			</plugin>
-		</plugins>
+        </plugins>
 		<finalName>app</finalName>
 	</build>
 
