@@ -1,4 +1,4 @@
-package com.pepper.backend.model;
+package com.pepper.backend.model.database;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;

@@ -1,7 +1,7 @@
 package com.pepper.backend.controllers;
 
-import com.pepper.backend.services.BotMessageHandlerService;
-import com.pepper.backend.services.EncryptionService;
+import com.pepper.backend.services.messaging.BotMessageHandlerService;
+import com.pepper.backend.services.messaging.EncryptionService;
 import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -98,10 +98,10 @@ public class BotCommunicationController implements MqttCallbackExtended {
 
     @Override
     public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-        String message;
+        String message = mqttMessage.toString();
 
         try {
-            message = this.encryptionService.decrypt(mqttMessage.toString(), this.encryptionPassword);
+            message = this.encryptionService.decrypt(message, this.encryptionPassword);
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
             return;

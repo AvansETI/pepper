@@ -1,4 +1,4 @@
-package com.pepper.backend.services;
+package com.pepper.backend.services.database;
 
 import com.pepper.backend.model.bot.BotMessage;
 import com.pepper.backend.model.staff.StaffMessage;

@@ -1,4 +1,4 @@
-package com.pepper.backend.services;
+package com.pepper.backend.services.messaging;
 
 import org.springframework.stereotype.Service;
 import javax.crypto.Cipher;
