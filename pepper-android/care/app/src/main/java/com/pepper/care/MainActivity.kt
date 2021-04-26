@@ -13,19 +13,24 @@ import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
 import com.aldebaran.qi.sdk.design.activity.RobotActivity
 import com.pepper.care.common.CommonConstants.COMMON_DEVICE_ID
 import com.pepper.care.common.usecases.GetNetworkConnectionStateUseCase
+import com.pepper.care.core.services.mqtt.MqttMessageCallbacks
+import com.pepper.care.core.services.mqtt.PlatformMqttClientHelper
+import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
+import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.koin.android.ext.android.inject
 
-class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks {
+@FlowPreview
+@ExperimentalCoroutinesApi
+class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCallbacks {
 
     private val getNetworkConnectionStateUseCase: GetNetworkConnectionStateUseCase by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-//        // Register the RobotLifecycleCallbacks to this Activity.
-//        QiSDK.register(this, this)
 
         // Check for connection with platform
         val connectionResult: MutableLiveData<GetNetworkConnectionStateUseCase.ConnectionState> = MutableLiveData()
@@ -45,12 +50,26 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks {
     }
 
     private fun setup() {
+        registerRobotCallbacks()
+        startMqttService()
+    }
 
+    private fun registerRobotCallbacks() {
+        // Register the RobotLifecycleCallbacks to this Activity.
+        QiSDK.register(this, this)
+    }
+
+    private fun startMqttService() {
+        // Start Mqtt service and register callbacks
+        lifecycleScope.launch {
+            PlatformMqttListenerService.start(this@MainActivity, this@MainActivity)
+        }
     }
 
     override fun onDestroy() {
         // Unregister the RobotLifecycleCallbacks for this Activity.
-//        QiSDK.unregister(this, this)
+        QiSDK.unregister(this@MainActivity, this@MainActivity)
+        PlatformMqttListenerService.stop(this@MainActivity)
         super.onDestroy()
     }
 
@@ -64,5 +83,9 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks {
 
     override fun onRobotFocusRefused(reason: String) {
         // The robot focus is refused.
+    }
+
+    override fun onMessageReceived(topic: String?, message: MqttMessage?) {
+        // Handle messaged.
     }
 }
