@@ -7,11 +7,14 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.pepper.care.ActivityLifecycle
 import com.pepper.care.common.di.commonModule
+import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
 import com.pepper.care.home.di.homeModule
 import com.pepper.care.order.di.orderModule
+import kotlinx.coroutines.FlowPreview
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
+@FlowPreview
 @ExperimentalStdlibApi
 class MyApplication : Application(), LifecycleObserver {
 

@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pepper.care">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <uses-feature android:name="com.softbank.hardware.pepper" />
 
     <application
@@ -31,6 +37,10 @@
             android:theme="@style/AppThemeMain"
             android:windowSoftInputMode="adjustResize">
         </activity>
+
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
+
+        <service android:name=".core.services.mqtt.PlatformMqttListenerService"/>
 
     </application>
 
