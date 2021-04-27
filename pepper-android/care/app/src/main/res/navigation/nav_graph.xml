@@ -18,5 +18,16 @@
         <action
             android:id="@+id/action_orderFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_orderFragment_to_orderViewMealFragment"
+            app:destination="@id/orderViewMealFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderViewMealFragment"
+        android:name="com.pepper.care.order.events.viewmeal.presentation.OrderViewMealFragment"
+        android:label="OrderViewMealFragment" >
+        <action
+            android:id="@+id/action_orderViewMealFragment_to_orderFragment"
+            app:destination="@id/orderFragment" />
     </fragment>
 </navigation>

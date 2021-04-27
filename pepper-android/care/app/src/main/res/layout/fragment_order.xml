@@ -6,9 +6,7 @@
     <data>
 
         <import type="com.pepper.care.order.presentation.viewmodels.OrderViewModel" />
-
         <import type="android.view.View" />
-
 
         <variable
             name="adapter"
@@ -33,8 +31,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:textColor="@color/colorPrimaryDark"
                 android:text="@{viewModel.orderText}"
+                android:textColor="@color/colorPrimaryDark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -44,8 +42,8 @@
                 android:id="@+id/meal_recycler_view"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:paddingTop="16dp"
                 android:layout_gravity="center_horizontal|center_vertical"
+                android:paddingTop="16dp"
                 app:adapter="@{adapter}"
                 app:items="@{viewModel.mealsList.size() &gt; 0 ? viewModel.mealsList : viewModel.errorList}"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
