@@ -2,7 +2,7 @@ package com.pepper.care.common.repo
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.pepper.care.common.api.PlatformConnectionApi
+import com.pepper.care.common.api.PlatformApi
 import com.pepper.care.common.usecases.GetNetworkConnectionStateUseCase
 
 interface PlatformConnectionRepository {
@@ -15,7 +15,7 @@ interface PlatformConnectionRepository {
 }
 
 class PlatformConnectionRepositoryImpl(
-    private val api: PlatformConnectionApi
+    private val api: PlatformApi
 ) : PlatformConnectionRepository {
 
     override suspend fun fetchPlatformConnection(
@@ -34,7 +34,7 @@ class PlatformConnectionRepositoryImpl(
                 }
             }
         } else {
-            Log.e("DistanceMatrix", request.errorBody().toString())
+            Log.e("PlatformConnection", request.errorBody().toString())
         }
     }
 

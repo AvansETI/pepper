@@ -4,6 +4,8 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.pepper.care.common.entities.PlatformConnectionResponse
 import com.pepper.care.common.entities.PlatformDataConnectionDeserializer
+import com.pepper.care.common.entities.PlatformMealsDeserializer
+import com.pepper.care.common.entities.PlatformMealsResponse
 import okhttp3.ResponseBody
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -16,6 +18,10 @@ class DynamicApiConverterFactory : Converter.Factory() {
         GsonConverterFactory.create(providePlatformConnectionGsonConverter())
     }
 
+    private val platformMeals: Converter.Factory by lazy {
+        GsonConverterFactory.create(providePlatformMealsGsonConverter())
+    }
+
     override fun responseBodyConverter(
         type: Type,
         annotations: Array<Annotation>,
@@ -25,7 +31,8 @@ class DynamicApiConverterFactory : Converter.Factory() {
 
             return when (annotation.annotationClass) {
                 PlatformConnection::class -> platformConnection.responseBodyConverter(type, annotations, retrofit)
-                else -> null
+                PlatformMeals::class -> platformMeals.responseBodyConverter(type, annotations, retrofit)
+                else -> throw NotImplementedError()
             }
         }
         return null
@@ -40,7 +47,15 @@ class DynamicApiConverterFactory : Converter.Factory() {
                 PlatformDataConnectionDeserializer()
             ).create()
         }
+
+        fun providePlatformMealsGsonConverter(): Gson {
+            return GsonBuilder().registerTypeAdapter(
+                PlatformMealsResponse::class.java,
+                PlatformMealsDeserializer()
+            ).create()
+        }
     }
 }
 
 annotation class PlatformConnection
+annotation class PlatformMeals

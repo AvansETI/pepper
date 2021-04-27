@@ -6,11 +6,15 @@ import android.content.SharedPreferences
 import org.koin.dsl.module
 import com.pepper.care.common.CommonConstants
 import com.pepper.care.common.DynamicApiConverterFactory
-import com.pepper.care.common.api.PlatformConnectionApi
+import com.pepper.care.common.api.PlatformApi
 import com.pepper.care.common.repo.PlatformConnectionRepository
 import com.pepper.care.common.repo.PlatformConnectionRepositoryImpl
+import com.pepper.care.common.repo.PlatformMealsRepository
+import com.pepper.care.common.repo.PlatformMealsRepositoryImpl
 import com.pepper.care.common.usecases.GetNetworkConnectionStateUseCase
 import com.pepper.care.common.usecases.GetNetworkConnectionStateUseCaseUsingRepository
+import com.pepper.care.order.common.usecases.GetPlatformMealsUseCase
+import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidApplication
 import retrofit2.Retrofit
@@ -35,8 +39,8 @@ val commonModule = module {
     factory<OkHttpClient> {
         provideOkHttpClient()
     }
-    factory<PlatformConnectionApi> {
-        providePlatformConnectionApi(get())
+    factory<PlatformApi> {
+        providePlatformApi(get())
     }
 }
 
@@ -64,10 +68,12 @@ fun provideOkHttpClient(): OkHttpClient {
 }
 
 /* Check Platform Connection */
-fun providePlatformConnectionApi(retrofit: Retrofit): PlatformConnectionApi {
-    return retrofit.create(PlatformConnectionApi::class.java)
+fun providePlatformApi(retrofit: Retrofit): PlatformApi {
+    return retrofit.create(PlatformApi::class.java)
 }
 
-fun providePlatformConnectionRepository(api: PlatformConnectionApi): PlatformConnectionRepository {
+fun providePlatformConnectionRepository(api: PlatformApi): PlatformConnectionRepository {
     return PlatformConnectionRepositoryImpl(api)
 }
+
+

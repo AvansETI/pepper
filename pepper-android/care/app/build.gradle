@@ -102,4 +102,7 @@ dependencies {
     // Better time
     api 'joda-time:joda-time:2.10.8'
 
+    // Loading images fromw web
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 }
