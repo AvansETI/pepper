@@ -12,22 +12,23 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:paddingVertical="8dp"
         android:layout_width="300dp"
-        android:layout_height="wrap_content">
+        android:layout_height="230dp">
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/clickable_card"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="8dp"
             android:clickable="true"
-            android:clipToPadding="false"
+            android:clipToPadding="true"
             android:focusable="true"
-            android:minHeight="110dp"
-            android:outlineAmbientShadowColor="#80000000"
-            android:outlineSpotShadowColor="#80000000"
-            app:cardBackgroundColor="#fff"
-            app:cardElevation="16dp"
+            android:minHeight="200dp"
+            app:cardElevation="8dp"
             app:cardForegroundColor="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

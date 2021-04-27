@@ -72,8 +72,8 @@ class UniversalRecyclerAdapter(
                     this.executePendingBindings()
                 }
 
-                itemView.setOnClickListener {
-                    clickCallback.onClicked(item)
+                binding.clickableCard.setOnClickListener {
+                    clickCallback.onClicked(binding.root, item)
                 }
             }
 
