@@ -132,14 +132,11 @@ class ClickableDiffCallback : DiffUtil.ItemCallback<RecyclerAdapterItem>() {
         oldItem: RecyclerAdapterItem,
         newItem: RecyclerAdapterItem
     ): Boolean {
-        when (newItem.getType() == oldItem.getType()) {
+        when (newItem.getViewType() == oldItem.getViewType()) {
             true -> {
-                when (newItem.getType()) {
+                when (newItem.getViewType()) {
                     RecyclerAdapterItem.ViewTypes.MEAL -> {
                         (oldItem as PlatformMealsResponse).id == (newItem as PlatformMealsResponse).id
-                    }
-                    RecyclerAdapterItem.ViewTypes.INFORM -> {
-                        (oldItem as InformUserRecyclerItem).informType == (newItem as InformUserRecyclerItem).informType
                     }
                 }
             }
@@ -151,9 +148,9 @@ class ClickableDiffCallback : DiffUtil.ItemCallback<RecyclerAdapterItem>() {
         oldItem: RecyclerAdapterItem,
         newItem: RecyclerAdapterItem
     ): Boolean {
-        when (newItem.getType() == oldItem.getType()) {
+        when (newItem.getViewType() == oldItem.getViewType()) {
             true -> {
-                when (newItem.getType()) {
+                when (newItem.getViewType()) {
                     RecyclerAdapterItem.ViewTypes.MEAL -> {
                         (oldItem as PlatformMealsResponse).name == (newItem as PlatformMealsResponse).name
                                 && oldItem.description == newItem.description
@@ -161,9 +158,6 @@ class ClickableDiffCallback : DiffUtil.ItemCallback<RecyclerAdapterItem>() {
                                 && oldItem.allergies == newItem.allergies
                                 && oldItem.calories == newItem.calories
                                 && oldItem.source == newItem.source
-                    }
-                    RecyclerAdapterItem.ViewTypes.INFORM -> {
-                        (oldItem as InformUserRecyclerItem).informType == (newItem as InformUserRecyclerItem).informType
                     }
                 }
             }

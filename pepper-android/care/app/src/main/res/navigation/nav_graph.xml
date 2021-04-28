@@ -9,7 +9,11 @@
         android:label="HomeFragment" >
         <action
             android:id="@+id/action_homeFragment_to_orderFragment"
-            app:destination="@id/orderFragment" />
+            app:destination="@id/orderFragment"
+            app:enterAnim="@anim/slide_left_full"
+            app:exitAnim="@anim/slide_left_bit"
+            app:popEnterAnim="@anim/slide_right_bit"
+            app:popExitAnim="@anim/slide_right_full" />
     </fragment>
     <fragment
         android:id="@+id/orderFragment"
@@ -17,10 +21,18 @@
         android:label="OrderFragment" >
         <action
             android:id="@+id/action_orderFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/homeFragment"
+            app:enterAnim="@anim/slide_left_full"
+            app:exitAnim="@anim/slide_left_bit"
+            app:popEnterAnim="@anim/slide_right_bit"
+            app:popExitAnim="@anim/slide_right_full" />
         <action
             android:id="@+id/action_orderFragment_to_orderViewMealFragment"
-            app:destination="@id/orderViewMealFragment" />
+            app:destination="@id/orderViewMealFragment"
+            app:enterAnim="@anim/slide_up"
+            app:exitAnim="@anim/slide_up"
+            app:popEnterAnim="@anim/fade_out"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/orderViewMealFragment"
@@ -28,6 +40,10 @@
         android:label="OrderViewMealFragment" >
         <action
             android:id="@+id/action_orderViewMealFragment_to_orderFragment"
-            app:destination="@id/orderFragment" />
+            app:destination="@id/orderFragment"
+            app:enterAnim="@anim/slide_left_full"
+            app:exitAnim="@anim/slide_left_bit"
+            app:popEnterAnim="@anim/slide_right_bit"
+            app:popExitAnim="@anim/slide_right_full" />
     </fragment>
 </navigation>

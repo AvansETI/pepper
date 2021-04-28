@@ -39,7 +39,11 @@ data class PlatformMealsResponse(
     val source: String
 ) : RecyclerAdapterItem() {
 
-    override fun getType() : ViewTypes {
+    override fun getViewType() : ViewTypes {
         return ViewTypes.MEAL
+    }
+
+    fun getCaloriesText() : String {
+        return "${this.calories} kilocalorieën"
     }
 }

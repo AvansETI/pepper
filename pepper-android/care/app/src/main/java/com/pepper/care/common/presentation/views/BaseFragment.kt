@@ -1,5 +1,7 @@
 package com.pepper.care.common.presentation.views
 
+import android.view.View
+import android.widget.ImageView
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
@@ -7,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
+import com.pepper.care.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 
@@ -48,5 +51,9 @@ abstract class BaseFragment : Fragment {
 
     protected fun <T> LiveData<T>.observeInLifecycleScope(observer: (T) -> Unit) {
         observe(viewLifecycleOwner, observer)
+    }
+
+    protected fun setToolbarBackButtonVisibility(id: Int) {
+        activity?.findViewById<ImageView>(R.id.back_toolbar_button)?.visibility = id
     }
 }

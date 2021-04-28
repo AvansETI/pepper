@@ -6,7 +6,7 @@ abstract class RecyclerAdapterItem {
         MEAL, INFORM
     }
 
-    open fun getType() : ViewTypes {
+    open fun getViewType() : ViewTypes {
         return ViewTypes.MEAL
     }
 }
@@ -20,7 +20,7 @@ data class InformUserRecyclerItem(
         NO_MEALS_RESULTS_FOUND("Er zijn geen maaltijden gevonden.")
     }
 
-    override fun getType() : ViewTypes {
+    override fun getViewType() : ViewTypes {
         return ViewTypes.INFORM
     }
 }

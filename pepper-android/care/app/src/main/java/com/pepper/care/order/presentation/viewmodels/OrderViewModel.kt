@@ -8,19 +8,12 @@ import com.pepper.care.common.entities.RecyclerAdapterItem
 
 interface OrderViewModel {
     fun onStart()
-    fun navigateToDetailScreen(view: View)
+    fun onBackPress(view: View)
 
     val orderText: String
-    val currentSelectedItem: MutableLiveData<PlatformMealsResponse>
     val adapterClickedListener: ClickCallback<RecyclerAdapterItem>
     val mealsList: MutableLiveData<List<RecyclerAdapterItem>>
     val errorList: MutableLiveData<List<RecyclerAdapterItem>>
 
-
-    val viewMealTitle: String
-    val viewMealDescription: String
-    val viewMealSource: String
-    val viewMealType: String
-    val viewMealAllergies: String
-    val viewMealCalories: String
+    val meal: MutableLiveData<PlatformMealsResponse>
 }

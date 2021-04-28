@@ -5,8 +5,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
+import androidx.navigation.fragment.findNavController
 import com.pepper.care.R
 import com.pepper.care.common.presentation.views.BaseFragment
 import com.pepper.care.common.presentation.views.UniversalRecyclerAdapter
@@ -15,6 +16,7 @@ import com.pepper.care.order.presentation.viewmodels.OrderViewModel
 import com.pepper.care.order.presentation.viewmodels.OrderViewModelUsingUsecases
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -22,18 +24,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 @ExperimentalCoroutinesApi
 class OrderFragment : BaseFragment() {
 
-    private val viewModel: OrderViewModel by viewModel<OrderViewModelUsingUsecases>()
+    private val viewModel: OrderViewModel by sharedViewModel<OrderViewModelUsingUsecases>()
     private lateinit var viewBinding: FragmentOrderBinding
 
     override val navigationDestinationId: Int = R.id.orderFragment
-
-    private fun setupDataBinding(inflater: LayoutInflater, container: ViewGroup?) {
-        viewBinding = FragmentOrderBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = this@OrderFragment.viewLifecycleOwner
-            viewModel = this@OrderFragment.viewModel
-            adapter = UniversalRecyclerAdapter(this@OrderFragment.viewModel.adapterClickedListener)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +35,7 @@ class OrderFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         setupDataBinding(inflater, container)
+        setToolbarBackButtonVisibility(View.GONE)
         return viewBinding.root
     }
 
@@ -51,5 +46,13 @@ class OrderFragment : BaseFragment() {
 
     private fun bindToEvents() {
         viewModel.onStart()
+    }
+
+    private fun setupDataBinding(inflater: LayoutInflater, container: ViewGroup?) {
+        viewBinding = FragmentOrderBinding.inflate(inflater, container, false).apply {
+            lifecycleOwner = this@OrderFragment.viewLifecycleOwner
+            viewModel = this@OrderFragment.viewModel
+            adapter = UniversalRecyclerAdapter(this@OrderFragment.viewModel.adapterClickedListener)
+        }
     }
 }

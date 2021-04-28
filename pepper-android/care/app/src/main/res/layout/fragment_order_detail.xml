@@ -26,7 +26,7 @@
                 android:layout_height="0dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/meal_placeholder"
-                app:imageSource="@{viewModel.viewMealSource}"
+                app:imageSource="@{viewModel.meal.source}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline7"
                 app:layout_constraintStart_toStartOf="parent"
@@ -50,12 +50,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:layout_marginStart="16dp"
-                android:text="@{viewModel.viewMealTitle}"
+                android:text="@{viewModel.meal.name}"
                 android:textColor="@color/colorPrimaryDark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline7"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Naam product" />
+                tools:text="Stamppot zuurkool met rookworst" />
 
             <TextView
                 android:id="@+id/detail_meal_description"
@@ -63,11 +63,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="@{viewModel.viewMealDescription}"
+                android:text="@{viewModel.meal.description}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline7"
                 app:layout_constraintTop_toBottomOf="@+id/detail_meal_title"
-                tools:text="Beschrijving product" />
+                tools:text="Stamppot zuurkool wordt in onze keuken op tradionele manier bereid met zelfgestampte aardappels en heerlijke ingelegde zuurkool. De rookworst is naar eigen recept bereid en is sappig en smaakvol. Een echt heerlijke, winterse Hollandse stamppot. " />
 
             <TextView
                 android:id="@+id/textView2"
@@ -83,41 +83,81 @@
                 app:layout_constraintTop_toBottomOf="@+id/detail_meal_description"
                 tools:text="Samenstelling" />
 
+            <ImageView
+                android:id="@+id/icon_type"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="16dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_meal"
+                app:layout_constraintStart_toStartOf="@+id/textView2"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
             <TextView
                 android:id="@+id/detail_meal_type"
                 style="@style/MaterialAlertDialog.Pepper.Care.Body.Text"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 android:layout_marginStart="16dp"
-                android:text="@{viewModel.viewMealDescription}"
+                android:gravity="center_vertical"
+                android:text="@{viewModel.meal.type}"
+                app:layout_constraintBottom_toBottomOf="@+id/icon_type"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline7"
-                app:layout_constraintTop_toBottomOf="@+id/textView2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/icon_type"
+                app:layout_constraintTop_toTopOf="@+id/icon_type"
+                app:layout_constraintVertical_bias="1.0"
                 tools:text="Standaard maaltijd" />
+
+            <ImageView
+                android:id="@+id/icon_allergies"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="16dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_peanut"
+                app:layout_constraintStart_toStartOf="@+id/icon_type"
+                app:layout_constraintTop_toBottomOf="@+id/icon_type" />
 
             <TextView
                 android:id="@+id/detail_meal_allergies"
                 style="@style/MaterialAlertDialog.Pepper.Care.Body.Text"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 android:layout_marginStart="16dp"
-                android:text="@{viewModel.viewMealAllergies}"
+                android:gravity="center_vertical"
+                android:text="@{viewModel.meal.allergies}"
+                app:layout_constraintBottom_toBottomOf="@+id/icon_allergies"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline7"
-                app:layout_constraintTop_toBottomOf="@+id/detail_meal_type"
-                tools:text="Het product bevat de volgende allergenen: Ei, Soja, Selderij, Lactose melk, Gluten." />
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/icon_allergies"
+                app:layout_constraintTop_toTopOf="@+id/icon_allergies"
+                tools:text="Gluten, Soja, Selderij, Lactose melk" />
+
+            <ImageView
+                android:id="@+id/icon_kcal"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="16dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_calories"
+                app:layout_constraintStart_toStartOf="@+id/icon_allergies"
+                app:layout_constraintTop_toBottomOf="@+id/icon_allergies" />
 
             <TextView
                 android:id="@+id/detail_meal_calories"
                 style="@style/MaterialAlertDialog.Pepper.Care.Body.Text"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 android:layout_marginStart="16dp"
-                android:text="@{viewModel.viewMealCalories}"
+                android:gravity="center_vertical"
+                android:text="@{viewModel.meal.caloriesText}"
+                app:layout_constraintBottom_toBottomOf="@+id/icon_kcal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline7"
-                app:layout_constraintTop_toBottomOf="@+id/detail_meal_allergies"
-                tools:text="Het product bevat 30 calorieën." />
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/icon_kcal"
+                app:layout_constraintTop_toTopOf="@+id/icon_kcal"
+                tools:text="123,07 kilocalorieën" />
 
             <ImageView
                 android:id="@+id/meal_logo"
@@ -126,8 +166,8 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/chef_logo_shadow"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/guideline9"
-                app:layout_constraintStart_toStartOf="@+id/guideline7"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline9"
                 app:layout_constraintTop_toTopOf="@+id/guideline8" />
 
             <androidx.constraintlayout.widget.Guideline
@@ -149,7 +189,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="382dp" />
+                app:layout_constraintGuide_end="200dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
