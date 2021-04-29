@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.LifecycleService
+import com.pepper.care.common.di.getSharedPrefs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
@@ -55,11 +56,7 @@ class PlatformMqttListenerService : LifecycleService() {
             }
 
             override fun messageArrived(topic: String?, message: MqttMessage?) {
-                Log.d(
-                    PlatformMqttListenerService::class.java.simpleName,
-                    "Receive message: ${message.toString()} from topic: $topic"
-                )
-                //callback.onMessageReceived(topic, message)
+                callback.onMessageReceived(topic, message.toString())
             }
 
             override fun deliveryComplete(token: IMqttDeliveryToken?) {
