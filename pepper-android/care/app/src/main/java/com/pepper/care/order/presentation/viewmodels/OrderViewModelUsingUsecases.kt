@@ -12,6 +12,7 @@ import com.pepper.care.common.entities.PlatformMealsResponse
 import com.pepper.care.common.entities.RecyclerAdapterItem
 import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.joda.time.LocalDateTime
 import java.util.*
@@ -24,21 +25,49 @@ class OrderViewModelUsingUsecases(
     override val orderText: String =
         "Het maaltijd menu, ${LocalDateTime().toString("EEEE d MMMM", Locale("nl"))}"
 
-    override val mealsList = MutableLiveData<List<RecyclerAdapterItem>>()
-    override val errorList = MutableLiveData<List<RecyclerAdapterItem>>(
-        listOf(
-            InformUserRecyclerItem(InformUserRecyclerItem.InformText.NO_MEALS_RESULTS_FOUND)
-        )
-    )
+    override val meal: MutableLiveData<PlatformMealsResponse> = MutableLiveData()
+    override val recyclerList = MutableLiveData<List<RecyclerAdapterItem>>(emptyList())
+    override val recyclerVisibility: MutableLiveData<Boolean> = MutableLiveData(false)
+    override val progressVisibility: MutableLiveData<Boolean> = MutableLiveData(true)
+    override val recyclerSpanCount: MutableLiveData<Int> = MutableLiveData(3)
 
     override fun onStart() {
+        showProgressView(true)
         viewModelScope.launch {
             when (val result = getPlatformMealsUseCaseUsingRepository.invoke()) {
                 is AppResult.Success -> {
-                    mealsList.value = result.successData
+                    if (result.successData.isNotEmpty()) recyclerList.value =
+                        result.successData else recyclerList.value =
+                        listOf(InformUserRecyclerItem(InformUserRecyclerItem.InformText.NO_MEALS_RESULTS_FOUND))
+                    showProgressView(false)
                 }
-                is AppResult.Error -> result.exception.message
+                is AppResult.Error -> {
+                    recyclerList.value =
+                        listOf(InformUserRecyclerItem(InformUserRecyclerItem.InformText.INTERNET_ERROR))
+                    result.exception.message
+                    showProgressView(false)
+                }
             }
+        }
+    }
+
+    private fun showProgressView(boolean: Boolean) {
+        updateSpanCount()
+        this@OrderViewModelUsingUsecases.progressVisibility.apply { value = boolean }
+        this@OrderViewModelUsingUsecases.recyclerVisibility.apply { value = !boolean }
+    }
+
+    private fun updateSpanCount() {
+        this@OrderViewModelUsingUsecases.recyclerSpanCount.apply {
+            value = calculateSpanCount()
+        }
+    }
+
+    private fun calculateSpanCount(): Int {
+        return when {
+            recyclerList.value!!.size == 2 -> 2
+            recyclerList.value!!.size <= 1 -> 1
+            else -> 3
         }
     }
 
@@ -66,6 +95,4 @@ class OrderViewModelUsingUsecases(
                 }
             }
         }
-
-    override val meal: MutableLiveData<PlatformMealsResponse> = MutableLiveData()
 }

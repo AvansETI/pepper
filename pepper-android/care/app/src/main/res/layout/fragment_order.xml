@@ -40,18 +40,31 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/meal_recycler_view"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:paddingTop="16dp"
+                app:isVisible="@{viewModel.recyclerVisibility}"
                 app:adapter="@{adapter}"
-                app:items="@{viewModel.mealsList.size() &gt; 0 ? viewModel.mealsList : viewModel.errorList}"
+                app:items="@{viewModel.recyclerList}"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline5"
                 app:layout_constraintStart_toStartOf="@+id/guideline4"
                 app:layout_constraintTop_toBottomOf="@+id/text_view_id"
-                app:spanCount="3" />
+                app:setSpanCount="@{viewModel.recyclerSpanCount}" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                app:trackColor="@color/transparent_not_selected"
+                app:indicatorColor="@color/colorAccent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                app:layout_constraintStart_toStartOf="@+id/guideline4"
+                app:layout_constraintTop_toBottomOf="@+id/text_view_id"
+                app:isVisible="@{viewModel.progressVisibility}"/>
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline4"

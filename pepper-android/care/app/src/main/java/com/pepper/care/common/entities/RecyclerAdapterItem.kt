@@ -16,7 +16,7 @@ data class InformUserRecyclerItem(
 ) : RecyclerAdapterItem() {
 
     enum class InformText(val text: String) {
-        NO_RESULTS_FOUND("Geen resultaten gevonden."),
+        INTERNET_ERROR("Kon geen verbinding maken met het Pepper Care platform."),
         NO_MEALS_RESULTS_FOUND("Er zijn geen maaltijden gevonden.")
     }
 
