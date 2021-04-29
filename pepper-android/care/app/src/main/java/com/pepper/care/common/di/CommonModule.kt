@@ -46,7 +46,7 @@ val commonModule = module {
 
 /* Shared Prefences */
 fun getSharedPrefs(androidApplication: Application): SharedPreferences {
-    return  androidApplication.getSharedPreferences(CommonConstants.COMMON_PREFENCES, Context.MODE_PRIVATE)
+    return androidApplication.getSharedPreferences(CommonConstants.COMMON_PREFENCES, Context.MODE_PRIVATE)
 }
 
 /* API Calling */

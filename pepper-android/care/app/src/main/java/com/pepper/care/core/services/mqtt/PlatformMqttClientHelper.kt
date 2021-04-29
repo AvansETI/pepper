@@ -22,23 +22,6 @@ class PlatformMqttClientHelper(
 
     init {
         client = MqttAndroidClient(context, serverUri, clientId)
-        client.setCallback(object : MqttCallbackExtended {
-            override fun connectComplete(b: Boolean, s: String) {
-                Log.w(PlatformMqttClientHelper::class.simpleName, s)
-            }
-
-            override fun connectionLost(throwable: Throwable) {}
-
-            @Throws(Exception::class)
-            override fun messageArrived(
-                topic: String,
-                mqttMessage: MqttMessage
-            ) {
-                Log.w(PlatformMqttClientHelper::class.simpleName, mqttMessage.toString())
-            }
-
-            override fun deliveryComplete(iMqttDeliveryToken: IMqttDeliveryToken) {}
-        })
         connect()
     }
 

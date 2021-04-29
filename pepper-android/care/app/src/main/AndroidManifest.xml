@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Care">
         <activity android:name=".info.presentation.InfoSliderActivity" />
+
         <activity
             android:name=".SplashScreenActivity"
             android:screenOrientation="landscape"
@@ -38,8 +39,8 @@
         </activity>
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
-
         <service android:name=".core.services.mqtt.PlatformMqttListenerService"/>
+        <service android:name=".core.services.time.TimeBasedInterfaceService"/>
 
     </application>
 

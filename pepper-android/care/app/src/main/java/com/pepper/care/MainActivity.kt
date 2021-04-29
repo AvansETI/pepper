@@ -1,6 +1,7 @@
 package com.pepper.care
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -25,10 +26,13 @@ import com.pepper.care.info.presentation.InfoSliderActivity
 import kotlinx.coroutines.launch
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.koin.android.ext.android.inject
+import org.joda.time.LocalDateTime
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCallbacks {
+
+    val sharedPreferences: SharedPreferences.Editor by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,19 +42,28 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
 
     private fun setup() {
         registerRobotCallbacks()
-        startMqttService()
+        startServices()
+
+        sharedPreferences.putString(KeyTypes.TEST_KEY.name, "AAA").commit()
     }
 
     private fun registerRobotCallbacks() {
         QiSDK.register(this, this)
     }
 
-    private fun startMqttService() {
+    private fun startServices() {
         lifecycleScope.launch {
+            PlatformMqttListenerService.start(this@MainActivity, this@MainActivity)
             PlatformMqttListenerService.start(this@MainActivity, this@MainActivity)
         }
         QiSDK.register(this, this)
         initUiElements()
+    }
+
+    private fun startTimeBasedInterfaceService() {
+        lifecycleScope.launch {
+
+        }
     }
 
     private fun initUiElements() {
@@ -92,4 +105,8 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
     override fun onMessageReceived(topic: String?, message: MqttMessage?) {
         // Handle messaged.
     }
+}
+
+enum class KeyTypes(key: String) {
+    TEST_KEY("TEST_KEY")
 }

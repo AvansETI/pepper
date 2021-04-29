@@ -11,12 +11,9 @@ import com.pepper.care.common.entities.InformUserRecyclerItem
 import com.pepper.care.common.entities.PlatformMealsResponse
 import com.pepper.care.common.entities.RecyclerAdapterItem
 import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.joda.time.LocalDateTime
 import java.util.*
-import kotlin.collections.ArrayList
 
 class OrderViewModelUsingUsecases(
     private val getPlatformMealsUseCaseUsingRepository: GetPlatformMealsUseCaseUsingRepository
