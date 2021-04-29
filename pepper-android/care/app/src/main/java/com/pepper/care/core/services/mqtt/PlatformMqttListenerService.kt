@@ -10,6 +10,7 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended
 import org.eclipse.paho.client.mqttv3.MqttMessage
 
+
 @FlowPreview
 @ExperimentalCoroutinesApi
 class PlatformMqttListenerService : LifecycleService() {
@@ -58,7 +59,7 @@ class PlatformMqttListenerService : LifecycleService() {
                     PlatformMqttListenerService::class.java.simpleName,
                     "Receive message: ${message.toString()} from topic: $topic"
                 )
-                callback.onMessageReceived(topic, message)
+                //callback.onMessageReceived(topic, message)
             }
 
             override fun deliveryComplete(token: IMqttDeliveryToken?) {
@@ -69,4 +70,5 @@ class PlatformMqttListenerService : LifecycleService() {
             }
         })
     }
+
 }
