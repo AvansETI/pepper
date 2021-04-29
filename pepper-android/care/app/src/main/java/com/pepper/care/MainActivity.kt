@@ -16,6 +16,7 @@ import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
 import com.aldebaran.qi.sdk.design.activity.RobotActivity
 import com.pepper.care.common.CommonConstants.COMMON_DEVICE_ID
 import com.pepper.care.common.usecases.GetNetworkConnectionStateUseCase
+import com.pepper.care.info.presentation.InfoSliderActivity
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -38,6 +39,11 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks {
                     this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.orderFragment)
                 }
             }
+        }
+
+        this.findViewById<ImageView>(R.id.info_toolbar_button).setOnClickListener {
+            Log.d(MainActivity::class.simpleName, "Clicked on info button!")
+            startActivity(Intent(this, InfoSliderActivity::class.java))
         }
     }
 

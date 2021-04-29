@@ -12,5 +12,6 @@
     <color name="default_dark_background_color">#404041</color>
 
     <color name="transparent">#00000000</color>
+    <color name="transparent_not_selected">#52999999</color>
 
 </resources>

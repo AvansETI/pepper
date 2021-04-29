@@ -12,12 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Care">
-
+        <activity android:name=".info.presentation.InfoSliderActivity" />
         <activity
             android:name=".SplashScreenActivity"
             android:screenOrientation="landscape"
             android:theme="@style/SplashScreenTheme">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,9 +28,7 @@
             android:name=".MainActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppThemeMain"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
-
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
