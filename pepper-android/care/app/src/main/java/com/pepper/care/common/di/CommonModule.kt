@@ -13,6 +13,7 @@ import com.pepper.care.common.repo.PlatformMealsRepository
 import com.pepper.care.common.repo.PlatformMealsRepositoryImpl
 import com.pepper.care.common.usecases.GetNetworkConnectionStateUseCase
 import com.pepper.care.common.usecases.GetNetworkConnectionStateUseCaseUsingRepository
+import com.pepper.care.core.services.encryption.EncryptionService
 import com.pepper.care.order.common.usecases.GetPlatformMealsUseCase
 import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
 import okhttp3.OkHttpClient
@@ -35,6 +36,9 @@ val commonModule = module {
     }
     single<Retrofit> {
         provideRetrofit(get())
+    }
+    single<EncryptionService> {
+        provideEncryptionService()
     }
     factory<OkHttpClient> {
         provideOkHttpClient()
@@ -74,6 +78,10 @@ fun providePlatformApi(retrofit: Retrofit): PlatformApi {
 
 fun providePlatformConnectionRepository(api: PlatformApi): PlatformConnectionRepository {
     return PlatformConnectionRepositoryImpl(api)
+}
+
+fun provideEncryptionService(): EncryptionService {
+    return EncryptionService()
 }
 
 

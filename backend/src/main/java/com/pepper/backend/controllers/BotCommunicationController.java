@@ -97,12 +97,12 @@ public class BotCommunicationController implements MqttCallbackExtended {
     }
 
     @Override
-    public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
+    public void messageArrived(String s, MqttMessage mqttMessage) {
         String message = mqttMessage.toString();
 
         try {
             message = this.encryptionService.decrypt(message, this.encryptionPassword);
-        } catch (GeneralSecurityException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return;
         }

@@ -26,8 +26,8 @@ import org.koin.android.ext.android.inject
 @ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCallbacks {
 
-    private val encryptionService: EncryptionService = EncryptionService()
-    val sharedPreferences: SharedPreferences.Editor by inject()
+    private val encryptionService: EncryptionService by inject()
+    private val sharedPreferences: SharedPreferences.Editor by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,8 +38,6 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
     private fun setup() {
         registerRobotCallbacks()
         startServices()
-
-        sharedPreferences.putString(KeyTypes.TEST_KEY.name, "AAA").commit()
     }
 
     private fun registerRobotCallbacks() {
@@ -109,13 +107,25 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
             return
         }
 
+        if (decrypted.contains("bot")) {
+            return
+        }
+
         Log.d(
             MainActivity::class.java.simpleName,
             "Receive message: \"$decrypted\" from topic: \"$topic\""
+        )
+
+        val message1 = "bot: " + java.util.UUID.randomUUID().toString()
+        sharedPreferences.putString(KeyTypes.MQTT_PUBLISH.name, message1).commit()
+
+        Log.d(
+            MainActivity::class.java.simpleName,
+            "Send message: $message1"
         )
     }
 }
 
 enum class KeyTypes(key: String) {
-    TEST_KEY("TEST_KEY")
+    MQTT_PUBLISH("MQTT_PUBLISH")
 }
