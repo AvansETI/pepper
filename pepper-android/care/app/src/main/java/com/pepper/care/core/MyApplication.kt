@@ -9,7 +9,6 @@ import com.pepper.care.ActivityLifecycle
 import com.pepper.care.common.di.commonModule
 import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
 import com.pepper.care.home.di.homeModule
-import com.pepper.care.info.di.infoModule
 import com.pepper.care.order.di.orderModule
 import kotlinx.coroutines.FlowPreview
 import org.koin.android.ext.koin.androidContext
@@ -27,7 +26,6 @@ class MyApplication : Application(), LifecycleObserver {
             modules(commonModule)
             modules(homeModule)
             modules(orderModule)
-            modules(infoModule)
         }
 
         registerActivityLifecycleCallbacks(ActivityLifecycle)
