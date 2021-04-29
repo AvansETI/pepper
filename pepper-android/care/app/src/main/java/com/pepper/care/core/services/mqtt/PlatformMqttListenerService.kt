@@ -4,15 +4,20 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.LifecycleService
+import com.pepper.care.core.services.encryption.EncryptionService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended
 import org.eclipse.paho.client.mqttv3.MqttMessage
+import java.security.GeneralSecurityException
+
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 class PlatformMqttListenerService : LifecycleService() {
+
+    private val encryptionService: EncryptionService = EncryptionService()
 
     companion object {
         lateinit var clientHelper: PlatformMqttClientHelper
@@ -54,11 +59,19 @@ class PlatformMqttListenerService : LifecycleService() {
             }
 
             override fun messageArrived(topic: String?, message: MqttMessage?) {
+                var decrypted = ""
+                try {
+                    decrypted = encryptionService.decrypt(message.toString(), "pepper")
+                } catch (e: GeneralSecurityException) {
+                    e.printStackTrace()
+                    return
+                }
+
                 Log.d(
                     PlatformMqttListenerService::class.java.simpleName,
-                    "Receive message: ${message.toString()} from topic: $topic"
+                    "Receive message: $decrypted from topic: $topic"
                 )
-                callback.onMessageReceived(topic, message)
+                //callback.onMessageReceived(topic, message)
             }
 
             override fun deliveryComplete(token: IMqttDeliveryToken?) {
@@ -69,4 +82,5 @@ class PlatformMqttListenerService : LifecycleService() {
             }
         })
     }
+
 }
