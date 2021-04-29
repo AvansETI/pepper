@@ -6,20 +6,21 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LifecycleService
 import com.pepper.care.KeyTypes
-import com.pepper.care.common.ClickCallback
-import com.pepper.care.common.entities.RecyclerAdapterItem
+import com.pepper.care.core.services.encryption.EncryptionService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.koin.android.ext.android.inject
+import java.lang.Exception
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 class PlatformMqttListenerService : LifecycleService() {
 
-    val sharedPreferences: SharedPreferences by inject()
+    private val sharedPreferences: SharedPreferences by inject()
+    private val encryptionService: EncryptionService by inject()
 
     companion object {
         lateinit var clientHelper: PlatformMqttClientHelper
@@ -74,17 +75,28 @@ class PlatformMqttListenerService : LifecycleService() {
         })
     }
 
-    private val sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener =
-        object : SharedPreferences.OnSharedPreferenceChangeListener {
-            override fun onSharedPreferenceChanged(
-                sharedPreferences: SharedPreferences?,
-                key: String?
-            ) {
-                when (key){
-                    KeyTypes.TEST_KEY.name -> {
-                        clientHelper.publish(sharedPreferences!!.getString(key, "Fout")!!,0)
+    private val sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener = object : SharedPreferences.OnSharedPreferenceChangeListener {
+        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+            when (key) {
+                KeyTypes.MQTT_PUBLISH.name -> {
+                    val message = sharedPreferences!!.getString(key, "error")
+
+                    if (message.equals("error")) {
+                        return
                     }
+
+                    var encrypted = ""
+                    try {
+                        encrypted = encryptionService.encrypt(message!!, "pepper")
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        return
+                    }
+
+                    clientHelper.publish(encrypted,0)
                 }
             }
         }
+    }
+
 }

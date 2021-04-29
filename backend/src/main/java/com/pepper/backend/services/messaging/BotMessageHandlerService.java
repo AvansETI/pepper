@@ -24,9 +24,15 @@ public class BotMessageHandlerService {
 
     public void send(String message) {
         this.botCommunicationController.publish(message);
+        System.out.println("SEND: " + message);
     }
 
     public void handle(String message) {
+        if (message.contains("backend")) {
+            return;
+        }
+
+        System.out.println("RECEIVED: " + message);
         //BotMessage botMessage = this.gson.fromJson(message, BotMessage.class);
         //this.databaseService.writeBotMessage(botMessage);
     }

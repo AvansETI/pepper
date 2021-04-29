@@ -20,7 +20,7 @@ public class TestController {
 
     @GetMapping("test")
     public void test() {
-        this.botMessageHandlerService.send("hello pepper, this message is encrypted");
+        this.botMessageHandlerService.send("backend: hello pepper 1");
     }
 
 }

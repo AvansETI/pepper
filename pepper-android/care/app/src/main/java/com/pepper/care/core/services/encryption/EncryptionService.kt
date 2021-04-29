@@ -1,16 +1,16 @@
 package com.pepper.care.core.services.encryption
 
 import android.util.Base64
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
+import java.nio.ByteBuffer
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
+import java.security.GeneralSecurityException
+import java.security.MessageDigest
+import java.security.SecureRandom
+import javax.crypto.Cipher
+import javax.crypto.SecretKey
+import javax.crypto.spec.GCMParameterSpec
+import javax.crypto.spec.SecretKeySpec
 
 class EncryptionService {
 
@@ -33,12 +33,12 @@ class EncryptionService {
             .put(cipherText)
             .array()
 
-        return Base64.encodeToString(cipherTextWithIv, Base64.DEFAULT)
+        return Base64.encodeToString(cipherTextWithIv, Base64.NO_WRAP)
     }
 
     @Throws(GeneralSecurityException::class)
     fun decrypt(text: String, password: String): String {
-        val decode: ByteArray = Base64.decode(text.toByteArray(UTF_8), Base64.DEFAULT)
+        val decode: ByteArray = Base64.decode(text.toByteArray(UTF_8), Base64.NO_WRAP)
         val bb: ByteBuffer = ByteBuffer.wrap(decode)
         val iv = ByteArray(IV_LENGTH_BYTE)
         bb.get(iv)
