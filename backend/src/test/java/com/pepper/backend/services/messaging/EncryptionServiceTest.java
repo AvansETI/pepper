@@ -13,7 +13,7 @@ class EncryptionServiceTest {
     EncryptionService encryptionService;
 
     @BeforeEach
-    void setUp() {
+    void setup() {
         this.encryptionService = new EncryptionService();
     }
 

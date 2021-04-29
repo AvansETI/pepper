@@ -20,7 +20,7 @@ class EncryptionService {
     private val UTF_8: Charset = StandardCharsets.UTF_8
 
     @Throws(GeneralSecurityException::class)
-    public fun encrypt(text: String, password: String): String? {
+    fun encrypt(text: String, password: String): String {
         val iv = getRandomNonce(IV_LENGTH_BYTE)
         val keyDigest: MessageDigest = MessageDigest.getInstance("SHA-256")
         val keyHash: ByteArray = keyDigest.digest(password.toByteArray(UTF_8))
@@ -32,13 +32,12 @@ class EncryptionService {
             .put(iv)
             .put(cipherText)
             .array()
-        val result = Base64.encodeToString(cipherTextWithIv, Base64.DEFAULT)
 
-        return "testencrypt"
+        return Base64.encodeToString(cipherTextWithIv, Base64.DEFAULT)
     }
 
     @Throws(GeneralSecurityException::class)
-    public fun decrypt(text: String, password: String): String {
+    fun decrypt(text: String, password: String): String {
         val decode: ByteArray = Base64.decode(text.toByteArray(UTF_8), Base64.DEFAULT)
         val bb: ByteBuffer = ByteBuffer.wrap(decode)
         val iv = ByteArray(IV_LENGTH_BYTE)
@@ -51,12 +50,11 @@ class EncryptionService {
         val cipher: Cipher = Cipher.getInstance(ENCRYPT_ALGO)
         cipher.init(Cipher.DECRYPT_MODE, secretKey, GCMParameterSpec(TAG_LENGTH_BIT, iv))
         val plainText: ByteArray = cipher.doFinal(cipherText)
-        val result = String(plainText, UTF_8)
 
-        return "testdecrypt"
+        return String(plainText, UTF_8)
     }
 
-    public fun getRandomNonce(numBytes: Int): ByteArray {
+    fun getRandomNonce(numBytes: Int): ByteArray {
         val nonce = ByteArray(numBytes)
         SecureRandom().nextBytes(nonce)
         return nonce
