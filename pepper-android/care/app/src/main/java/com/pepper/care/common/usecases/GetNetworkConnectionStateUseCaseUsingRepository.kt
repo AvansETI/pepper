@@ -9,6 +9,7 @@ interface GetNetworkConnectionStateUseCase {
     enum class ConnectionState: Serializable {
         NO_INTERNET_CONNECTION, CONNECTION_VERIFIED
     }
+
     suspend operator fun invoke(
         connectionStateResult: MutableLiveData<ConnectionState>,
         deviceId: Int

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.pepper.care.R
 import com.pepper.care.common.presentation.views.BaseFragment
 import com.pepper.care.databinding.FragmentHomeBinding
@@ -35,6 +36,7 @@ class HomeFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         setupDataBinding(inflater, container)
+        setToolbarBackButtonVisibility(View.GONE)
         return viewBinding.root
     }
 
