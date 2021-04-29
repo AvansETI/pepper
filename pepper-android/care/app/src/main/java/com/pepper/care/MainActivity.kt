@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.aldebaran.qi.sdk.QiContext
@@ -21,9 +20,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
 import java.lang.NullPointerException
 import java.security.GeneralSecurityException
-import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.koin.android.ext.android.inject
-import org.joda.time.LocalDateTime
 
 @FlowPreview
 @ExperimentalCoroutinesApi
