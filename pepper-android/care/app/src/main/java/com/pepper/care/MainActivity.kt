@@ -5,25 +5,22 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.ImageView
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.aldebaran.qi.sdk.QiContext
 import com.aldebaran.qi.sdk.QiSDK
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
-import com.aldebaran.qi.sdk.design.activity.RobotActivity
-import com.pepper.care.common.CommonConstants.COMMON_DEVICE_ID
-import com.pepper.care.common.usecases.GetNetworkConnectionStateUseCase
+import com.pepper.care.core.services.encryption.EncryptionService
 import com.pepper.care.core.services.mqtt.MqttMessageCallbacks
-import com.pepper.care.core.services.mqtt.PlatformMqttClientHelper
 import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
+import com.pepper.care.info.presentation.InfoSliderActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import com.pepper.care.info.presentation.InfoSliderActivity
 import kotlinx.coroutines.launch
+import java.lang.NullPointerException
+import java.security.GeneralSecurityException
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.koin.android.ext.android.inject
 import org.joda.time.LocalDateTime
@@ -32,6 +29,7 @@ import org.joda.time.LocalDateTime
 @ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCallbacks {
 
+    private val encryptionService: EncryptionService = EncryptionService()
     val sharedPreferences: SharedPreferences.Editor by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,8 +100,22 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
         // The robot focus is refused.
     }
 
-    override fun onMessageReceived(topic: String?, message: MqttMessage?) {
-        // Handle messaged.
+    override fun onMessageReceived(topic: String?, message: String?) {
+        var decrypted = ""
+        try {
+            decrypted = encryptionService.decrypt(message!!, "pepper")
+        } catch (e: GeneralSecurityException) {
+            e.printStackTrace()
+            return
+        } catch (e: NullPointerException) {
+            e.printStackTrace()
+            return
+        }
+
+        Log.d(
+            MainActivity::class.java.simpleName,
+            "Receive message: \"$decrypted\" from topic: \"$topic\""
+        )
     }
 }
 

@@ -27,7 +27,7 @@ public class BotMessageHandlerService {
     }
 
     public void handle(String message) {
-        BotMessage botMessage = this.gson.fromJson(message, BotMessage.class);
-        this.databaseService.writeBotMessage(botMessage);
+        //BotMessage botMessage = this.gson.fromJson(message, BotMessage.class);
+        //this.databaseService.writeBotMessage(botMessage);
     }
 }

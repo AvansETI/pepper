@@ -62,11 +62,7 @@ class PlatformMqttListenerService : LifecycleService() {
             }
 
             override fun messageArrived(topic: String?, message: MqttMessage?) {
-                Log.d(
-                    PlatformMqttListenerService::class.java.simpleName,
-                    "Receive message: ${message.toString()} from topic: $topic"
-                )
-                //callback.onMessageReceived(topic, message)
+                callback.onMessageReceived(topic, message.toString())
             }
 
             override fun deliveryComplete(token: IMqttDeliveryToken?) {

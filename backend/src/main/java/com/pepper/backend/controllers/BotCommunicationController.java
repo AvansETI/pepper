@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
-import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 
 @Controller
