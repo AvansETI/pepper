@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import java.lang.NullPointerException
 import java.security.GeneralSecurityException
 import org.koin.android.ext.android.inject
+import java.lang.Exception
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -99,10 +100,7 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
         var decrypted = ""
         try {
             decrypted = encryptionService.decrypt(message!!, "pepper")
-        } catch (e: GeneralSecurityException) {
-            e.printStackTrace()
-            return
-        } catch (e: NullPointerException) {
+        } catch (e: Exception) {
             e.printStackTrace()
             return
         }

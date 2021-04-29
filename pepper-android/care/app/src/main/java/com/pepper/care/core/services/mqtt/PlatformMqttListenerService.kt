@@ -13,8 +13,7 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.koin.android.ext.android.inject
-import java.lang.NullPointerException
-import java.security.GeneralSecurityException
+import java.lang.Exception
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -89,10 +88,7 @@ class PlatformMqttListenerService : LifecycleService() {
                     var encrypted = ""
                     try {
                         encrypted = encryptionService.encrypt(message!!, "pepper")
-                    } catch (e: GeneralSecurityException) {
-                        e.printStackTrace()
-                        return
-                    } catch (e: NullPointerException) {
+                    } catch (e: Exception) {
                         e.printStackTrace()
                         return
                     }

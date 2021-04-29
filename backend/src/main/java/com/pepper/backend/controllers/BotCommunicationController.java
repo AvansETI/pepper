@@ -61,7 +61,7 @@ public class BotCommunicationController implements MqttCallbackExtended {
 
         try {
             message = this.encryptionService.encrypt(message, this.encryptionPassword);
-        } catch (GeneralSecurityException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return;
         }
