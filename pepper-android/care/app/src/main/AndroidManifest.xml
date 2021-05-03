@@ -17,13 +17,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Care">
+        android:theme="@style/Theme_Care">
         <activity android:name=".info.presentation.InfoSliderActivity" />
 
         <activity
             android:name=".SplashScreenActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/SplashScreenTheme">
+            android:theme="@style/Theme_Splash_Screen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,7 +34,6 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/AppThemeMain"
             android:windowSoftInputMode="adjustResize">
         </activity>
 

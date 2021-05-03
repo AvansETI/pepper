@@ -24,17 +24,16 @@
         app:layout_constraintVertical_weight="5" />
 
     <TextView
+        style="@style/Pepper_Care_Title_Text"
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:fontFamily="@font/montserrat_bold"
         android:gravity="center"
-        android:includeFontPadding="false"
         android:text="Medemogelijk gemaakt door"
-        android:textColor="@color/black"
         android:textSize="24sp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -44,21 +43,19 @@
         app:layout_constraintVertical_weight="2" />
 
     <TextView
+        style="@style/Pepper_Care_Body_Text"
         android:id="@+id/description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:fontFamily="@font/montserrat_regular"
         android:gravity="center_horizontal"
         android:paddingHorizontal="230dp"
-        android:includeFontPadding="false"
-        android:lineSpacingMultiplier="1.25"
         android:text="De Pepper is een initiatief van het GET-lab, een plek waarbij de wereld van zorg en technologie samenkomen. Het ondersteund (toekomstige) zorgprofessionals bij het ontwikkelen tot hulpverleners die aansluiten bij de vraag van nu en in de toekomst."
         android:textAlignment="center"
-        android:textColor="@color/black"
         android:textSize="16sp"
+        android:lineSpacingMultiplier="1.25"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

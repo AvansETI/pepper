@@ -22,17 +22,12 @@
             android:layout_height="0dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginVertical="8dp"
-            android:clickable="true"
-            android:clipToPadding="true"
-            android:focusable="true"
-            android:minHeight="200dp"
-            app:cardElevation="8dp"
-            app:cardForegroundColor="@color/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MaterialCardView.Cut">
+            app:cardBackgroundColor="@color/materialCardColor"
+            app:shapeAppearanceOverlay="@style/Pepper_Care_Material_Card">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -40,10 +35,10 @@
                 android:paddingBottom="8dp">
 
                 <ImageView
+                    style="@style/Pepper_Care_Image"
                     android:id="@+id/meal_img_src"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:scaleType="centerCrop"
                     android:src="@drawable/meal_placeholder"
                     app:imageSource="@{meal.source}"
                     app:layout_constraintBottom_toTopOf="@+id/guideline6"
@@ -52,17 +47,14 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    style="@style/Pepper_Care_Title_Text"
                     android:id="@+id/meal_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:includeFontPadding="false"
                     android:paddingHorizontal="8dp"
                     android:paddingTop="8dp"
                     android:text="Maaltijd titel"
                     android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                    android:textColor="@color/black"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -70,22 +62,14 @@
                     tools:text="@{meal.name}" />
 
                 <Button
+                    style="@style/Pepper_Care_Button"
                     android:id="@+id/more_info"
-                    style="@style/Widget.MaterialComponents.Button.Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:backgroundTint="@color/colorPrimary"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:letterSpacing="0"
-                    android:paddingHorizontal="12dp"
-                    android:stateListAnimator="@null"
                     android:text="Meer informatie"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorAccent"
                     android:textSize="11sp"
-                    android:background="@color/transparent"
-                    app:cornerRadius="30dp"
+                    app:icon="@null"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -97,6 +81,13 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     app:layout_constraintGuide_begin="120dp" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_end="25dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
