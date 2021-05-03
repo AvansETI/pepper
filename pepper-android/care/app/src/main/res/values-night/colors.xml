@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--    SPECIFIC    -->
+    <color name="backgroundColor">@color/blackAlternative</color>
+    <color name="statusBarColor">@color/grey</color>
+    <color name="toolBarColor">@color/grey</color>
+    <color name="toolBarIconsColor">@color/whiteAlternative</color>
+    <color name="titleTextColor">@color/colorPrimary</color>
+    <color name="bodyTextColor">@color/white</color>
+    <color name="materialCardColor">@color/grey</color>
+    <color name="ButtonTextColor">@color/white</color>
+    <color name="ButtonStrokeColor">@color/colorAccent</color>
+    <color name="ButtonIconTintColor">@color/white</color>
+    <color name="ButtonBackgroundColor">@color/whiteAlternative</color>
+
+</resources>

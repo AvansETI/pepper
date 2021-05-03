@@ -21,10 +21,10 @@
             android:layout_height="match_parent">
 
             <ImageView
+                style="@style/Pepper_Care_Image"
                 android:id="@+id/meal_img_src"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:scaleType="centerCrop"
                 android:src="@drawable/meal_placeholder"
                 app:imageSource="@{viewModel.meal.source}"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -33,45 +33,44 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
+                style="@style/Pepper_Care_Image_Filter"
                 android:id="@+id/meal_picture_filter"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:scaleType="centerCrop"
-                android:src="#660E76BC"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline7"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                style="@style/Pepper_Care_Title_Text"
                 android:id="@+id/detail_meal_title"
-                style="@style/MaterialAlertDialog.Pepper.Care.Title.Text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:layout_marginStart="16dp"
                 android:text="@{viewModel.meal.name}"
-                android:textColor="@color/colorPrimaryDark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline7"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Stamppot zuurkool met rookworst" />
 
             <TextView
+                style="@style/Pepper_Care_Body_Text"
                 android:id="@+id/detail_meal_description"
-                style="@style/MaterialAlertDialog.Pepper.Care.Body.Text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="@{viewModel.meal.description}"
+                android:paddingEnd="100dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline7"
                 app:layout_constraintTop_toBottomOf="@+id/detail_meal_title"
                 tools:text="Stamppot zuurkool wordt in onze keuken op tradionele manier bereid met zelfgestampte aardappels en heerlijke ingelegde zuurkool. De rookworst is naar eigen recept bereid en is sappig en smaakvol. Een echt heerlijke, winterse Hollandse stamppot. " />
 
             <TextView
+                style="@style/Pepper_Care_Title_Text"
                 android:id="@+id/textView2"
-                style="@style/MaterialAlertDialog.Pepper.Care.Title.Text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -84,18 +83,18 @@
                 tools:text="Samenstelling" />
 
             <ImageView
+                style="@style/Pepper_Care_Icon_Image"
                 android:id="@+id/icon_type"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginTop="16dp"
-                android:scaleType="centerCrop"
                 android:src="@drawable/ic_meal"
                 app:layout_constraintStart_toStartOf="@+id/textView2"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
             <TextView
+                style="@style/Pepper_Care_Body_Text"
                 android:id="@+id/detail_meal_type"
-                style="@style/MaterialAlertDialog.Pepper.Care.Body.Text"
                 android:layout_width="0dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="16dp"
@@ -110,18 +109,18 @@
                 tools:text="Standaard maaltijd" />
 
             <ImageView
+                style="@style/Pepper_Care_Icon_Image"
                 android:id="@+id/icon_allergies"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginTop="16dp"
-                android:scaleType="centerCrop"
                 android:src="@drawable/ic_peanut"
                 app:layout_constraintStart_toStartOf="@+id/icon_type"
                 app:layout_constraintTop_toBottomOf="@+id/icon_type" />
 
             <TextView
+                style="@style/Pepper_Care_Body_Text"
                 android:id="@+id/detail_meal_allergies"
-                style="@style/MaterialAlertDialog.Pepper.Care.Body.Text"
                 android:layout_width="0dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="16dp"
@@ -135,18 +134,18 @@
                 tools:text="Gluten, Soja, Selderij, Lactose melk" />
 
             <ImageView
+                style="@style/Pepper_Care_Icon_Image"
                 android:id="@+id/icon_kcal"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginTop="16dp"
-                android:scaleType="centerCrop"
                 android:src="@drawable/ic_calories"
                 app:layout_constraintStart_toStartOf="@+id/icon_allergies"
                 app:layout_constraintTop_toBottomOf="@+id/icon_allergies" />
 
             <TextView
+                style="@style/Pepper_Care_Body_Text"
                 android:id="@+id/detail_meal_calories"
-                style="@style/MaterialAlertDialog.Pepper.Care.Body.Text"
                 android:layout_width="0dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="16dp"
@@ -160,10 +159,10 @@
                 tools:text="123,07 kilocalorieën" />
 
             <ImageView
+                style="@style/Pepper_Care_Image"
                 android:id="@+id/meal_logo"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:scaleType="centerCrop"
                 android:src="@drawable/chef_logo_shadow"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

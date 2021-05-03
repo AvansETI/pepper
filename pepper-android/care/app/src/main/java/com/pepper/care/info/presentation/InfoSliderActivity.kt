@@ -36,7 +36,7 @@ class InfoSliderActivity : AppIntro() {
 
         setIndicatorColor(
             selectedIndicatorColor = ResourcesCompat.getColor(resources, R.color.colorAccent, theme),
-            unselectedIndicatorColor = ResourcesCompat.getColor(resources, R.color.transparent_not_selected, theme)
+            unselectedIndicatorColor = ResourcesCompat.getColor(resources, R.color.transparentNotSelected, theme)
         )
 
         setTransformer(AppIntroPageTransformerType.Flow)

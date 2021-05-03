@@ -11,6 +11,7 @@ import com.pepper.care.common.ClickCallback
 import com.pepper.care.common.entities.InformUserRecyclerItem
 import com.pepper.care.common.entities.PlatformMealsResponse
 import com.pepper.care.common.entities.RecyclerAdapterItem
+import com.pepper.care.common.entities.RecyclerAdapterItem.ViewTypes.*
 import com.pepper.care.databinding.AdapterItemInformBinding
 import com.pepper.care.databinding.AdapterItemMealBinding
 
@@ -128,6 +129,7 @@ abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemV
  */
 class ClickableDiffCallback : DiffUtil.ItemCallback<RecyclerAdapterItem>() {
 
+    @Suppress("UnusedEquals")
     override fun areItemsTheSame(
         oldItem: RecyclerAdapterItem,
         newItem: RecyclerAdapterItem
@@ -135,9 +137,10 @@ class ClickableDiffCallback : DiffUtil.ItemCallback<RecyclerAdapterItem>() {
         when (newItem.getViewType() == oldItem.getViewType()) {
             true -> {
                 when (newItem.getViewType()) {
-                    RecyclerAdapterItem.ViewTypes.MEAL -> {
+                    MEAL -> {
                         (oldItem as PlatformMealsResponse).id == (newItem as PlatformMealsResponse).id
                     }
+                    INFORM -> TODO()
                 }
             }
         }
@@ -151,7 +154,7 @@ class ClickableDiffCallback : DiffUtil.ItemCallback<RecyclerAdapterItem>() {
         when (newItem.getViewType() == oldItem.getViewType()) {
             true -> {
                 when (newItem.getViewType()) {
-                    RecyclerAdapterItem.ViewTypes.MEAL -> {
+                    MEAL -> {
                         (oldItem as PlatformMealsResponse).name == (newItem as PlatformMealsResponse).name
                                 && oldItem.description == newItem.description
                                 && oldItem.type == newItem.type

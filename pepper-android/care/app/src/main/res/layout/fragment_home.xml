@@ -21,22 +21,13 @@
             android:layout_height="match_parent">
 
             <Button
+                style="@style/Pepper_Care_Button"
                 android:id="@+id/exampleButton"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:fontFamily="@font/montserrat_regular"
                 android:onClick="@{() -> viewModel.onButtonClick(exampleButton)}"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
                 android:text="@{viewModel.todaysDateText}"
-                android:textAllCaps="false"
-                android:textColor="@color/colorAccent"
-                android:textSize="12sp"
-                app:backgroundTint="#FFF"
-                app:cornerRadius="20dp"
-                app:iconGravity="end"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

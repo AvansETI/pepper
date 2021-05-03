@@ -26,28 +26,26 @@
             android:layout_height="match_parent">
 
             <TextView
+                style="@style/Pepper_Care_Title_Text"
                 android:id="@+id/text_view_id"
-                style="@style/MaterialAlertDialog.Pepper.Care.Title.Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:text="@{viewModel.orderText}"
-                android:textColor="@color/colorPrimaryDark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Het menu is" />
 
             <androidx.recyclerview.widget.RecyclerView
+                style="@style/Pepper_Care_Circular_Recycler_View"
                 android:id="@+id/meal_recycler_view"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_gravity="center_horizontal|center_vertical"
-                android:paddingTop="16dp"
                 app:isVisible="@{viewModel.recyclerVisibility}"
                 app:adapter="@{adapter}"
                 app:items="@{viewModel.recyclerList}"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline5"
                 app:layout_constraintStart_toStartOf="@+id/guideline4"
@@ -55,11 +53,9 @@
                 app:setSpanCount="@{viewModel.recyclerSpanCount}" />
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
+                style="@style/Pepper_Care_Circular_Progress_Indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:indeterminate="true"
-                app:trackColor="@color/transparent_not_selected"
-                app:indicatorColor="@color/colorAccent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline5"
                 app:layout_constraintStart_toStartOf="@+id/guideline4"

@@ -59,5 +59,4 @@ class EncryptionService {
         SecureRandom().nextBytes(nonce)
         return nonce
     }
-
 }
