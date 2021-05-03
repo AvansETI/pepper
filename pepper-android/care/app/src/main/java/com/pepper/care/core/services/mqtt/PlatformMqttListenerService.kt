@@ -5,11 +5,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LifecycleService
-import com.pepper.care.KeyTypes
-import com.pepper.care.core.services.encryption.EncryptionService
-import com.pepper.care.common.ClickCallback
 import com.pepper.care.common.CommonConstants.COMMON_SHARED_PREF_PUBLISH_MSG_KEY
-import com.pepper.care.common.entities.RecyclerAdapterItem
+import com.pepper.care.core.services.encryption.EncryptionService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
@@ -81,7 +78,7 @@ class PlatformMqttListenerService : LifecycleService() {
     private val sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener = object : SharedPreferences.OnSharedPreferenceChangeListener {
         override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
             when (key) {
-                KeyTypes.MQTT_PUBLISH.name -> {
+                COMMON_SHARED_PREF_PUBLISH_MSG_KEY -> {
                     val message = sharedPreferences!!.getString(key, "error")
 
                     if (message.equals("error")) {

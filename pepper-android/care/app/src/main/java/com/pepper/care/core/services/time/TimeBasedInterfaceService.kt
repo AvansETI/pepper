@@ -44,8 +44,8 @@ class TimeBasedInterfaceService : LifecycleService() {
                 val currentTime = LocalTime()
                 val timeOfDay = isDayOrNight(currentTime)
 
-                sharedPreferences.putString(CommonConstants.COMMON_SHARED_PREF_LIVE_THEME_KEY, timeOfDay.name)
-                sharedPreferences.commit()
+                sharedPreferences.putString(CommonConstants.COMMON_SHARED_PREF_LIVE_THEME_KEY, timeOfDay.name).commit()
+
                 Log.d(
                     TimeBasedInterfaceService::class.simpleName,
                     "${currentTime.toString("HH:mm")}, ${timeOfDay.name}"
