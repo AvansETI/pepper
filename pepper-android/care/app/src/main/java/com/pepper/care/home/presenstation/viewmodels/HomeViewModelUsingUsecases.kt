@@ -16,6 +16,6 @@ class HomeViewModelUsingUsecases : ViewModel(), HomeViewModel {
 
     override fun onButtonClick(view: View) {
         Log.d("ViewModel", "Button pressed")
-        view.findNavController().navigate(R.id.orderFragment)
+        view.findNavController().navigate(R.id.feedbackFragment)
     }
 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import com.pepper.care.ActivityLifecycle
 import com.pepper.care.common.di.commonModule
 import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
+import com.pepper.care.feedback.di.feedbackModule
 import com.pepper.care.home.di.homeModule
 import com.pepper.care.order.di.orderModule
 import kotlinx.coroutines.FlowPreview
@@ -26,6 +27,7 @@ class MyApplication : Application(), LifecycleObserver {
             modules(commonModule)
             modules(homeModule)
             modules(orderModule)
+            modules(feedbackModule)
         }
 
         registerActivityLifecycleCallbacks(ActivityLifecycle)

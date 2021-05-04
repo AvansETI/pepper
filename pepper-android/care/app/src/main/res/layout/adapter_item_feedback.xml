@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.pepper.care.feedback.entities.FeedbackEntity.FeedbackTypes" />
+        <import type="android.view.View" />
+
+        <variable
+            name="feedBack"
+            type="com.pepper.care.feedback.entities.FeedbackEntity" />
+
+        <variable
+            name="callBack"
+            type="com.pepper.care.feedback.FeedbackCallback" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:paddingVertical="8dp"
+        android:layout_width="300dp"
+        android:layout_height="230dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/feedback_card"
+            android:onClick="@{() -> feedBack.onClick(feedBack.givenType, callBack)}"
+            android:layout_width="250dp"
+            android:layout_height="200dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:cardBackgroundColor="@color/materialCardColor"
+            app:shapeAppearanceOverlay="@style/Pepper_Care_Material_Card">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="16dp">
+
+                <ImageView
+                    style="@style/Pepper_Care_Image"
+                    android:id="@+id/feedback_img"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:src="@color/transparent"
+                    app:colorCardSource="@{feedBack.givenType}"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline6"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    style="@style/Pepper_Care_Image"
+                    android:id="@+id/icon_overlay_img"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:src="@color/transparent"
+                    android:padding="15dp"
+                    android:scaleType="fitCenter"
+                    app:iconSource="@{feedBack.givenType}"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline6"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    style="@style/Pepper_Care_Body_Text"
+                    android:id="@+id/feedback_description"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:fontFamily="@font/montserrat_semi_bold"
+                    android:gravity="center"
+                    android:text="Het gaat goed"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/feedback_img"
+                    tools:text="@{feedBack.givenType.text}" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_begin="150dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

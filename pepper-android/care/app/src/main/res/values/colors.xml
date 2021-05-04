@@ -7,6 +7,9 @@
     <color name="grey">#6A6A6C</color>
     <color name="white">#FFFFFFFF</color>
     <color name="whiteAlternative">#F8F8F6</color>
+    <color name="red">#F44336</color>
+    <color name="yellow">#DDA614</color>
+    <color name="green">#60B64C</color>
 
     <color name="colorPrimary">#8DC641</color>
     <color name="colorPrimaryDark">#84B240</color>
@@ -25,6 +28,7 @@
     <color name="titleTextColor">@color/colorPrimary</color>
     <color name="bodyTextColor">@color/black</color>
     <color name="materialCardColor">@color/whiteAlternative</color>
+    <color name="materialCardIconColor">@color/whiteAlternative</color>
     <color name="ButtonTextColor">@color/colorAccent</color>
     <color name="ButtonStrokeColor">@color/colorAccent</color>
     <color name="ButtonIconTintColor">@color/colorAccent</color>

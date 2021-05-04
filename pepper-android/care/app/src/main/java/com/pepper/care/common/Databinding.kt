@@ -1,5 +1,7 @@
 package com.pepper.care.common
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -9,6 +11,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.pepper.care.R
+import com.pepper.care.feedback.entities.FeedbackEntity
 
 @BindingAdapter("items")
 fun setItems(
@@ -40,4 +44,34 @@ fun setSpanCount(recyclerView: RecyclerView, amount: Int) {
         recyclerView.layoutManager = GridLayoutManager(recyclerView.context, amount)
         Log.d("Databinding", "Recyclerview updated, columns $amount")
     }
+}
+
+@BindingAdapter("colorCardSource")
+fun setColorSource(imageView: ImageView, type: FeedbackEntity.FeedbackTypes) {
+    val image = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(image)
+    canvas.drawColor(
+        imageView.resources.getColor(
+                        when(type){
+                            FeedbackEntity.FeedbackTypes.BAD -> R.color.red
+                            FeedbackEntity.FeedbackTypes.OKAY -> R.color.yellow
+                            FeedbackEntity.FeedbackTypes.GOOD -> R.color.green
+                      }
+            , imageView.context.theme)
+    )
+
+    Glide.with(imageView.context)
+        .load(image)
+        .into(imageView)
+}
+
+@BindingAdapter("iconSource")
+fun setIconSource(imageView: ImageView, type: FeedbackEntity.FeedbackTypes) {
+    Glide.with(imageView.context)
+        .load(when(type){
+            FeedbackEntity.FeedbackTypes.BAD -> R.drawable.ic_feedback_bad
+            FeedbackEntity.FeedbackTypes.OKAY -> R.drawable.ic_feedback_okay
+            FeedbackEntity.FeedbackTypes.GOOD -> R.drawable.ic_feedback_good
+        })
+        .into(imageView)
 }

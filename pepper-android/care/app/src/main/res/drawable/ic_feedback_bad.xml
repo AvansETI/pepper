@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="512dp"
+    android:height="512dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <path
+        android:fillColor="@color/materialCardIconColor"
+        android:pathData="M378.05 369.94L366.65 379.16Q355.65 363.88 328.91 350.58Q301.91 337.01 264.26 336.79Q226.35 336.58 190.68 350.04Q154.76 363.24 140.23 378.89L135.62 373.19Q154.07 349.31 196.44 335.11Q238.56 320.66 272.6 320.85Q290.91 320.96 311.51 326.49Q332.11 331.77 351.39 343.49Q370.4 354.94 378.05 369.94Z" />
+    <path
+        android:fillColor="@color/materialCardIconColor"
+        android:pathData="M154.5 235C133.76 235 117 218.24 117 197.5C117 176.76 133.76 160 154.5 160C175.24 160 192 176.76 192 197.5C192 218.24 175.24 235 154.5 235Z" />
+    <path
+        android:fillColor="@color/materialCardIconColor"
+        android:pathData="M357.5 235C336.76 235 320 218.24 320 197.5C320 176.76 336.76 160 357.5 160C378.24 160 395 176.76 395 197.5C395 218.24 378.24 235 357.5 235Z" />
+</vector>

@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
 
     private fun startServices() {
         lifecycleScope.launch {
-            PlatformMqttListenerService.start(this@MainActivity, this@MainActivity)
+            //PlatformMqttListenerService.start(this@MainActivity, this@MainActivity)
             TimeBasedInterfaceService.start(this@MainActivity)
         }
         //QiSDK.register(this, this)
@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
                 COMMON_SHARED_PREF_LIVE_THEME_KEY -> {
                     when (sharedPreferences.getString(COMMON_SHARED_PREF_LIVE_THEME_KEY, InterfaceTime.DAY.name)) {
                         InterfaceTime.DAY.name -> {
-                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                            //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                             Log.d(MainActivity::class.simpleName, "Applied Day Theme")
                         }
                         InterfaceTime.NIGHT.name -> {

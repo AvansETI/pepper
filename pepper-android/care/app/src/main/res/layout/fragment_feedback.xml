@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.pepper.care.feedback.presentation.viewmodels.FeedbackViewModel" />
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.pepper.care.feedback.presentation.viewmodels.FeedbackViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                style="@style/Pepper_Care_Title_Text"
+                android:id="@+id/text_view_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@{viewModel.headerText}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Het menu is" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                app:layout_constraintStart_toStartOf="@+id/guideline4"
+                app:layout_constraintTop_toBottomOf="@+id/text_view_id">
+
+                <include
+                    layout="@layout/adapter_item_feedback"
+                    android:id="@+id/badMaterialCard"
+                    app:callBack="@{viewModel.cardClickedListener}"
+                    app:feedBack="@{viewModel.badFeedbackEntity}"/>
+
+                <include
+                    layout="@layout/adapter_item_feedback"
+                    android:id="@+id/mediumMaterialCard"
+                    app:callBack="@{viewModel.cardClickedListener}"
+                    app:feedBack="@{viewModel.mediumFeedbackEntity}"/>
+
+                <include
+                    layout="@layout/adapter_item_feedback"
+                    android:id="@+id/goodMaterialCard"
+                    app:callBack="@{viewModel.cardClickedListener}"
+                    app:feedBack="@{viewModel.goodFeedbackEntity}"/>
+
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="30dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="30dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+</layout>
