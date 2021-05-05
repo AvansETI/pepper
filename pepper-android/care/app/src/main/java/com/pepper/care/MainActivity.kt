@@ -2,42 +2,39 @@ package com.pepper.care
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
-import android.view.View
-import android.view.WindowManager
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
+import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.aldebaran.qi.sdk.QiContext
 import com.aldebaran.qi.sdk.QiSDK
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
 import com.pepper.care.core.services.encryption.EncryptionService
-import com.aldebaran.qi.sdk.design.activity.RobotActivity
-import com.pepper.care.common.CommonConstants
-import com.pepper.care.common.CommonConstants.COMMON_DEVICE_ID
+import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_FEEDBACK
+import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_GOODBYE
+import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_ID
+import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_INTRO
+import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_MEDICATION
+import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_ORDER
+import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_PATIENT
+import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_QUESTION
+import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_STANDBY
 import com.pepper.care.common.CommonConstants.COMMON_SHARED_PREF_LIVE_THEME_KEY
-import com.pepper.care.common.usecases.GetNetworkConnectionStateUseCase
 import com.pepper.care.core.services.mqtt.MqttMessageCallbacks
 import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
 import com.pepper.care.core.services.time.InterfaceTime
 import com.pepper.care.core.services.time.TimeBasedInterfaceService
+import com.pepper.care.dialog.DialogRoutes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import com.pepper.care.info.presentation.InfoSliderActivity
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.lang.NullPointerException
-import java.security.GeneralSecurityException
 import org.koin.android.ext.android.inject
-import java.lang.Exception
+import java.lang.IllegalStateException
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -69,7 +66,7 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
 
     private fun startServices() {
         lifecycleScope.launch {
-            //PlatformMqttListenerService.start(this@MainActivity, this@MainActivity)
+            PlatformMqttListenerService.start(this@MainActivity, this@MainActivity)
             TimeBasedInterfaceService.start(this@MainActivity)
         }
         //QiSDK.register(this, this)
@@ -117,30 +114,92 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
     }
 
     override fun onMessageReceived(topic: String?, message: String?) {
-        var decrypted = ""
-        try {
-            decrypted = encryptionService.decrypt(message!!, "pepper")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return
+        //        var decrypted = ""
+//        try {
+//            decrypted = encryptionService.decrypt(message!!, "pepper")
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            return
+//        }
+//
+//        if (decrypted.contains("bot")) {
+//            return
+//        }
+//
+//        Log.d(
+//            MainActivity::class.java.simpleName,
+//            "Receive message: \"$decrypted\" from topic: \"$topic\""
+//        )
+//
+//        val message1 = "bot: " + java.util.UUID.randomUUID().toString()
+//        sharedPreferencesEditor.putString(CommonConstants.COMMON_SHARED_PREF_PUBLISH_MSG_KEY, message1).commit()
+        navigateHandler(message)
+    }
+
+    private fun navigateHandler(message: String?) {
+        when(message){
+            COMMON_MSG_NAV_STANDBY-> {
+                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_STANDBY)
+                this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.homeFragment)
+            }
+            COMMON_MSG_NAV_INTRO -> {
+                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_INTRO)
+                this.findNavController(R.id.child_nav_host_fragment).navigate(
+                    R.id.dialogFragment, bundleOf(
+                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.INTRO)
+                    )
+                )
+            }
+            COMMON_MSG_NAV_ID-> {
+                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_ID)
+                this.findNavController(R.id.child_nav_host_fragment).navigate(
+                    R.id.dialogFragment, bundleOf(
+                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.ID)
+                    )
+                )
+            }
+            COMMON_MSG_NAV_PATIENT-> {
+                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_PATIENT)
+                this.findNavController(R.id.child_nav_host_fragment).navigate(
+                    R.id.dialogFragment, bundleOf(
+                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.PATIENT)
+                    )
+                )
+            }
+            COMMON_MSG_NAV_ORDER-> {
+                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_ORDER)
+                this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.orderFragment)
+            }
+            COMMON_MSG_NAV_MEDICATION-> {
+                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_MEDICATION)
+                this.findNavController(R.id.child_nav_host_fragment).navigate(
+                    R.id.dialogFragment, bundleOf(
+                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.MEDICATION)
+                    )
+                )
+            }
+            COMMON_MSG_NAV_QUESTION-> {
+                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_QUESTION)
+                this.findNavController(R.id.child_nav_host_fragment).navigate(
+                    R.id.dialogFragment, bundleOf(
+                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.QUESTION)
+                    )
+                )
+            }
+            COMMON_MSG_NAV_FEEDBACK-> {
+                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_FEEDBACK)
+                this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.feedbackFragment)
+            }
+            COMMON_MSG_NAV_GOODBYE-> {
+                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_GOODBYE)
+                this.findNavController(R.id.child_nav_host_fragment).navigate(
+                    R.id.dialogFragment, bundleOf(
+                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.GOODBYE)
+                    )
+                )
+            }
+            else -> throw IllegalStateException("Not a valid option")
         }
-
-        if (decrypted.contains("bot")) {
-            return
-        }
-
-        Log.d(
-            MainActivity::class.java.simpleName,
-            "Receive message: \"$decrypted\" from topic: \"$topic\""
-        )
-
-        val message1 = "bot: " + java.util.UUID.randomUUID().toString()
-        sharedPreferencesEditor.putString(CommonConstants.COMMON_SHARED_PREF_PUBLISH_MSG_KEY, message1).commit()
-
-        Log.d(
-            MainActivity::class.java.simpleName,
-            "Send message: $message1"
-        )
     }
 
     /*

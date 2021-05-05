@@ -12,10 +12,5 @@ import java.util.*
 
 class HomeViewModelUsingUsecases : ViewModel(), HomeViewModel {
 
-    override val todaysDateText = "Vandaag, ${LocalDateTime().toString("EEEE d MMMM", Locale("nl"))}"
-
-    override fun onButtonClick(view: View) {
-        Log.d("ViewModel", "Button pressed")
-        view.findNavController().navigate(R.id.feedbackFragment)
-    }
+    override val standbyText: String = "Pepper staat momenteel op standby..."
 }

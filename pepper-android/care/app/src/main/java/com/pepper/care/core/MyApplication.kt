@@ -8,6 +8,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import com.pepper.care.ActivityLifecycle
 import com.pepper.care.common.di.commonModule
 import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
+import com.pepper.care.dialog.di.dialogModule
 import com.pepper.care.feedback.di.feedbackModule
 import com.pepper.care.home.di.homeModule
 import com.pepper.care.order.di.orderModule
@@ -26,6 +27,7 @@ class MyApplication : Application(), LifecycleObserver {
             androidContext(this@MyApplication)
             modules(commonModule)
             modules(homeModule)
+            modules(dialogModule)
             modules(orderModule)
             modules(feedbackModule)
         }
