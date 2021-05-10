@@ -3,13 +3,13 @@ package com.pepper.care.feedback.entities
 import com.pepper.care.feedback.FeedbackCallback
 
 class FeedbackEntity(
-    val givenType: FeedbackTypes
+    val givenType: FeedbackMessage
 ) {
-    fun onClick(type: FeedbackTypes, callback: FeedbackCallback) {
+    fun onClick(type: FeedbackMessage, callback: FeedbackCallback) {
         callback.onClicked(type)
     }
 
-    enum class FeedbackTypes(
+    enum class FeedbackMessage(
         var text: String
     ) {
         GOOD("Het gaat goed"),

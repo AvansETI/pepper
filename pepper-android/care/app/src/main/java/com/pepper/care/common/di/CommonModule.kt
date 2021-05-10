@@ -7,15 +7,10 @@ import org.koin.dsl.module
 import com.pepper.care.common.CommonConstants
 import com.pepper.care.common.DynamicApiConverterFactory
 import com.pepper.care.common.api.PlatformApi
-import com.pepper.care.common.repo.PlatformConnectionRepository
-import com.pepper.care.common.repo.PlatformConnectionRepositoryImpl
-import com.pepper.care.common.repo.PlatformMealsRepository
-import com.pepper.care.common.repo.PlatformMealsRepositoryImpl
-import com.pepper.care.common.usecases.GetNetworkConnectionStateUseCase
-import com.pepper.care.common.usecases.GetNetworkConnectionStateUseCaseUsingRepository
+import com.pepper.care.common.repo.*
+import com.pepper.care.common.usecases.GetPatientDetailsUseCase
+import com.pepper.care.common.usecases.GetPatientDetailsUseCaseUsingRepository
 import com.pepper.care.core.services.encryption.EncryptionService
-import com.pepper.care.order.common.usecases.GetPlatformMealsUseCase
-import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidApplication
 import retrofit2.Retrofit
@@ -28,12 +23,6 @@ val commonModule = module {
     single<SharedPreferences.Editor> {
         getSharedPrefs(androidApplication()).edit()
     }
-    single<GetNetworkConnectionStateUseCase> {
-        GetNetworkConnectionStateUseCaseUsingRepository(get())
-    }
-    single<PlatformConnectionRepository> {
-        providePlatformConnectionRepository(get())
-    }
     single<Retrofit> {
         provideRetrofit(get())
     }
@@ -45,6 +34,12 @@ val commonModule = module {
     }
     factory<PlatformApi> {
         providePlatformApi(get())
+    }
+    single {
+        GetPatientDetailsUseCaseUsingRepository(get())
+    }
+    single<PlatformPatientDetailsRepository> {
+        providePlatformPatientDetailsRepository()
     }
 }
 
@@ -71,13 +66,12 @@ fun provideOkHttpClient(): OkHttpClient {
             .build()
 }
 
-/* Check Platform Connection */
 fun providePlatformApi(retrofit: Retrofit): PlatformApi {
     return retrofit.create(PlatformApi::class.java)
 }
 
-fun providePlatformConnectionRepository(api: PlatformApi): PlatformConnectionRepository {
-    return PlatformConnectionRepositoryImpl(api)
+fun providePlatformPatientDetailsRepository(): PlatformPatientDetailsRepository {
+    return PlatformPatientDetailsRepositoryImpl()
 }
 
 fun provideEncryptionService(): EncryptionService {

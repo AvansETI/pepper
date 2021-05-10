@@ -29,6 +29,7 @@
                 android:layout_height="0dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/pepper_icon"
+                android:onClick="@{() -> viewModel.onConfirmResult(imageView2)}"
                 app:layout_constraintBottom_toTopOf="@+id/guideline11"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

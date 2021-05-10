@@ -6,6 +6,6 @@ import org.koin.dsl.module
 
 val dialogModule = module {
     viewModel {
-        DialogViewModelUsingUsecases()
+        DialogViewModelUsingUsecases(get())
     }
 }

@@ -47,15 +47,15 @@ fun setSpanCount(recyclerView: RecyclerView, amount: Int) {
 }
 
 @BindingAdapter("colorCardSource")
-fun setColorSource(imageView: ImageView, type: FeedbackEntity.FeedbackTypes) {
+fun setColorSource(imageView: ImageView, type: FeedbackEntity.FeedbackMessage) {
     val image = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(image)
     canvas.drawColor(
         imageView.resources.getColor(
                         when(type){
-                            FeedbackEntity.FeedbackTypes.BAD -> R.color.red
-                            FeedbackEntity.FeedbackTypes.OKAY -> R.color.yellow
-                            FeedbackEntity.FeedbackTypes.GOOD -> R.color.green
+                            FeedbackEntity.FeedbackMessage.BAD -> R.color.red
+                            FeedbackEntity.FeedbackMessage.OKAY -> R.color.yellow
+                            FeedbackEntity.FeedbackMessage.GOOD -> R.color.green
                       }
             , imageView.context.theme)
     )
@@ -66,12 +66,12 @@ fun setColorSource(imageView: ImageView, type: FeedbackEntity.FeedbackTypes) {
 }
 
 @BindingAdapter("iconSource")
-fun setIconSource(imageView: ImageView, type: FeedbackEntity.FeedbackTypes) {
+fun setIconSource(imageView: ImageView, type: FeedbackEntity.FeedbackMessage) {
     Glide.with(imageView.context)
         .load(when(type){
-            FeedbackEntity.FeedbackTypes.BAD -> R.drawable.ic_feedback_bad
-            FeedbackEntity.FeedbackTypes.OKAY -> R.drawable.ic_feedback_okay
-            FeedbackEntity.FeedbackTypes.GOOD -> R.drawable.ic_feedback_good
+            FeedbackEntity.FeedbackMessage.BAD -> R.drawable.ic_feedback_bad
+            FeedbackEntity.FeedbackMessage.OKAY -> R.drawable.ic_feedback_okay
+            FeedbackEntity.FeedbackMessage.GOOD -> R.drawable.ic_feedback_good
         })
         .into(imageView)
 }

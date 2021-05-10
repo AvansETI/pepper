@@ -1,10 +1,13 @@
 package com.pepper.care
 
+import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
@@ -13,6 +16,10 @@ import androidx.navigation.findNavController
 import com.aldebaran.qi.sdk.QiContext
 import com.aldebaran.qi.sdk.QiSDK
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
+import com.aldebaran.qi.sdk.design.activity.RobotActivity
+import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayPosition
+import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy
+import com.example.awesomedialog.*
 import com.pepper.care.core.services.encryption.EncryptionService
 import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_FEEDBACK
 import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_GOODBYE
@@ -29,6 +36,7 @@ import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
 import com.pepper.care.core.services.time.InterfaceTime
 import com.pepper.care.core.services.time.TimeBasedInterfaceService
 import com.pepper.care.dialog.DialogRoutes
+import com.pepper.care.dialog.presentation.viewmodels.DialogViewModelUsingUsecases
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import com.pepper.care.info.presentation.InfoSliderActivity
@@ -38,7 +46,7 @@ import java.lang.IllegalStateException
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCallbacks {
+class MainActivity : RobotActivity(), RobotLifecycleCallbacks, MqttMessageCallbacks {
 
     private val encryptionService: EncryptionService by inject()
     private val sharedPreferencesEditor: SharedPreferences.Editor by inject()
@@ -61,7 +69,9 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
     }
 
     private fun registerRobotCallbacks() {
-        QiSDK.register(this, this)
+        setSpeechBarDisplayStrategy(SpeechBarDisplayStrategy.IMMERSIVE)
+        setSpeechBarDisplayPosition(SpeechBarDisplayPosition.BOTTOM)
+        QiSDK.register(this@MainActivity, this@MainActivity)
     }
 
     private fun startServices() {
@@ -69,7 +79,6 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
             PlatformMqttListenerService.start(this@MainActivity, this@MainActivity)
             TimeBasedInterfaceService.start(this@MainActivity)
         }
-        //QiSDK.register(this, this)
         initUiElements()
     }
 
@@ -94,10 +103,10 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
 
     // TODO find a way to change theme without affecting running services
     override fun onDestroy() {
-        //QiSDK.unregister(this@MainActivity, this@MainActivity)
         //PlatformMqttListenerService.stop(this@MainActivity)
         //TimeBasedInterfaceService.stop(this@MainActivity)
         //sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
+        QiSDK.unregister(this@MainActivity, this@MainActivity)
         super.onDestroy()
     }
 
