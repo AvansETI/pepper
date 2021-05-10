@@ -1,7 +1,6 @@
 package com.pepper.backend.controllers;
 
 import com.pepper.backend.services.messaging.BotMessageHandlerService;
-import com.pepper.backend.services.messaging.EncryptionService;
 import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -17,36 +16,25 @@ public class BotCommunicationController implements MqttCallbackExtended {
     @Value("${mqtt.topic}")
     private String topic;
 
-    @Value("${mqtt.host}")
+    @Value("${mqtt.username}")
     private String username;
 
-    @Value("${mqtt.topic}")
+    @Value("${mqtt.password}")
     private String password;
-
-    @Value("${encryption.password}")
-    private String encryptionPassword;
 
     private IMqttClient client;
     private final BotMessageHandlerService messageHandler;
-    private final EncryptionService encryptionService;
 
-    public BotCommunicationController(@Lazy BotMessageHandlerService messageHandler, EncryptionService encryptionService) {
+    public BotCommunicationController(@Lazy BotMessageHandlerService messageHandler) {
         this.messageHandler = messageHandler;
-        this.encryptionService = encryptionService;
     }
 
     @PostConstruct
     public void connect() {
-        MqttConnectOptions options = new MqttConnectOptions();
-        options.setUserName(this.username);
-        options.setPassword(this.password.toCharArray());
-        options.setAutomaticReconnect(true);
-        options.setCleanSession(true);
-
         try {
             this.client = new MqttClient(this.host, "client-1");
             this.client.setCallback(this);
-            this.client.connect(options);
+            this.client.connect(this.getOptions());
         } catch (MqttException e) {
             e.printStackTrace();
         }
@@ -58,22 +46,28 @@ public class BotCommunicationController implements MqttCallbackExtended {
         }
 
         try {
-            message = this.encryptionService.encrypt(message, this.encryptionPassword);
-        } catch (Exception e) {
+            this.client.publish(this.topic, this.createMqttMessage(message));
+        } catch (MqttException e) {
             e.printStackTrace();
-            return;
         }
+    }
 
+    private MqttConnectOptions getOptions() {
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setUserName(this.username);
+        options.setPassword(this.password.toCharArray());
+        options.setAutomaticReconnect(true);
+        options.setCleanSession(true);
 
+        return options;
+    }
+
+    private MqttMessage createMqttMessage(String message) {
         MqttMessage mqttMessage = new MqttMessage(message.getBytes());
         mqttMessage.setQos(0);
         mqttMessage.setRetained(false);
 
-        try {
-            this.client.publish(this.topic, mqttMessage);
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
+        return mqttMessage;
     }
 
     @Override
@@ -96,16 +90,7 @@ public class BotCommunicationController implements MqttCallbackExtended {
 
     @Override
     public void messageArrived(String s, MqttMessage mqttMessage) {
-        String message = mqttMessage.toString();
-
-        try {
-            message = this.encryptionService.decrypt(message, this.encryptionPassword);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
-
-        this.messageHandler.handle(message);
+        this.messageHandler.handle(mqttMessage.toString());
     }
 
     @Override

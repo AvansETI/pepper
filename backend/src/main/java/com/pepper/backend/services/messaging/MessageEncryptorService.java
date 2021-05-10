@@ -14,7 +14,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 @Service
-public class EncryptionService {
+public class MessageEncryptorService {
 
     private static final String ENCRYPT_ALGO = "AES/GCM/NoPadding";
     private static final int TAG_LENGTH_BIT = 128; // must be one of {128, 120, 112, 104, 96}
