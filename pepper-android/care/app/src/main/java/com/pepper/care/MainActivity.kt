@@ -2,42 +2,29 @@ package com.pepper.care
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
-import android.view.View
-import android.view.WindowManager
-import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.aldebaran.qi.sdk.QiContext
 import com.aldebaran.qi.sdk.QiSDK
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
-import com.pepper.care.core.services.encryption.EncryptionService
-import com.aldebaran.qi.sdk.design.activity.RobotActivity
 import com.pepper.care.common.CommonConstants
-import com.pepper.care.common.CommonConstants.COMMON_DEVICE_ID
 import com.pepper.care.common.CommonConstants.COMMON_SHARED_PREF_LIVE_THEME_KEY
-import com.pepper.care.common.usecases.GetNetworkConnectionStateUseCase
+import com.pepper.care.core.services.encryption.EncryptionService
 import com.pepper.care.core.services.mqtt.MqttMessageCallbacks
 import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
+import com.pepper.care.core.services.robot.Speech
 import com.pepper.care.core.services.time.InterfaceTime
 import com.pepper.care.core.services.time.TimeBasedInterfaceService
+import com.pepper.care.info.presentation.InfoSliderActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import com.pepper.care.info.presentation.InfoSliderActivity
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.lang.NullPointerException
-import java.security.GeneralSecurityException
 import org.koin.android.ext.android.inject
-import java.lang.Exception
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -51,6 +38,7 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setup()
+        QiSDK.register(this,this)
     }
 
     private fun setup() {
@@ -105,7 +93,7 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
     }
 
     override fun onRobotFocusGained(qiContext: QiContext) {
-        // The robot focus is gained.
+        Speech.say("application starting", qiContext)
     }
 
     override fun onRobotFocusLost() {
