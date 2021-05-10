@@ -8,13 +8,13 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class EncryptionServiceTest {
+class MessageEncryptorServiceTest {
 
-    EncryptionService encryptionService;
+    MessageEncryptorService messageEncryptor;
 
     @BeforeEach
     void setup() {
-        this.encryptionService = new EncryptionService();
+        this.messageEncryptor = new MessageEncryptorService();
     }
 
     @Test
@@ -23,8 +23,8 @@ class EncryptionServiceTest {
 
         AtomicReference<String> decrypted = new AtomicReference<>("");
         assertDoesNotThrow(() -> {
-            String encrypted = this.encryptionService.encrypt(original, "pepper");
-            decrypted.set(this.encryptionService.decrypt(encrypted, "pepper"));
+            String encrypted = this.messageEncryptor.encrypt(original, "pepper");
+            decrypted.set(this.messageEncryptor.decrypt(encrypted, "pepper"));
         });
         assertEquals(original, decrypted.toString());
     }
@@ -35,19 +35,19 @@ class EncryptionServiceTest {
 
         AtomicReference<String> decrypted = new AtomicReference<>("");
         assertThrows(GeneralSecurityException.class, () -> {
-            String encrypted = this.encryptionService.encrypt(original, "pepper");
-            decrypted.set(this.encryptionService.decrypt(encrypted, "p3pper"));
+            String encrypted = this.messageEncryptor.encrypt(original, "pepper");
+            decrypted.set(this.messageEncryptor.decrypt(encrypted, "p3pper"));
         });
         assertNotEquals(original, decrypted.toString());
     }
 
     @Test
     void encrypt() {
-        String text = "bot: 72ec3a30-7fc1-405e-94e5-30624fc3d69a";
+        String text = "BOT:3:PATIENT:5:FEEDBACK#{bla bla bla}";
         String encrypted = "";
 
         try {
-            encrypted = this.encryptionService.encrypt(text, "pepper");
+            encrypted = this.messageEncryptor.encrypt(text, "pepper");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -57,11 +57,11 @@ class EncryptionServiceTest {
 
     @Test
     void decrypt() {
-        String encrypted = "xEiAnVz2EIfhYXoIt2Tg4bTXdNzbVYadJmPlT_nEfTw8EXUI59ghG1UgGOs6g7JK_t3iyvIagjDUOkRL_4oti7bGVwil";
+        String encrypted = "TL2ojGq/l3V3d8FT2UMBGWhbCJLXBteB8bbG5DitkvJ8RBbzDgfwpb0JW2oOz9w8BV2GlxOSCVljH+E4N38hZbJWiNx01GY=";
         String decrypted = "";
 
         try {
-            decrypted = this.encryptionService.decrypt(encrypted, "pepper");
+            decrypted = this.messageEncryptor.decrypt(encrypted, "pepper");
         } catch (Exception e) {
             e.printStackTrace();
         }

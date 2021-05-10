@@ -1,10 +1,11 @@
 package com.pepper.backend.services.messaging;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.pepper.backend.controllers.BotCommunicationController;
 import com.pepper.backend.model.bot.BotMessage;
+import com.pepper.backend.model.bot.Person;
+import com.pepper.backend.model.bot.Task;
 import com.pepper.backend.services.database.DatabaseService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,27 +13,53 @@ public class BotMessageHandlerService {
 
     private final BotCommunicationController botCommunicationController;
     private final DatabaseService databaseService;
-    private final Gson gson;
+    private final MessageParserService messageParser;
+    private final MessageEncryptorService messageEncryptor;
 
-    public BotMessageHandlerService(BotCommunicationController botCommunicationController, DatabaseService databaseService) {
+    @Value("${encryption.password}")
+    private String encryptionPassword;
+
+    public BotMessageHandlerService(BotCommunicationController botCommunicationController, DatabaseService databaseService, MessageParserService messageParser, MessageEncryptorService messageEncryptor) {
         this.botCommunicationController = botCommunicationController;
         this.databaseService = databaseService;
-        this.gson = new GsonBuilder()
-                .registerTypeAdapter(BotMessage.class, new BotMessage())
-                .create();
+        this.messageParser = messageParser;
+        this.messageEncryptor = messageEncryptor;
     }
 
-    public void send(String message) {
-        this.botCommunicationController.publish(message);
-        System.out.println("SEND: " + message);
-    }
+    public void send(String botId, Person person, String personId, Task task, String data) {
+        String message = messageParser.createMessage(botId, person, personId, task, data);
 
-    public void handle(String message) {
-        if (message.contains("backend")) {
+        try {
+            message = this.messageEncryptor.encrypt(message, this.encryptionPassword);
+        } catch (Exception e) {
+            e.printStackTrace();
             return;
         }
 
-        System.out.println("RECEIVED: " + message);
+        this.botCommunicationController.publish(message);
+    }
+
+    public void handle(String message) {
+        try {
+            message = this.messageEncryptor.decrypt(message, this.encryptionPassword);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        if (message.contains("PLATFORM")) {
+            return;
+        }
+
+        BotMessage botMessage = null;
+        try {
+            botMessage = this.messageParser.toBotMessage(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        System.out.println("RECEIVED: " + botMessage);
         //BotMessage botMessage = this.gson.fromJson(message, BotMessage.class);
         //this.databaseService.writeBotMessage(botMessage);
     }

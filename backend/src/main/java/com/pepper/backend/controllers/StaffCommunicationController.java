@@ -1,6 +1,6 @@
 package com.pepper.backend.controllers;
 
-import com.pepper.backend.services.messaging.EncryptionService;
+import com.pepper.backend.services.messaging.MessageEncryptorService;
 import com.pepper.backend.services.messaging.StaffMessageHandlerService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -17,9 +17,9 @@ public class StaffCommunicationController {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final StaffMessageHandlerService messageHandler;
-    private final EncryptionService encryptionService;
+    private final MessageEncryptorService encryptionService;
 
-    public StaffCommunicationController(@Lazy StaffMessageHandlerService messageHandler, EncryptionService encryptionService, SimpMessagingTemplate messagingTemplate) {
+    public StaffCommunicationController(@Lazy StaffMessageHandlerService messageHandler, MessageEncryptorService encryptionService, SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
         this.messageHandler = messageHandler;
         this.encryptionService = encryptionService;

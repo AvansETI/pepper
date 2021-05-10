@@ -4,7 +4,7 @@ mqtt:
   host: tcp://git.jijbentzacht.nl
   username: drpepper
   password: securityBEtheKEY
-  topic: pepper-zorg-ti
+  topic: pepper-zorg-wout
 
 spring.data.mongodb:
   host: localhost
@@ -15,4 +15,3 @@ spring.data.mongodb:
   password: pepper
 
 encryption.password: pepper
-
