@@ -1,9 +1,9 @@
 package com.pepper.backend.services.messaging;
 
 import com.pepper.backend.controllers.BotCommunicationController;
-import com.pepper.backend.model.bot.BotMessage;
-import com.pepper.backend.model.bot.Person;
-import com.pepper.backend.model.bot.Task;
+import com.pepper.backend.model.protocol.bot.BotMessage;
+import com.pepper.backend.model.protocol.bot.Person;
+import com.pepper.backend.model.protocol.bot.Task;
 import com.pepper.backend.services.database.DatabaseService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

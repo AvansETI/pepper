@@ -1,8 +1,8 @@
 package com.pepper.backend.services.messaging;
 
-import com.pepper.backend.model.bot.BotMessage;
-import com.pepper.backend.model.bot.Person;
-import com.pepper.backend.model.bot.Task;
+import com.pepper.backend.model.protocol.bot.BotMessage;
+import com.pepper.backend.model.protocol.bot.Person;
+import com.pepper.backend.model.protocol.bot.Task;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,0 +1,2 @@
+package com.pepper.backend.model;public enum Medication {
+}

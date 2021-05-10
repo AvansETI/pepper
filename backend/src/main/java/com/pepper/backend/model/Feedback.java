@@ -1,4 +1,4 @@
-package com.pepper.backend.model.bot;
+package com.pepper.backend.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,20 +11,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "botMessages")
-public class BotMessage {
+@Document(collation = "feedback")
+public class Feedback {
 
     @Id
     private String id;
 
-    private String botId;
+    private String patientId;
 
-    private Person person;
+    private Status status;
 
-    private String personId;
-
-    private Task task;
-
-    private String data;
+    private String explanation;
 
 }
