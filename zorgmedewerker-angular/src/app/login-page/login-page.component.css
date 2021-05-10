@@ -1,7 +1,33 @@
-.circle 
-{
-    background: lightblue;
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
+.login_page {
+    width: 100vw;
+    height: 93.2vh;
+    background: url('../../assets/overlay_color_background_2.png') no-repeat;
+    background-size: 100vw 100vh
+}
+
+.login_roundcircle {
+    padding: 20px;
+    width: 20vw;
+    height: 50vh;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+}
+
+.login_roundcircle div {
+    text-align: center;
+}
+
+.pepper_head{
+    text-align: left;
+}
+
+.pepper_head img{
+    max-height: 10vh;
+    max-width: 10vw;
+    position: absolute;
+    left: 1%;
+    bottom: 1%;
 }

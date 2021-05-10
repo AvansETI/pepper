@@ -1,0 +1,18 @@
+.doctor_page {
+    width: 100vw;
+    height: 93.2vh;
+    background: url('../../assets/overlay_color_background_2.png') no-repeat;
+    background-size: 100vw 100vh
+}
+
+.pepper_head{
+    text-align: left;
+}
+
+.pepper_head img{
+    max-height: 10vh;
+    max-width: 10vw;
+    left: 1%;
+    bottom: 1%;
+    position: absolute;
+}
