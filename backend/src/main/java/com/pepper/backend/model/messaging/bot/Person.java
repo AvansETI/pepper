@@ -1,4 +1,4 @@
-package com.pepper.backend.model.protocol.bot;
+package com.pepper.backend.model.messaging.bot;
 
 public enum Person {
 

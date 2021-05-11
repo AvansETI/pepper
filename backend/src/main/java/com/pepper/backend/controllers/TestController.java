@@ -1,7 +1,7 @@
 package com.pepper.backend.controllers;
 
-import com.pepper.backend.model.protocol.bot.Person;
-import com.pepper.backend.model.protocol.bot.Task;
+import com.pepper.backend.model.messaging.bot.Person;
+import com.pepper.backend.model.messaging.bot.Task;
 import com.pepper.backend.services.messaging.BotMessageHandlerService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

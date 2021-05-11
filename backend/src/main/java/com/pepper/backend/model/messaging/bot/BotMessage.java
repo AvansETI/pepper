@@ -1,4 +1,4 @@
-package com.pepper.backend.model.protocol.bot;
+package com.pepper.backend.model.messaging.bot;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BotMessage {
 
-    private String id;
+    private Sender sender;
 
     private String botId;
 

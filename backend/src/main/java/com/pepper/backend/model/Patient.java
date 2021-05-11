@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 
 @Data
@@ -25,6 +25,10 @@ public class Patient {
 
     private LocalDate birthdate;
 
-    private List<Allergy> allergies;
+    private Set<Allergy> allergies;
+
+    public void addAllergies(Set<Allergy> allergies) {
+        this.allergies.addAll(allergies);
+    }
 
 }
