@@ -14,14 +14,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collation = "order")
-public class Order {
+public class MealOrder {
 
     @Id
     private String id;
 
     private String patientId;
 
-    private String food;
+    private String meal;
 
     private LocalDateTime timestamp;
 

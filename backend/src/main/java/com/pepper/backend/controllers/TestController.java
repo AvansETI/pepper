@@ -19,7 +19,7 @@ public class TestController {
 
     @GetMapping("test")
     public void test() {
-        this.botMessageHandlerService.send("3", Person.GENERAL, "", Task.FEEDBACK, "data frf4654");
+        this.botMessageHandlerService.send("3", Person.GENERAL, "", Task.FEEDBACK_STATUS, "6", "data frf4654");
     }
 
 }

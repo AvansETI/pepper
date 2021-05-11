@@ -23,13 +23,14 @@ class BotMessageParserServiceTest {
 
     @Test
     void toBotMessage_test() {
-        String message = "BOT:3:PATIENT:5:FEEDBACK#{bla: bla# bla}";
+        String message = "BOT:3:PATIENT:5:FEEDBACK_STATUS:8#{bla: bla# bla}";
         BotMessage expected = BotMessage.builder()
                 .sender(Sender.BOT)
-                .botId("3")
+                .senderId("3")
                 .person(Person.PATIENT)
                 .personId("5")
-                .task(Task.FEEDBACK)
+                .task(Task.FEEDBACK_STATUS)
+                .taskId("8")
                 .data("bla: bla# bla")
                 .build();
 
@@ -43,8 +44,8 @@ class BotMessageParserServiceTest {
 
     @Test
     void createMessage_test() {
-        String expected = "PLATFORM:3:PATIENT:5:FEEDBACK#{bla# bla :bla}";
-        String message = this.messageParser.createMessage(Sender.PLATFORM,"3", Person.PATIENT, "5", Task.FEEDBACK, "bla# bla :bla");
+        String expected = "PLATFORM:3:PATIENT:5:FEEDBACK_STATUS:6#{bla# bla :bla}";
+        String message = this.messageParser.createMessage(Sender.PLATFORM,"3", Person.PATIENT, "5", Task.FEEDBACK_STATUS, "6","bla# bla :bla");
 
         assertEquals(expected, message);
     }

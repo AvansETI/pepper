@@ -19,20 +19,22 @@ public class BotMessageParserService {
 
         return BotMessage.builder()
                 .sender(Sender.valueOf(pathSplit[0]))
-                .botId(pathSplit[1])
+                .senderId(pathSplit[1])
                 .person(Person.valueOf(pathSplit[2]))
                 .personId(pathSplit[3])
                 .task(Task.valueOf(pathSplit[4]))
+                .taskId(pathSplit[5])
                 .data(data.substring(1, data.length() - 1))
                 .build();
     }
 
-    public String createMessage(Sender sender, String botId, Person person, String personId, Task task, String data) {
+    public String createMessage(Sender sender, String botId, Person person, String personId, Task task, String taskId, String data) {
         return sender.toString() + ":"
                 + botId + ":"
                 + person.toString() + ":"
                 + personId + ":"
-                + task.toString() + "#{"
+                + task.toString() + ":"
+                + taskId + "#{"
                 + data + "}";
     }
 

@@ -2,10 +2,17 @@ package com.pepper.backend.model.messaging.bot;
 
 public enum Task {
 
-    FEEDBACK,
-    MEAL_ORDER,
+    FEEDBACK_STATUS,
+    FEEDBACK_EXPLANATION,
+    FEEDBACK_TIMESTAMP,
+
+    MEAL_ORDER_MEAL,
+    MEAL_ORDER_TIMESTAMP,
+
     ANSWER,
+
     QUESTION,
+
     REMINDER,
 
     PATIENT_NAME,

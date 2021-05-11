@@ -1,8 +1,7 @@
 package com.pepper.backend.services.messaging;
 
 import com.pepper.backend.controllers.BotCommunicationController;
-import com.pepper.backend.model.Allergy;
-import com.pepper.backend.model.Patient;
+import com.pepper.backend.model.*;
 import com.pepper.backend.model.messaging.bot.BotMessage;
 import com.pepper.backend.model.messaging.bot.Person;
 import com.pepper.backend.model.messaging.bot.Sender;
@@ -10,8 +9,8 @@ import com.pepper.backend.model.messaging.bot.Task;
 import com.pepper.backend.services.database.DatabaseService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
-import java.util.ArrayList;
+
+import java.time.*;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -33,8 +32,8 @@ public class BotMessageHandlerService {
         this.messageEncryptor = messageEncryptor;
     }
 
-    public void send(String botId, Person person, String personId, Task task, String data) {
-        String message = this.messageParser.createMessage(Sender.PLATFORM, botId, person, personId, task, data);
+    public void send(String senderId, Person person, String personId, Task task, String taskId, String data) {
+        String message = this.messageParser.createMessage(Sender.PLATFORM, senderId, person, personId, task, taskId, data);
 
         try {
             message = this.messageEncryptor.encrypt(message, this.encryptionPassword);
@@ -72,11 +71,40 @@ public class BotMessageHandlerService {
     public void handleBotMessage(BotMessage message) {
 
         switch (message.getTask()) {
-            case FEEDBACK -> {
-                System.out.println("feedback: " + message.getData());
+            case FEEDBACK_STATUS -> {
+                this.databaseService.saveFeedback(Feedback.builder()
+                        .id(message.getTaskId())
+                        .patientId(message.getPersonId())
+                        .status(Status.valueOf(message.getData()))
+                        .build());
             }
-            case MEAL_ORDER -> {
-                System.out.println("meal order: " + message.getData());
+            case FEEDBACK_EXPLANATION -> {
+                this.databaseService.saveFeedback(Feedback.builder()
+                        .id(message.getTaskId())
+                        .patientId(message.getPersonId())
+                        .explanation(message.getData())
+                        .build());
+            }
+            case FEEDBACK_TIMESTAMP -> {
+                this.databaseService.saveFeedback(Feedback.builder()
+                        .id(message.getTaskId())
+                        .patientId(message.getPersonId())
+                        .timestamp(LocalDateTime.ofEpochSecond(Long.parseLong(message.getData()), 0, ZoneOffset.UTC))
+                        .build());
+            }
+            case MEAL_ORDER_MEAL -> {
+                this.databaseService.saveMealOrder(MealOrder.builder()
+                        .id(message.getTaskId())
+                        .patientId(message.getPersonId())
+                        .meal(message.getData())
+                        .build());
+            }
+            case MEAL_ORDER_TIMESTAMP -> {
+                this.databaseService.saveMealOrder(MealOrder.builder()
+                        .id(message.getTaskId())
+                        .patientId(message.getPersonId())
+                        .timestamp(LocalDateTime.ofEpochSecond(Long.parseLong(message.getData()), 0, ZoneOffset.UTC))
+                        .build());
             }
             case ANSWER -> {
                 System.out.println("answer: " + message.getData());
@@ -88,19 +116,19 @@ public class BotMessageHandlerService {
                 System.out.println("reminder: " + message.getData());
             }
             case PATIENT_NAME -> {
-                this.databaseService.savePatientData(Patient.builder()
+                this.databaseService.savePatient(Patient.builder()
                         .id(message.getPersonId())
                         .name(message.getData())
                         .build());
             }
             case PATIENT_BIRTHDATE -> {
-                this.databaseService.savePatientData(Patient.builder()
+                this.databaseService.savePatient(Patient.builder()
                         .id(message.getPersonId())
                         .birthdate(LocalDate.ofEpochDay(Long.parseLong(message.getData())))
                         .build());
             }
             case PATIENT_ALLERGY -> {
-                this.databaseService.savePatientData(Patient.builder()
+                this.databaseService.savePatient(Patient.builder()
                         .id(message.getPersonId())
                         .allergies(new HashSet<>(Arrays.asList(Allergy.valueOf(message.getData()))))
                         .build());

@@ -13,13 +13,15 @@ public class BotMessage {
 
     private Sender sender;
 
-    private String botId;
+    private String senderId;
 
     private Person person;
 
     private String personId;
 
     private Task task;
+
+    private String taskId;
 
     private String data;
 
