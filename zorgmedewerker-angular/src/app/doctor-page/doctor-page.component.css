@@ -18,18 +18,30 @@
 }
 
 .doctor_nondetail{
-    border-radius: 10%;
-    background-color: white;
     padding: 20px;
-    width: 20vw;
-    height: 60vh;
     position: absolute;
-    top: 55%;
-    left: 20%;
+    top: 35%;
+    left: 15%;
     /* bring your own prefixes */
     transform: translate(-50%, -50%);
     text-align: center;
 }
+
+.dark_space{
+    border-radius: 10%;
+    background-color: black;
+    padding: 20px;
+    width: 20vw;
+    height: 60vh;
+    opacity: 0.1;
+    position: absolute;
+}
+
+.top{
+    z-index: 9;
+}
+
+
 
 .avans_logo img{
     max-height: 6vh;
