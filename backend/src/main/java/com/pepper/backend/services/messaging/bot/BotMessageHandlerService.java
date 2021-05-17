@@ -1,4 +1,4 @@
-package com.pepper.backend.services.messaging;
+package com.pepper.backend.services.messaging.bot;
 
 import com.pepper.backend.controllers.BotCommunicationController;
 import com.pepper.backend.model.*;
@@ -7,6 +7,7 @@ import com.pepper.backend.model.messaging.bot.Person;
 import com.pepper.backend.model.messaging.bot.Sender;
 import com.pepper.backend.model.messaging.bot.Task;
 import com.pepper.backend.services.database.DatabaseService;
+import com.pepper.backend.services.messaging.MessageEncryptorService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,9 @@ import java.util.HashSet;
 
 @Service
 public class BotMessageHandlerService {
+
+    @Value("${encryption.enabled}")
+    private boolean encryptionEnabled;
 
     @Value("${encryption.password}")
     private String encryptionPassword;
@@ -35,23 +39,27 @@ public class BotMessageHandlerService {
     public void send(String senderId, Person person, String personId, Task task, String taskId, String data) {
         String message = this.messageParser.createMessage(Sender.PLATFORM, senderId, person, personId, task, taskId, data);
 
-        try {
-            message = this.messageEncryptor.encrypt(message, this.encryptionPassword);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
+        if (this.encryptionEnabled) {
+            try {
+                message = this.messageEncryptor.encrypt(message, this.encryptionPassword);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
         }
 
         this.botCommunicationController.publish(message);
     }
 
     public void handle(String message) {
-//        try {
-//            message = this.messageEncryptor.decrypt(message, this.encryptionPassword);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return;
-//        }
+        if (this.encryptionEnabled) {
+            try {
+                message = this.messageEncryptor.decrypt(message, this.encryptionPassword);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        }
 
         BotMessage botMessage;
         try {

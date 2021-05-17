@@ -1,4 +1,4 @@
-package com.pepper.backend.services.messaging;
+package com.pepper.backend.services.messaging.bot;
 
 import com.pepper.backend.model.messaging.bot.BotMessage;
 import com.pepper.backend.model.messaging.bot.Person;

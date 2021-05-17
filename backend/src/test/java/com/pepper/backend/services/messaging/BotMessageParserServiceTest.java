@@ -4,6 +4,7 @@ import com.pepper.backend.model.messaging.bot.BotMessage;
 import com.pepper.backend.model.messaging.bot.Person;
 import com.pepper.backend.model.messaging.bot.Sender;
 import com.pepper.backend.model.messaging.bot.Task;
+import com.pepper.backend.services.messaging.bot.BotMessageParserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
