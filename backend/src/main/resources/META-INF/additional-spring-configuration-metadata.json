@@ -24,6 +24,11 @@
       "name": "mqtt.password",
       "type": "java.lang.String",
       "description": "Description for mqtt.password."
+    },
+    {
+      "name": "encryption.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Description for encryption.enable."
     }
   ]
 }

@@ -7,28 +7,22 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
-import java.util.Set;
-
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collation = "patient")
-public class Patient {
+@Document(collation = "order")
+public class MealOrder {
 
     @Id
     private String id;
 
-    private String name;
+    private String patientId;
 
-    private LocalDate birthdate;
+    private String meal;
 
-    private Set<Allergy> allergies;
-
-    public void addAllergies(Set<Allergy> allergies) {
-        this.allergies.addAll(allergies);
-    }
+    private LocalDateTime timestamp;
 
 }

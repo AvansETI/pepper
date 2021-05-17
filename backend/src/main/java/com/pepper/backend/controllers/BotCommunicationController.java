@@ -1,6 +1,6 @@
 package com.pepper.backend.controllers;
 
-import com.pepper.backend.services.messaging.BotMessageHandlerService;
+import com.pepper.backend.services.messaging.bot.BotMessageHandlerService;
 import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;

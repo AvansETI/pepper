@@ -9,9 +9,11 @@ mqtt:
 spring.data.mongodb:
   host: database
   port: 27017
-  authentication-database: admin
   database: pepper
+  authentication-database: admin
   username: pepper
   password: pepper
 
-encryption.password: pepper
+encryption:
+  enabled: true
+  password: pepper
