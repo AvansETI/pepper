@@ -1,7 +1,7 @@
 .doctor_page {
     width: 100vw;
     height: 93.2vh;
-    background: url('../../assets/overlay_color_background_2.png') no-repeat;
+    background: url('../../assets/background-pepper.png') no-repeat;
     background-size: 100vw 100vh
 }
 
@@ -13,6 +13,28 @@
     max-height: 10vh;
     max-width: 10vw;
     left: 1%;
-    bottom: 1%;
+    bottom: 2%;
     position: absolute;
+}
+
+.doctor_nondetail{
+    border-radius: 10%;
+    background-color: white;
+    padding: 20px;
+    width: 20vw;
+    height: 60vh;
+    position: absolute;
+    top: 55%;
+    left: 20%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.avans_logo img{
+    max-height: 6vh;
+    max-width: 6vw;
+    position: absolute;
+    right: 0.5%;
+    bottom: 0.8%;
 }

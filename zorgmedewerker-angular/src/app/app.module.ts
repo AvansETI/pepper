@@ -6,6 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { DoctorPageComponent } from './doctor-page/doctor-page.component';
+import { OrderPageComponent } from './order-page/order-page.component';
 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
@@ -14,15 +15,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
-import { BrowserAnimationsModule}  from '@angular/platform-browser/animations'
-
-import { from } from 'rxjs';
+import { BrowserAnimationsModule}  from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginPageComponent,
-    DoctorPageComponent
+    DoctorPageComponent,
+    OrderPageComponent
   ],
   imports: [
     BrowserModule,
