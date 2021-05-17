@@ -1,0 +1,51 @@
+.doctor_page {
+    width: 100vw;
+    height: 93.2vh;
+    background: url('../../assets/background-pepper.png') no-repeat;
+    background-size: 100vw 100vh
+}
+
+.pepper_head{
+    text-align: left;
+}
+
+.pepper_head img{
+    max-height: 10vh;
+    max-width: 10vw;
+    left: 1%;
+    bottom: 2%;
+    position: absolute;
+}
+
+.dark_space{
+    border-radius: 10%;
+    background-color: black;
+    padding: 20px;
+    width: 20vw;
+    height: 60vh;
+    position: absolute;
+    top: 190%;
+    left: 45%;
+    opacity: 0.1;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.doctor_nondetail{
+    padding: 20px;
+    position: absolute;
+    top: 35%;
+    left: 15%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.avans_logo img{
+    max-height: 6vh;
+    max-width: 6vw;
+    position: absolute;
+    right: 0.5%;
+    bottom: 0.8%;
+}

@@ -1,0 +1,35 @@
+<body class="login_page">
+    <div class="login_roundcircle">
+        <div>
+        <mat-form-field appearance="legacy">
+            <mat-label>Enter your username</mat-label>
+            <input matInput type="text">
+        </mat-form-field>
+        </div>
+        <div>
+        <mat-form-field appearance="legacy">
+            <mat-label>Enter your password</mat-label>
+            <input matInput [type]="hide ? 'password' : 'text'">
+            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+              <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+        </mat-form-field> 
+        </div>
+        <div>
+        <mat-form-field appearance="legacy">
+            <mat-label>Enter your doktor-id</mat-label>
+            <input matInput type="number">
+        </mat-form-field>
+        </div>
+        <div>
+        <a class= "login_button" mat-raised-button routerLink="/doctor-page-component" color= "primary">Login</a>
+        </div>
+    </div>
+    <div class="pepper_head">
+        <img src="assets/pepper-head.png">
+    </div>
+    <div class="avans_logo">
+        <img src="assets/logo-white-2.png">
+    </div>
+</body>
+ 
