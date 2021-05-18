@@ -1,6 +1,5 @@
 package com.pepper.care.feedback.common.usecases
 
-import com.pepper.care.feedback.entities.FeedbackType
 import com.pepper.care.feedback.repo.FeedbackRepository
 
 interface AddPatientGivenHealthFeedbackUseCase {

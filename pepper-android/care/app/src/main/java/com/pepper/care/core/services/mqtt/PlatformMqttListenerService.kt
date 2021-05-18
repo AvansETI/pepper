@@ -75,28 +75,31 @@ class PlatformMqttListenerService : LifecycleService() {
         })
     }
 
-    private val sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener = object : SharedPreferences.OnSharedPreferenceChangeListener {
-        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+    private val sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
             when (key) {
                 COMMON_SHARED_PREF_PUBLISH_MSG_KEY -> {
-                    val message = sharedPreferences!!.getString(key, "error")
+                    //                    val message = sharedPreferences!!.getString(key, "error")
+                    //
+                    //                    if (message.equals("error")) {
+                    //                        return
+                    //                    }
+                    //
+                    //                    var encrypted = ""
+                    //                    try {
+                    //                        encrypted = encryptionService.encrypt(message!!, "pepper")
+                    //                    } catch (e: Exception) {
+                    //                        e.printStackTrace()
+                    //                        return
+                    //                    }
 
-                    if (message.equals("error")) {
-                        return
-                    }
-
-                    var encrypted = ""
-                    try {
-                        encrypted = encryptionService.encrypt(message!!, "pepper")
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        return
-                    }
-
-                    clientHelper.publish(encrypted,0)
+                    clientHelper.publish(
+                        sharedPreferences!!.getString(
+                            COMMON_SHARED_PREF_PUBLISH_MSG_KEY, "error"
+                        )!!, 0
+                    )
                 }
             }
         }
-    }
 
 }

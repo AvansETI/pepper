@@ -1,12 +1,13 @@
 package com.pepper.care.feedback.entities
 
+import android.view.View
 import com.pepper.care.feedback.FeedbackCallback
 
 class FeedbackEntity(
     val givenType: FeedbackMessage
 ) {
-    fun onClick(type: FeedbackMessage, callback: FeedbackCallback) {
-        callback.onClicked(type)
+    fun onClick(view: View, type: FeedbackMessage, callback: FeedbackCallback) {
+        callback.onClicked(view, type)
     }
 
     enum class FeedbackMessage(

@@ -1,17 +1,18 @@
-package com.pepper.care.order.common.usecases
+package com.pepper.care.common.usecases
 
 import com.pepper.care.common.AppResult
+import com.pepper.care.common.entities.PatientDetails
 import com.pepper.care.common.repo.PatientRepository
 
-interface GetPatientAllergiesUseCase {
+interface GetPatientNameUseCase {
     suspend operator fun invoke() : AppResult<String>
 }
 
-class GetPatientAllergiesUseCaseUsingRepository(
+class GetPatientNameUseCaseUsingRepository(
     private val patientRepository: PatientRepository
-) : GetPatientAllergiesUseCase {
+) : GetPatientNameUseCase {
 
     override suspend fun invoke() : AppResult<String> {
-        return patientRepository.fetchAllergies()
+        return patientRepository.fetchName()
     }
 }

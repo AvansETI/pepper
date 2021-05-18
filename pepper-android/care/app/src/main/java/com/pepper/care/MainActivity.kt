@@ -77,7 +77,7 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks, MqttMessageCallba
     private fun startServices() {
         lifecycleScope.launch {
             PlatformMqttListenerService.start(this@MainActivity, this@MainActivity)
-            TimeBasedInterfaceService.start(this@MainActivity)
+            //TimeBasedInterfaceService.start(this@MainActivity)
         }
         initUiElements()
     }
@@ -151,30 +151,6 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks, MqttMessageCallba
                 Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_STANDBY)
                 this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.homeFragment)
             }
-            COMMON_MSG_NAV_INTRO -> {
-                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_INTRO)
-                this.findNavController(R.id.child_nav_host_fragment).navigate(
-                    R.id.dialogFragment, bundleOf(
-                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.INTRO)
-                    )
-                )
-            }
-            COMMON_MSG_NAV_ID-> {
-                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_ID)
-                this.findNavController(R.id.child_nav_host_fragment).navigate(
-                    R.id.dialogFragment, bundleOf(
-                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.ID)
-                    )
-                )
-            }
-            COMMON_MSG_NAV_PATIENT-> {
-                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_PATIENT)
-                this.findNavController(R.id.child_nav_host_fragment).navigate(
-                    R.id.dialogFragment, bundleOf(
-                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.PATIENT)
-                    )
-                )
-            }
             COMMON_MSG_NAV_ORDER-> {
                 Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_ORDER)
                 this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.orderFragment)
@@ -192,18 +168,6 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks, MqttMessageCallba
                 this.findNavController(R.id.child_nav_host_fragment).navigate(
                     R.id.dialogFragment, bundleOf(
                         Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.QUESTION)
-                    )
-                )
-            }
-            COMMON_MSG_NAV_FEEDBACK-> {
-                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_FEEDBACK)
-                this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.feedbackFragment)
-            }
-            COMMON_MSG_NAV_GOODBYE-> {
-                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_GOODBYE)
-                this.findNavController(R.id.child_nav_host_fragment).navigate(
-                    R.id.dialogFragment, bundleOf(
-                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.GOODBYE)
                     )
                 )
             }

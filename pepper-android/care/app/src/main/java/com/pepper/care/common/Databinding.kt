@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.pepper.care.R
+import com.pepper.care.dialog.FabType
 import com.pepper.care.feedback.entities.FeedbackEntity
 
 @BindingAdapter("items")
@@ -74,4 +76,14 @@ fun setIconSource(imageView: ImageView, type: FeedbackEntity.FeedbackMessage) {
             FeedbackEntity.FeedbackMessage.GOOD -> R.drawable.ic_feedback_good
         })
         .into(imageView)
+}
+
+@BindingAdapter("fabIcon")
+fun setIconSource(floatingActionButton: FloatingActionButton, type: FabType) {
+    Glide.with(floatingActionButton.context)
+        .load(when(type){
+            FabType.NEXT -> R.drawable.ic_baseline_chevron_right_24
+            FabType.KEYBOARD -> R.drawable.ic_baseline_keyboard_24
+        })
+        .into(floatingActionButton)
 }

@@ -10,13 +10,15 @@ import com.pepper.care.common.ClickCallback
 import com.pepper.care.common.entities.InformUserRecyclerItem
 import com.pepper.care.common.entities.PlatformMealsResponse
 import com.pepper.care.common.entities.RecyclerAdapterItem
+import com.pepper.care.order.common.usecases.GetPatientAllergiesUseCaseUsingRepository
 import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
 import kotlinx.coroutines.launch
 import org.joda.time.LocalDateTime
 import java.util.*
 
 class OrderViewModelUsingUsecases(
-    private val getPlatformMealsUseCaseUsingRepository: GetPlatformMealsUseCaseUsingRepository
+    private val getPlatformMealsUseCaseUsingRepository: GetPlatformMealsUseCaseUsingRepository,
+    private val getPatientAllergiesUseCaseUsingRepository: GetPatientAllergiesUseCaseUsingRepository
 ) : ViewModel(), OrderViewModel {
 
     override val orderText: String =
