@@ -5,13 +5,20 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
+import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import com.aldebaran.qi.Future
 import com.aldebaran.qi.sdk.QiContext
 import com.aldebaran.qi.sdk.QiSDK
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
+import com.aldebaran.qi.sdk.`object`.conversation.Say
+import com.aldebaran.qi.sdk.`object`.locale.Language
+import com.aldebaran.qi.sdk.`object`.locale.Locale
+import com.aldebaran.qi.sdk.`object`.locale.Region
+import com.aldebaran.qi.sdk.builder.SayBuilder
 import com.pepper.care.common.CommonConstants
 import com.pepper.care.common.CommonConstants.COMMON_SHARED_PREF_LIVE_THEME_KEY
 import com.pepper.care.core.services.encryption.EncryptionService
@@ -26,6 +33,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
+
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCallbacks {
@@ -33,12 +41,16 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
     private val encryptionService: EncryptionService by inject()
     private val sharedPreferencesEditor: SharedPreferences.Editor by inject()
     private val sharedPreferences: SharedPreferences by inject()
+    private lateinit var qiContext: QiContext
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setup()
         QiSDK.register(this,this)
+
+
+
     }
 
     private fun setup() {
@@ -57,8 +69,8 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
 
     private fun startServices() {
         lifecycleScope.launch {
-            PlatformMqttListenerService.start(this@MainActivity, this@MainActivity)
-            TimeBasedInterfaceService.start(this@MainActivity)
+            //PlatformMqttListenerService.start(this@MainActivity, this@MainActivity)
+            //TimeBasedInterfaceService.start(this@MainActivity)
         }
         //QiSDK.register(this, this)
         initUiElements()
@@ -77,6 +89,15 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
             }
         }
 
+        this.findViewById<Switch>(R.id.sw_lang).setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                Speech.setToDutch()
+            } else {
+                Speech.setToEnglish()
+            }
+            Speech.say("Hallo", this.qiContext)
+        }
+
         this.findViewById<ImageView>(R.id.info_toolbar_button).setOnClickListener {
             Log.d(MainActivity::class.simpleName, "Clicked on info button!")
             startActivity(Intent(this, InfoSliderActivity::class.java))
@@ -93,11 +114,17 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
     }
 
     override fun onRobotFocusGained(qiContext: QiContext) {
+        this.qiContext = qiContext
         Speech.say("application starting", qiContext)
+
+        Speech.setToDutch()
+
+        Speech.say("Hallo makker", qiContext)
+
     }
 
     override fun onRobotFocusLost() {
-        // The robot focus is lost.
+
     }
 
     override fun onRobotFocusRefused(reason: String) {
@@ -153,4 +180,6 @@ class MainActivity : AppCompatActivity(), RobotLifecycleCallbacks, MqttMessageCa
                 }
             }
         }
+
+
 }
