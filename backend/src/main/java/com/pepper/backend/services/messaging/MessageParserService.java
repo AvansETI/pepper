@@ -1,15 +1,15 @@
-package com.pepper.backend.services.messaging.bot;
+package com.pepper.backend.services.messaging;
 
-import com.pepper.backend.model.messaging.bot.BotMessage;
-import com.pepper.backend.model.messaging.bot.Person;
-import com.pepper.backend.model.messaging.bot.Sender;
-import com.pepper.backend.model.messaging.bot.Task;
+import com.pepper.backend.model.messaging.Message;
+import com.pepper.backend.model.messaging.Person;
+import com.pepper.backend.model.messaging.Sender;
+import com.pepper.backend.model.messaging.Task;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BotMessageParserService {
+public class MessageParserService {
 
-    public BotMessage toBotMessage(String message) throws IndexOutOfBoundsException {
+    public Message parse(String message) throws IndexOutOfBoundsException {
         String[] messageSplit = message.split("#", 2);
 
         String path = messageSplit[0];
@@ -17,7 +17,7 @@ public class BotMessageParserService {
 
         String[] pathSplit = path.split(":");
 
-        return BotMessage.builder()
+        return Message.builder()
                 .sender(Sender.valueOf(pathSplit[0]))
                 .senderId(pathSplit[1])
                 .person(Person.valueOf(pathSplit[2]))
@@ -28,9 +28,9 @@ public class BotMessageParserService {
                 .build();
     }
 
-    public String createMessage(Sender sender, String botId, Person person, String personId, Task task, String taskId, String data) {
+    public String stringify(Sender sender, String senderId, Person person, String personId, Task task, String taskId, String data) {
         return sender.toString() + ":"
-                + botId + ":"
+                + senderId + ":"
                 + person.toString() + ":"
                 + personId + ":"
                 + task.toString() + ":"
