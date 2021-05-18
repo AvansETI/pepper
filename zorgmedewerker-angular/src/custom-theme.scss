@@ -176,7 +176,7 @@ $pa-light-primary: mat-palette($pa-primary);
 $pa-light-accent:  mat-palette($pa-lightaccent);
 $pa-light-background:  mat-palette($pa-lightback);
 
-$pa-dark-primary: mat-palette($pa-darkback);
+$pa-dark-primary: mat-palette($pa-lightaccent);
 $pa-dark-accent:  mat-palette($pa-darkaccent);
 $pa-dark-background:  mat-palette($pa-lightback);
 
