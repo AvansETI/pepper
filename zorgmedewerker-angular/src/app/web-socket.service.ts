@@ -12,7 +12,8 @@ export class WebSocketService {
   private eventHandler: EventEmitter<string>;
 
   constructor() {
-    this.client = Stomp.over(new SockJS('http://' + config.backend.auth.username + ':' + config.backend.auth.password + '@' + config.backend.host + '/pepper'));
+    // this.client = Stomp.over(new SockJS('http://' + config.backend.auth.username + ':' + config.backend.auth.password + '@' + config.backend.host + '/pepper'));
+    this.client = Stomp.over(new SockJS('http://' + config.backend.host + '/pepper'));
     this.eventHandler = new EventEmitter<string>();
   }
 
@@ -24,14 +25,21 @@ export class WebSocketService {
         host: config.backend.host
       },
       () => {
-        this.client.subscribe('/topic/data', (message) => {
-          if (message.body) {
-            this.eventHandler.emit(message.body);
-          }
-        });
+        this.subscribe();
       },
       (error) => {
         console.log(error);
+      }
+    );
+  }
+
+  subscribe(): void {
+    this.client.subscribe(
+      '/topic/data', 
+      (message) => {
+        if (message.body) {
+          this.eventHandler.emit(message.body);
+        }
       }
     );
   }
@@ -45,7 +53,6 @@ export class WebSocketService {
   send(payload: string): void {
     if (this.client && this.client.connected) {
       this.client.send('/app/data', payload, {});
-      console.log('send to backend: ' + payload)
     }
   }
 

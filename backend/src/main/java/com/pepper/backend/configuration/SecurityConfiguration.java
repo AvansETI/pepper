@@ -23,7 +23,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication()
                 .withUser("pepper")
                 .password(passwordEncoder().encode("pepper"))
-                .roles("ADMIN");
+                .roles("USER");
     }
 
     @Override

@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { MessageEncryptorService } from './message-encryptor.service';
 import { WebSocketService } from './web-socket.service'
+import { config } from '../config'
 
 @Component({
   selector: 'app-root',
@@ -14,8 +16,8 @@ export class AppComponent {
 
   private webSocketSubscription: Subscription;
 
-  constructor(private webSocket: WebSocketService) {
-    this.webSocketSubscription = this.webSocket.getEventHandler().subscribe((message) => this.onMessageReceive(message));
+  constructor(private webSocket: WebSocketService, private messageEncryptor: MessageEncryptorService) {
+    this.webSocketSubscription = this.webSocket.getEventHandler().subscribe((message) => { this.onMessageReceive(message) });
   }
 
   ngOnInit() {
@@ -35,12 +37,21 @@ export class AppComponent {
     localStorage.setItem('theme', this.isDarkTheme ? "Dark" : "Light");
   }
 
-  onMessageReceive(message: string): void {
-    console.log(message);
+  async onMessageReceive(message: string): Promise<void> {
+    if (config.backend.encryption.enabled) {
+      message = await this.messageEncryptor.decrypt(message, config.backend.encryption.password);
+    }
+    
+    console.log('Received:' + message);
   }
 
-  sendMessage(message: string): void {
+  async sendMessage(message: string): Promise<void> {
+    if (config.backend.encryption.enabled) {
+      message = await this.messageEncryptor.encrypt(message, config.backend.encryption.password);
+    }
+    
     this.webSocket.send(message);
+    console.log('Send: ' + message);
   }
 
 }

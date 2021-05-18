@@ -4,6 +4,10 @@ const config = {
     auth: {
       username: 'pepper',
       password: 'pepper'
+    },
+    encryption: {
+      enabled: true,
+      password: 'pepper'
     }
   }
 }
