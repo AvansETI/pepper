@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { MessageEncryptorService } from './message-encryptor.service';
-import { WebSocketService } from './web-socket.service'
-import { config } from '../config'
+import { Person } from 'src/model/person';
+import { Task } from 'src/model/task';
+import { MessageHandlerService } from './message-handler.service';
 
 @Component({
   selector: 'app-root',
@@ -14,22 +13,18 @@ export class AppComponent {
   isDarkTheme: boolean = false;
   title = 'zorgmedewerker-angular';
 
-  private webSocketSubscription: Subscription;
 
-  constructor(private webSocket: WebSocketService, private messageEncryptor: MessageEncryptorService) {
-    this.webSocketSubscription = this.webSocket.getEventHandler().subscribe((message) => { this.onMessageReceive(message) });
+  constructor(private messageHandler: MessageHandlerService) {
+    
   }
 
   ngOnInit() {
-    this.webSocket.connect();
+    this.messageHandler.init();
     this.isDarkTheme = localStorage.getItem('theme') === "Dark";
   }
 
   ngOnDestroy() {
-    if (this.webSocketSubscription) {
-      this.webSocketSubscription.unsubscribe();
-    }
-    this.webSocket.disconnect();
+    this.messageHandler.destroy();
   }
 
   storeThemeSelection()
@@ -37,21 +32,8 @@ export class AppComponent {
     localStorage.setItem('theme', this.isDarkTheme ? "Dark" : "Light");
   }
 
-  async onMessageReceive(message: string): Promise<void> {
-    if (config.backend.encryption.enabled) {
-      message = await this.messageEncryptor.decrypt(message, config.backend.encryption.password);
-    }
-    
-    console.log('Received:' + message);
-  }
-
-  async sendMessage(message: string): Promise<void> {
-    if (config.backend.encryption.enabled) {
-      message = await this.messageEncryptor.encrypt(message, config.backend.encryption.password);
-    }
-    
-    this.webSocket.send(message);
-    console.log('Send: ' + message);
+  test(): void {
+    this.messageHandler.send('1', Person.PATIENT, '2', Task.PATIENT_NAME, '1', 'get these bitches');
   }
 
 }

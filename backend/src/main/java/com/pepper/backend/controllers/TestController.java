@@ -1,5 +1,7 @@
 package com.pepper.backend.controllers;
 
+import com.pepper.backend.model.messaging.Person;
+import com.pepper.backend.model.messaging.Task;
 import com.pepper.backend.services.messaging.bot.BotMessageHandlerService;
 import com.pepper.backend.services.messaging.staff.StaffMessageHandlerService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +23,7 @@ public class TestController {
     @GetMapping("test")
     public void test() {
 //        this.botMessageHandler.send("3", Person.GENERAL, "", Task.FEEDBACK_STATUS, "6", "data frf4654");
-        this.staffMessageHandler.send("hello angular");
+        this.staffMessageHandler.send("3", Person.PATIENT, "", Task.PATIENT_NAME, "6", "data frf4654");
     }
 
 }

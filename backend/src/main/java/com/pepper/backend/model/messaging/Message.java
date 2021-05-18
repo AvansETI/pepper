@@ -1,4 +1,4 @@
-package com.pepper.backend.model.messaging.bot;
+package com.pepper.backend.model.messaging;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BotMessage {
+public class Message {
 
     private Sender sender;
 

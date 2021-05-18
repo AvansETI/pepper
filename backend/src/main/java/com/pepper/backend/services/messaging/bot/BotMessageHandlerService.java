@@ -2,12 +2,13 @@ package com.pepper.backend.services.messaging.bot;
 
 import com.pepper.backend.controllers.BotCommunicationController;
 import com.pepper.backend.model.*;
-import com.pepper.backend.model.messaging.bot.BotMessage;
-import com.pepper.backend.model.messaging.bot.Person;
-import com.pepper.backend.model.messaging.bot.Sender;
-import com.pepper.backend.model.messaging.bot.Task;
+import com.pepper.backend.model.messaging.Message;
+import com.pepper.backend.model.messaging.Person;
+import com.pepper.backend.model.messaging.Sender;
+import com.pepper.backend.model.messaging.Task;
 import com.pepper.backend.services.database.DatabaseService;
 import com.pepper.backend.services.messaging.MessageEncryptorService;
+import com.pepper.backend.services.messaging.MessageParserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +27,10 @@ public class BotMessageHandlerService {
 
     private final BotCommunicationController botCommunicationController;
     private final DatabaseService databaseService;
-    private final BotMessageParserService messageParser;
+    private final MessageParserService messageParser;
     private final MessageEncryptorService messageEncryptor;
 
-    public BotMessageHandlerService(BotCommunicationController botCommunicationController, DatabaseService databaseService, BotMessageParserService messageParser, MessageEncryptorService messageEncryptor) {
+    public BotMessageHandlerService(BotCommunicationController botCommunicationController, DatabaseService databaseService, MessageParserService messageParser, MessageEncryptorService messageEncryptor) {
         this.botCommunicationController = botCommunicationController;
         this.databaseService = databaseService;
         this.messageParser = messageParser;
@@ -37,7 +38,7 @@ public class BotMessageHandlerService {
     }
 
     public void send(String senderId, Person person, String personId, Task task, String taskId, String data) {
-        String message = this.messageParser.createMessage(Sender.PLATFORM, senderId, person, personId, task, taskId, data);
+        String message = this.messageParser.stringify(Sender.PLATFORM, senderId, person, personId, task, taskId, data);
 
         if (this.encryptionEnabled) {
             try {
@@ -61,22 +62,22 @@ public class BotMessageHandlerService {
             }
         }
 
-        BotMessage botMessage;
+        Message botMessage;
         try {
-            botMessage = this.messageParser.toBotMessage(message);
+            botMessage = this.messageParser.parse(message);
         } catch (Exception e) {
             e.printStackTrace();
             return;
         }
 
-        if (botMessage.getSender() == Sender.PLATFORM) {
+        if (botMessage.getSender() != Sender.BOT) {
             return;
         }
 
         this.handleBotMessage(botMessage);
     }
 
-    public void handleBotMessage(BotMessage message) {
+    public void handleBotMessage(Message message) {
 
         switch (message.getTask()) {
             case FEEDBACK_STATUS -> {
