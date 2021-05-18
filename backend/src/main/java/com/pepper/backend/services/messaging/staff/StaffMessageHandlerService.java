@@ -10,7 +10,7 @@ import java.security.GeneralSecurityException;
 @Service
 public class StaffMessageHandlerService {
 
-    @Value("${encryption.encryptionEnabled}")
+    @Value("${encryption.enabled}")
     private boolean encryptionEnabled;
 
     @Value("${encryption.password}")

@@ -57,7 +57,7 @@ class MessageEncryptorServiceTest {
 
     @Test
     void decrypt() {
-        String encrypted = "TL2ojGq/l3V3d8FT2UMBGWhbCJLXBteB8bbG5DitkvJ8RBbzDgfwpb0JW2oOz9w8BV2GlxOSCVljH+E4N38hZbJWiNx01GY=";
+        String encrypted = "8paQVNtolCUdNG0gB60LD2UUrAcRH2YNABwmqTEGbIBQrJIA/+tmyNU=";
         String decrypted = "";
 
         try {

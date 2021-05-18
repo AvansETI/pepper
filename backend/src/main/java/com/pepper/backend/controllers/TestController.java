@@ -21,7 +21,7 @@ public class TestController {
     @GetMapping("test")
     public void test() {
 //        this.botMessageHandler.send("3", Person.GENERAL, "", Task.FEEDBACK_STATUS, "6", "data frf4654");
-        this.staffMessageHandler.send("test");
+        this.staffMessageHandler.send("hello angular");
     }
 
 }
