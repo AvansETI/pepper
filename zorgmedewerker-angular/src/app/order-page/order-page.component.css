@@ -1,8 +1,8 @@
-.doctor_page {
+.order_page {
     width: 100vw;
     height: 93.2vh;
-    background: url('../../assets/background-pepper.png') no-repeat;
-    background-size: 100vw 100vh
+    background: url('../../assets/background-pepper3.png') no-repeat;
+    background-size: 100vw 93.2vh
 }
 
 .pepper_head{
@@ -10,42 +10,48 @@
 }
 
 .pepper_head img{
-    max-height: 10vh;
-    max-width: 10vw;
+    max-height: 7.5vh;
+    max-width: 7.5vw;
+    position: absolute;
     left: 1%;
-    bottom: 2%;
-    position: absolute;
-}
-
-.dark_space{
-    border-radius: 10%;
-    background-color: black;
-    padding: 20px;
-    width: 20vw;
-    height: 60vh;
-    position: absolute;
-    top: 190%;
-    left: 45%;
-    opacity: 0.1;
-    /* bring your own prefixes */
-    transform: translate(-50%, -50%);
-    text-align: center;
-}
-
-.doctor_nondetail{
-    padding: 20px;
-    position: absolute;
-    top: 35%;
-    left: 15%;
-    /* bring your own prefixes */
-    transform: translate(-50%, -50%);
-    text-align: center;
+    bottom: 0.5%;
 }
 
 .avans_logo img{
-    max-height: 6vh;
-    max-width: 6vw;
+    max-height: 8vh;
+    max-width: 8vw;
     position: absolute;
     right: 0.5%;
-    bottom: 0.8%;
+    bottom: 2%;
+}
+
+.order_nondetail{
+    padding: 20px;
+    position: absolute;
+    top: 30%;
+    left: 10%;
+    height: 50vh;
+    /* bring your own prefixes */
+    border: 2px solid #c7c9c8;
+    border-radius: 18px;
+}
+
+
+.order_detail{
+    padding: 20px;
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    width: 50vw;
+    /* bring your own prefixes */
+    border: 2px solid #c7c9c8;
+    border-radius: 18px;
+}
+
+.order_nondetail div {
+    text-align: center;
+}
+
+.order_detail div {
+   text-align: center;
 }
