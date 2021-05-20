@@ -9,6 +9,8 @@ import com.pepper.backend.model.messaging.Task;
 import com.pepper.backend.services.database.DatabaseService;
 import com.pepper.backend.services.messaging.MessageEncryptorService;
 import com.pepper.backend.services.messaging.MessageParserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,8 @@ import java.util.HashSet;
 
 @Service
 public class BotMessageHandlerService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BotMessageHandlerService.class);
 
     @Value("${encryption.enabled}")
     private boolean encryptionEnabled;
@@ -49,7 +53,11 @@ public class BotMessageHandlerService {
             }
         }
 
-        this.botCommunicationController.publish(message);
+        if (this.botCommunicationController.publish(message)) {
+            LOG.info("Send message to bot: " + message);
+        } else {
+            LOG.error("Failed to send message to bot");
+        }
     }
 
     public void handle(String message) {
@@ -57,7 +65,7 @@ public class BotMessageHandlerService {
             try {
                 message = this.messageEncryptor.decrypt(message, this.encryptionPassword);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Failed to decrypt message: " + message);
                 return;
             }
         }
@@ -66,7 +74,7 @@ public class BotMessageHandlerService {
         try {
             botMessage = this.messageParser.parse(message);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Failed to parse message: " + message);
             return;
         }
 
@@ -81,6 +89,7 @@ public class BotMessageHandlerService {
 
         switch (message.getTask()) {
             case FEEDBACK_STATUS -> {
+                LOG.info("New feedback status: " + message.getData());
                 this.databaseService.saveFeedback(Feedback.builder()
                         .id(message.getTaskId())
                         .patientId(message.getPersonId())
@@ -88,6 +97,7 @@ public class BotMessageHandlerService {
                         .build());
             }
             case FEEDBACK_EXPLANATION -> {
+                LOG.info("New feedback explanation: " + message.getData());
                 this.databaseService.saveFeedback(Feedback.builder()
                         .id(message.getTaskId())
                         .patientId(message.getPersonId())
@@ -95,6 +105,7 @@ public class BotMessageHandlerService {
                         .build());
             }
             case FEEDBACK_TIMESTAMP -> {
+                LOG.info("New feedback timestamp: " + message.getData());
                 this.databaseService.saveFeedback(Feedback.builder()
                         .id(message.getTaskId())
                         .patientId(message.getPersonId())
@@ -102,6 +113,7 @@ public class BotMessageHandlerService {
                         .build());
             }
             case MEAL_ORDER_MEAL -> {
+                LOG.info("New meal order meal: " + message.getData());
                 this.databaseService.saveMealOrder(MealOrder.builder()
                         .id(message.getTaskId())
                         .patientId(message.getPersonId())
@@ -109,6 +121,7 @@ public class BotMessageHandlerService {
                         .build());
             }
             case MEAL_ORDER_TIMESTAMP -> {
+                LOG.info("New meal order timestamp: " + message.getData());
                 this.databaseService.saveMealOrder(MealOrder.builder()
                         .id(message.getTaskId())
                         .patientId(message.getPersonId())
@@ -116,31 +129,37 @@ public class BotMessageHandlerService {
                         .build());
             }
             case ANSWER -> {
-                System.out.println("answer: " + message.getData());
+                LOG.info("New answer: " + message.getData());
             }
             case QUESTION -> {
-                System.out.println("question: " + message.getData());
+                LOG.info("New question: " + message.getData());
             }
             case REMINDER -> {
-                System.out.println("reminder: " + message.getData());
+                LOG.info("New reminder: " + message.getData());
             }
             case PATIENT_NAME -> {
+                LOG.info("New patient name: " + message.getData());
                 this.databaseService.savePatient(Patient.builder()
                         .id(message.getPersonId())
                         .name(message.getData())
                         .build());
             }
             case PATIENT_BIRTHDATE -> {
+                LOG.info("New patient birthdate: " + message.getData());
                 this.databaseService.savePatient(Patient.builder()
                         .id(message.getPersonId())
                         .birthdate(LocalDate.ofEpochDay(Long.parseLong(message.getData())))
                         .build());
             }
             case PATIENT_ALLERGY -> {
+                LOG.info("New patient allergy: " + message.getData());
                 this.databaseService.savePatient(Patient.builder()
                         .id(message.getPersonId())
                         .allergies(new HashSet<>(Arrays.asList(Allergy.valueOf(message.getData()))))
                         .build());
+            }
+            default -> {
+                LOG.error("Unknown command: " + message.getTask());
             }
         }
 

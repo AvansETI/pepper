@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collation = "feedback")
+@Document("feedback")
 public class Feedback {
 
     @Id

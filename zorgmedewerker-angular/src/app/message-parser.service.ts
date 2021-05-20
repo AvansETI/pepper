@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Message } from '../model/message';
-import { Sender } from '../model/sender';
-import { Person } from '../model/person';
-import { Task } from '../model/task';
+import { Message, Sender, Person, Task } from '../model/message';
 
 @Injectable({
   providedIn: 'root'

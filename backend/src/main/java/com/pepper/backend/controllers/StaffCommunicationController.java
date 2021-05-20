@@ -17,8 +17,10 @@ public class StaffCommunicationController {
         this.messageHandler = messageHandler;
     }
 
-    public void send(String message) {
+    public boolean send(String message) {
         this.messagingTemplate.convertAndSend("/topic/data", message);
+
+        return true;
     }
 
     @MessageMapping("/data")

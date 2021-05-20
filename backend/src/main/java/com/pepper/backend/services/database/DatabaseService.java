@@ -11,8 +11,7 @@ import com.pepper.backend.repositories.database.QuestionRepository;
 import com.pepper.backend.repositories.database.ReminderRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class DatabaseService {
@@ -63,6 +62,20 @@ public class DatabaseService {
         }
 
         this.patientRepository.save(patientFounded);
+    }
+
+    public Patient findPatientById(String id) {
+        return this.patientRepository.findById(id).orElse(null);
+    }
+
+    public Set<String> findPatientIds() {
+        Set<String> ids = new HashSet<>();
+
+        for (Patient patient : this.patientRepository.findAll()) {
+            ids.add(patient.getId());
+        }
+
+        return ids;
     }
 
     public void saveMealOrder(MealOrder order) {

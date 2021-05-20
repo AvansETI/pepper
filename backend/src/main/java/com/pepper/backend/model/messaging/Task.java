@@ -15,8 +15,9 @@ public enum Task {
 
     REMINDER,
 
+    PATIENT,
+    PATIENT_ID,
     PATIENT_NAME,
     PATIENT_BIRTHDATE,
-    PATIENT_ALLERGY
-
+    PATIENT_ALLERGY,
 }

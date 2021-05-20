@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { Person } from 'src/model/person';
-import { Task } from 'src/model/task';
+import { Subscription } from 'rxjs';
+import { Person, Task } from '../model/message';
+import { Patient } from '../model/patient';
 import { MessageHandlerService } from './message-handler.service';
 
 @Component({
@@ -12,28 +13,34 @@ export class AppComponent {
 
   isDarkTheme: boolean = false;
   title = 'zorgmedewerker-angular';
+  patients: Patient[] = [];
 
+  private patientsSubscription: Subscription;
 
   constructor(private messageHandler: MessageHandlerService) {
-    
+    this.messageHandler.getEventHandler().subscribe((patients) => this.handlePatients(patients));
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.messageHandler.init();
     this.isDarkTheme = localStorage.getItem('theme') === "Dark";
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
+    this.patientsSubscription.unsubscribe();
     this.messageHandler.destroy();
   }
 
-  storeThemeSelection()
-  {
+  storeThemeSelection(): void {
     localStorage.setItem('theme', this.isDarkTheme ? "Dark" : "Light");
   }
 
   test(): void {
-    this.messageHandler.send('1', Person.PATIENT, '2', Task.QUESTION, '1', 'get these bitches');
+    this.messageHandler.send('1', Person.PATIENT, '', Task.PATIENT_ID, '1', '');
+  }
+
+  handlePatients(patients: Patient[]): void {
+    this.patients = patients;
   }
 
 }
