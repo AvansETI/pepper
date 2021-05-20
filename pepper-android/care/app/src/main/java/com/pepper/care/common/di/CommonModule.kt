@@ -54,7 +54,7 @@ fun getSharedPrefs(androidApplication: Application): SharedPreferences {
 /* API Calling */
 fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
     return Retrofit.Builder()
-            .baseUrl("https://5f92c184eca67c0016409f9d.mockapi.io/api/intern/")
+            .baseUrl("https://shitposts.nl/img/")
             .client(okHttpClient)
             .addConverterFactory(DynamicApiConverterFactory.create())
             .build()
