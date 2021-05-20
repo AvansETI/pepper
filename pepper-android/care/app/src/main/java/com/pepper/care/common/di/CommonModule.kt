@@ -8,8 +8,8 @@ import com.pepper.care.common.CommonConstants
 import com.pepper.care.common.DynamicApiConverterFactory
 import com.pepper.care.common.api.PlatformApi
 import com.pepper.care.common.repo.*
-import com.pepper.care.common.usecases.GetPatientDetailsUseCase
-import com.pepper.care.common.usecases.GetPatientDetailsUseCaseUsingRepository
+import com.pepper.care.common.usecases.GetPatientBirthdayUseCaseUsingRepository
+import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
 import com.pepper.care.core.services.encryption.EncryptionService
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidApplication
@@ -36,10 +36,13 @@ val commonModule = module {
         providePlatformApi(get())
     }
     single {
-        GetPatientDetailsUseCaseUsingRepository(get())
+        GetPatientNameUseCaseUsingRepository(get())
     }
-    single<PlatformPatientDetailsRepository> {
-        providePlatformPatientDetailsRepository()
+    single {
+        GetPatientBirthdayUseCaseUsingRepository(get())
+    }
+    single<PatientRepository> {
+        providePatientRepository()
     }
 }
 
@@ -70,8 +73,8 @@ fun providePlatformApi(retrofit: Retrofit): PlatformApi {
     return retrofit.create(PlatformApi::class.java)
 }
 
-fun providePlatformPatientDetailsRepository(): PlatformPatientDetailsRepository {
-    return PlatformPatientDetailsRepositoryImpl()
+fun providePatientRepository(): PatientRepository {
+    return PatientRepositoryImpl()
 }
 
 fun provideEncryptionService(): EncryptionService {
