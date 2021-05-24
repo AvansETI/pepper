@@ -4,11 +4,14 @@ import android.app.Activity
 import android.graphics.Typeface
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import com.example.awesomedialog.*
 import com.pepper.care.R
+import com.pepper.care.common.DialogCallback
+import com.pepper.care.common.DialogUtil
 import com.pepper.care.dialog.DialogRoutes
 import com.pepper.care.feedback.FeedbackCallback
 import com.pepper.care.feedback.FeedbackConstants.FEEDBACK_MOCK_EXPLANATION
@@ -30,29 +33,29 @@ class FeedbackViewModelUsingUsecases(
     override val goodFeedbackEntity: FeedbackEntity =
         FeedbackEntity(FeedbackEntity.FeedbackMessage.GOOD)
 
+    private val selectedType: MutableLiveData<FeedbackEntity.FeedbackMessage> = MutableLiveData()
+
     override val cardClickedListener: FeedbackCallback =
         object : FeedbackCallback {
             override fun onClicked(view: View, type: FeedbackEntity.FeedbackMessage) {
-                createDialog(view, type)
+                selectedType.apply { value = type }
+                DialogUtil.buildDialog(view, "${type.text}, $FEEDBACK_MOCK_EXPLANATION.",
+                    DialogRoutes.FEEDBACK, dialogCallback)
             }
         }
 
-    private fun createDialog(view: View, type: FeedbackEntity.FeedbackMessage) {
-        AwesomeDialog.build(view.context as Activity)
-            .title("Klopt het onderstaande?", Typeface.DEFAULT_BOLD, R.color.black)
-            .body("U gaf het volgend antwoord: ${type.text}, $FEEDBACK_MOCK_EXPLANATION.", null, R.color.black)
-            .onPositive("Ja", R.color.green) {
+    private val dialogCallback: DialogCallback =
+        object : DialogCallback {
+            override fun onDialogConfirm(view: View) {
                 viewModelScope.launch {
-                    feedbackType.invoke(type)
+                    feedbackType.invoke(selectedType.value!!)
                     feedbackExplain.invoke(FEEDBACK_MOCK_EXPLANATION)
                 }
-
                 view.findNavController().navigate(
                     R.id.dialogFragment, bundleOf(
                         Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.GOODBYE)
                     )
                 )
             }
-            .onNegative("Nee", R.color.red)
-    }
+        }
 }
