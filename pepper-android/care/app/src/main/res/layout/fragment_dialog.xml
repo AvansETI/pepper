@@ -28,6 +28,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:alpha="0.01"
+                app:textLength="@{viewModel.inputTextLength}"
                 app:isKeyboardNumeric="@{viewModel.isKeyboardNumeric}"
                 app:keyListener="@{viewModel.keyboardKeyListener}"
                 app:isKeyboardVisible="@{viewModel.isKeyboardVisible}"

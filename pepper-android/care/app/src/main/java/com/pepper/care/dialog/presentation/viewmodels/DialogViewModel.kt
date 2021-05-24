@@ -17,6 +17,7 @@ interface DialogViewModel {
     val fabCallback: FabCallback
 
     val inputTextWatcher: TextWatcher
+    val inputTextLength: MutableLiveData<Int>
     val isKeyboardVisible: MutableLiveData<Boolean>
     val isKeyboardNumeric: MutableLiveData<Boolean>
     val inputText: MutableLiveData<String>

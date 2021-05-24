@@ -17,6 +17,8 @@ import com.pepper.care.common.DialogCallback
 import com.pepper.care.common.DialogUtil
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
 import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_ANSWER
+import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_ID_LENGTH
+import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_MSG_LENGTH
 import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_NAME
 import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_QUESTION
 import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_TIME
@@ -38,6 +40,7 @@ class DialogViewModelUsingUsecases(
     override val isNextButtonVisible: MutableLiveData<Boolean> = MutableLiveData(false)
     override val isKeyboardVisible: MutableLiveData<Boolean> = MutableLiveData(false)
     override val isKeyboardNumeric: MutableLiveData<Boolean> = MutableLiveData(false)
+    override val inputTextLength: MutableLiveData<Int> = MutableLiveData(0)
     override val fabType: MutableLiveData<FabType> = MutableLiveData(FabType.NEXT)
 
     private val fetchedName: MutableLiveData<String> = MutableLiveData(DIALOG_MOCK_NAME)
@@ -168,8 +171,14 @@ class DialogViewModelUsingUsecases(
                     }
                     FabType.KEYBOARD -> {
                         when (currentScreen.value) {
-                            DialogRoutes.ID -> isKeyboardNumeric.apply { value = true }
-                            else -> isKeyboardNumeric.apply { value = false }
+                            DialogRoutes.ID -> {
+                                inputTextLength.apply { value = DIALOG_MOCK_ID_LENGTH }
+                                isKeyboardNumeric.apply { value = true }
+                            }
+                            else -> {
+                                inputTextLength.apply { value = DIALOG_MOCK_MSG_LENGTH }
+                                isKeyboardNumeric.apply { value = false }
+                            }
                         }
                         isKeyboardVisible.postValue(true)
                     }

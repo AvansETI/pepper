@@ -3,6 +3,7 @@ package com.pepper.care.common
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.Log
@@ -129,4 +130,9 @@ fun bindKeyListener(editText: EditText, listener: View.OnKeyListener?) {
 @BindingAdapter("textChangedListener")
 fun bindTextWatcher(editText: EditText, textWatcher: TextWatcher?) {
     editText.addTextChangedListener(textWatcher)
+}
+
+@BindingAdapter("textLength")
+fun setTextLength(editText: EditText, length: Int) {
+    editText.filters = arrayOf(InputFilter.LengthFilter(length))
 }
