@@ -20,7 +20,10 @@ import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.pepper.care.R
 import com.pepper.care.dialog.FabType
+import com.pepper.care.feedback.FeedbackCallback
 import com.pepper.care.feedback.entities.FeedbackEntity
+import com.ramotion.fluidslider.FluidSlider
+import de.hdodenhof.circleimageview.CircleImageView
 
 
 @BindingAdapter("items")
@@ -74,6 +77,25 @@ fun setColorSource(imageView: ImageView, type: FeedbackEntity.FeedbackMessage) {
         .into(imageView)
 }
 
+@BindingAdapter("colorMoodSource")
+fun setMoodColorSource(circleImageView: CircleImageView, type: FeedbackEntity.FeedbackMessage) {
+    val image = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(image)
+    canvas.drawColor(
+        circleImageView.resources.getColor(
+            when (type) {
+                FeedbackEntity.FeedbackMessage.BAD -> R.color.red
+                FeedbackEntity.FeedbackMessage.OKAY -> R.color.yellow
+                FeedbackEntity.FeedbackMessage.GOOD -> R.color.green
+            }, circleImageView.context.theme
+        )
+    )
+
+    Glide.with(circleImageView.context)
+        .load(image)
+        .into(circleImageView)
+}
+
 @BindingAdapter("iconSource")
 fun setIconSource(imageView: ImageView, type: FeedbackEntity.FeedbackMessage) {
     Glide.with(imageView.context)
@@ -107,12 +129,14 @@ fun setKeyboardVisibility(editText: EditText, isVisible: Boolean) {
 
 private fun View.showKeyboard() {
     this.requestFocus()
-    val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    val inputMethodManager =
+        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }
 
 private fun View.hideKeyboard() {
-    val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    val inputMethodManager =
+        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
 }
 
@@ -135,4 +159,28 @@ fun bindTextWatcher(editText: EditText, textWatcher: TextWatcher?) {
 @BindingAdapter("textLength")
 fun setTextLength(editText: EditText, length: Int) {
     editText.filters = arrayOf(InputFilter.LengthFilter(length))
+}
+
+@BindingAdapter("setSliderRange", "imageCallback")
+fun setSliderRange(
+    fluidSlider: FluidSlider,
+    minMaxPair: Pair<Int, Int>,
+    feedbackCallback: FeedbackCallback
+) {
+    val total = minMaxPair.second - minMaxPair.first
+    fluidSlider.positionListener = { pos ->
+        fluidSlider.bubbleText = "${minMaxPair.first + (total * pos).toInt()}"
+        Log.d("Slider", pos.toString())
+        feedbackCallback.onClicked(
+            fluidSlider,
+            when {
+                pos >= 0.7 -> FeedbackEntity.FeedbackMessage.GOOD
+                pos < 0.5 -> FeedbackEntity.FeedbackMessage.BAD
+                else -> FeedbackEntity.FeedbackMessage.OKAY
+            }
+        )
+    }
+    fluidSlider.position = 0.75f
+    fluidSlider.startText = "${minMaxPair.first}"
+    fluidSlider.endText = "${minMaxPair.second}"
 }
