@@ -1,13 +1,9 @@
 package com.pepper.care
 
-import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Typeface
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
@@ -16,33 +12,32 @@ import androidx.navigation.findNavController
 import com.aldebaran.qi.sdk.QiContext
 import com.aldebaran.qi.sdk.QiSDK
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
+import com.aldebaran.qi.sdk.`object`.conversation.Chat
+import com.aldebaran.qi.sdk.`object`.conversation.QiChatbot
+import com.aldebaran.qi.sdk.`object`.conversation.Topic
+import com.aldebaran.qi.sdk.builder.ChatBuilder
+import com.aldebaran.qi.sdk.builder.QiChatbotBuilder
+import com.aldebaran.qi.sdk.builder.TopicBuilder
 import com.aldebaran.qi.sdk.design.activity.RobotActivity
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayPosition
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy
 import com.example.awesomedialog.*
-import com.pepper.care.core.services.encryption.EncryptionService
-import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_FEEDBACK
-import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_GOODBYE
-import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_ID
-import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_INTRO
 import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_MEDICATION
 import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_ORDER
-import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_PATIENT
 import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_QUESTION
 import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_STANDBY
 import com.pepper.care.common.CommonConstants.COMMON_SHARED_PREF_LIVE_THEME_KEY
+import com.pepper.care.core.services.Qi.RobotThreadingHelper
+import com.pepper.care.core.services.encryption.EncryptionService
 import com.pepper.care.core.services.mqtt.MqttMessageCallbacks
 import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
 import com.pepper.care.core.services.time.InterfaceTime
-import com.pepper.care.core.services.time.TimeBasedInterfaceService
 import com.pepper.care.dialog.DialogRoutes
-import com.pepper.care.dialog.presentation.viewmodels.DialogViewModelUsingUsecases
+import com.pepper.care.info.presentation.InfoSliderActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import com.pepper.care.info.presentation.InfoSliderActivity
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import java.lang.IllegalStateException
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -51,6 +46,7 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks, MqttMessageCallba
     private val encryptionService: EncryptionService by inject()
     private val sharedPreferencesEditor: SharedPreferences.Editor by inject()
     private val sharedPreferences: SharedPreferences by inject()
+    private var qiContext: QiContext? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,11 +56,11 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks, MqttMessageCallba
 
     private fun setup() {
         registerRobotCallbacks()
-        registerSharedPrefences()
+        registerSharedPreferences()
         startServices()
     }
 
-    private fun registerSharedPrefences() {
+    private fun registerSharedPreferences() {
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
     }
 
@@ -111,15 +107,56 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks, MqttMessageCallba
     }
 
     override fun onRobotFocusGained(qiContext: QiContext) {
-        // The robot focus is gained.
+        Log.i("MAIN", "Connected to robot brain")
+        this.qiContext = qiContext
+        RobotThreadingHelper.setChat(getChatBot(R.raw.nl_greet))
+        startChat(RobotThreadingHelper.getChat(), Regex("(order)"))
+    }
+
+    private fun getChatBot(chatResource: Int): Chat? {
+        val chat: Array<Chat?> = arrayOfNulls<Chat>(1)
+        RobotThreadingHelper.runOffMainThreadSynchronous(Runnable {
+            val topic: Topic = TopicBuilder.with(qiContext).withResource(chatResource).build()
+            val qiChatbot: QiChatbot = QiChatbotBuilder.with(qiContext).withTopic(topic).build()
+            chat[0] = ChatBuilder.with(qiContext).withChatbot(qiChatbot).build()
+        })
+        return chat[0]
+    }
+
+    private fun startChat(chat: Chat, exitPhraseRegex: Regex) {
+        RobotThreadingHelper.setChatFuture(chat.async().run())
+
+        RobotThreadingHelper.runOffMainThreadSynchronous(Runnable {
+            chat.addOnHeardListener { heardPhrase ->
+
+                Log.d("chat onheard", heardPhrase.text)
+
+                val phrase = heardPhrase.text.toLowerCase()
+
+                if (phrase.matches(exitPhraseRegex)) {
+                    Log.d("chat onheard", "input matches exit regex")
+
+                    runOnUiThread {
+                        navigateHandler(COMMON_MSG_NAV_ORDER)
+                    }
+
+                } else {
+                    Log.d("chat onheard", "input does not match exit regex")
+                }
+
+
+
+                Log.d("chat onheard", heardPhrase.text)
+            }
+        })
     }
 
     override fun onRobotFocusLost() {
-        // The robot focus is lost.
+        Log.e("MAIN", "Connection is lost cannot communicate with robot brain")
     }
 
     override fun onRobotFocusRefused(reason: String) {
-        // The robot focus is refused.
+        Log.e("MAIN", reason)
     }
 
     override fun onMessageReceived(topic: String?, message: String?) {
