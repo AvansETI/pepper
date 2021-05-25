@@ -245,7 +245,6 @@ class DialogViewModelUsingUsecases(
         override fun afterTextChanged(s: Editable?) {
             // Do nothing.
         }
-
     }
 
     private fun fetchUpcomingScreens() {

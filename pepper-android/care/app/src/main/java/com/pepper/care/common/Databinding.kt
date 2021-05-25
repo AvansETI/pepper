@@ -170,7 +170,6 @@ fun setSliderRange(
     val total = minMaxPair.second - minMaxPair.first
     fluidSlider.positionListener = { pos ->
         fluidSlider.bubbleText = "${minMaxPair.first + (total * pos).toInt()}"
-        Log.d("Slider", pos.toString())
         feedbackCallback.onClicked(
             fluidSlider,
             when {

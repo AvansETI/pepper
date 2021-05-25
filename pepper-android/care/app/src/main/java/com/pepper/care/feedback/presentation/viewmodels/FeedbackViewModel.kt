@@ -1,5 +1,7 @@
 package com.pepper.care.feedback.presentation.viewmodels
 
+import android.text.TextWatcher
+import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.pepper.care.common.DialogCallback
 import com.pepper.care.dialog.FabType
@@ -20,4 +22,11 @@ interface FeedbackViewModel {
     val fabCallback: FabCallback
 
     fun onStart()
+
+    val inputTextWatcher: TextWatcher
+    val inputTextLength: MutableLiveData<Int>
+    val isKeyboardVisible: MutableLiveData<Boolean>
+    val isKeyboardNumeric: MutableLiveData<Boolean>
+    val inputText: MutableLiveData<String>
+    val keyboardKeyListener: View.OnKeyListener
 }

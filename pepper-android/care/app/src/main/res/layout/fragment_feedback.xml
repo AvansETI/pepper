@@ -30,18 +30,17 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Het menu is" />
+                tools:text="Hoe voelt u zich momenteel?" />
 
             <com.ramotion.fluidslider.FluidSlider
                 android:id="@+id/feedback_slider"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="128dp"
                 app:bar_color="@color/colorAccent"
                 app:layout_constraintBottom_toTopOf="@+id/guideline13"
                 app:layout_constraintEnd_toStartOf="@+id/guideline5"
                 app:layout_constraintStart_toStartOf="@+id/guideline4"
-                app:layout_constraintTop_toBottomOf="@+id/text_view_id"
                 app:setSliderRange="@{viewModel.sliderRange}"
                 app:imageCallback="@{viewModel.imageListener}"
                 app:size="small" />
@@ -53,6 +52,7 @@
                 android:layout_height="0dp"
                 android:paddingHorizontal="250dp"
                 android:paddingBottom="60dp"
+                android:paddingTop="32dp"
                 android:src="@color/transparent"
                 app:colorMoodSource="@{viewModel.givenFeedbackType}"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -69,6 +69,7 @@
                 android:padding="15dp"
                 android:scaleType="fitCenter"
                 android:layout_marginBottom="60dp"
+                android:paddingTop="32dp"
                 app:iconSource="@{viewModel.givenFeedbackType}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline5"
@@ -89,12 +90,49 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
+            <EditText
+                android:id="@+id/inputText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:alpha="0.01"
+                android:inputType="number"
+                app:isKeyboardNumeric="@{viewModel.isKeyboardNumeric}"
+                app:isKeyboardVisible="@{viewModel.isKeyboardVisible}"
+                app:keyListener="@{viewModel.keyboardKeyListener}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/feedback_slider"
+                app:textChangedListener="@{viewModel.inputTextWatcher}"
+                app:textLength="@{viewModel.inputTextLength}" />
+
+            <TextView
+                style="@style/Pepper_Care_Body_Text"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:gravity="center_horizontal"
+                android:lineSpacingMultiplier="1.25"
+                android:paddingHorizontal="250dp"
+                android:text="@{viewModel.inputText}"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline14"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layout_constraintGuide_begin="180dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="120dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline4"
