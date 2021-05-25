@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collation = "reminder")
+@Document("reminder")
 public class Reminder {
 
     @Id

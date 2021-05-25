@@ -30,7 +30,7 @@ val orderModule = module {
         GetPatientAllergiesUseCaseUsingRepository(get())
     }
     viewModel {
-        OrderViewModelUsingUsecases(get(), get())
+        OrderViewModelUsingUsecases(get(), get(), get())
     }
 }
 

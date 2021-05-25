@@ -30,36 +30,109 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Het menu is" />
+                tools:text="Hoe voelt u zich momenteel?" />
 
-            <LinearLayout
+            <com.ramotion.fluidslider.FluidSlider
+                android:id="@+id/feedback_slider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="128dp"
+                app:bar_color="@color/colorAccent"
+                app:layout_constraintBottom_toTopOf="@+id/guideline13"
+                app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                app:layout_constraintStart_toStartOf="@+id/guideline4"
+                app:setSliderRange="@{viewModel.sliderRange}"
+                app:imageCallback="@{viewModel.imageListener}"
+                app:size="small" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                style="@style/Pepper_Care_Image"
+                android:id="@+id/mood_circle"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:orientation="horizontal"
+                android:paddingHorizontal="250dp"
+                android:paddingBottom="60dp"
+                android:paddingTop="32dp"
+                android:src="@color/transparent"
+                app:colorMoodSource="@{viewModel.givenFeedbackType}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline5"
                 app:layout_constraintStart_toStartOf="@+id/guideline4"
-                app:layout_constraintTop_toBottomOf="@+id/text_view_id">
+                app:layout_constraintTop_toTopOf="@+id/guideline13"/>
 
-                <include
-                    layout="@layout/adapter_item_feedback"
-                    android:id="@+id/badMaterialCard"
-                    app:callBack="@{viewModel.cardClickedListener}"
-                    app:feedBack="@{viewModel.badFeedbackEntity}"/>
+            <ImageView
+                style="@style/Pepper_Care_Image"
+                android:id="@+id/icon_overlay_img"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@color/transparent"
+                android:padding="15dp"
+                android:scaleType="fitCenter"
+                android:layout_marginBottom="60dp"
+                android:paddingTop="32dp"
+                app:iconSource="@{viewModel.givenFeedbackType}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                app:layout_constraintStart_toStartOf="@+id/guideline4"
+                app:layout_constraintTop_toTopOf="@+id/guideline13"/>
 
-                <include
-                    layout="@layout/adapter_item_feedback"
-                    android:id="@+id/mediumMaterialCard"
-                    app:callBack="@{viewModel.cardClickedListener}"
-                    app:feedBack="@{viewModel.mediumFeedbackEntity}"/>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/nextFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:layout_margin="16dp"
+                android:onClick="@{() -> viewModel.fabCallback.onClick(nextFab)}"
+                android:src="@drawable/ic_baseline_chevron_right_24"
+                app:fabIcon="@{viewModel.fabType}"
+                app:isVisible="@{viewModel.isNextButtonVisible()}"
+                app:backgroundTint="@color/whiteAlternative"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-                <include
-                    layout="@layout/adapter_item_feedback"
-                    android:id="@+id/goodMaterialCard"
-                    app:callBack="@{viewModel.cardClickedListener}"
-                    app:feedBack="@{viewModel.goodFeedbackEntity}"/>
+            <EditText
+                android:id="@+id/inputText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:alpha="0.01"
+                android:inputType="number"
+                app:isKeyboardNumeric="@{viewModel.isKeyboardNumeric}"
+                app:isKeyboardVisible="@{viewModel.isKeyboardVisible}"
+                app:keyListener="@{viewModel.keyboardKeyListener}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/feedback_slider"
+                app:textChangedListener="@{viewModel.inputTextWatcher}"
+                app:textLength="@{viewModel.inputTextLength}" />
 
-            </LinearLayout>
+            <TextView
+                style="@style/Pepper_Care_Body_Text"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:gravity="center_horizontal"
+                android:lineSpacingMultiplier="1.25"
+                android:paddingHorizontal="250dp"
+                android:text="@{viewModel.inputText}"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline14"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="180dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="120dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline4"

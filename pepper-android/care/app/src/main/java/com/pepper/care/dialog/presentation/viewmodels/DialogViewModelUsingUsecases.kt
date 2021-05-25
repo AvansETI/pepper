@@ -1,7 +1,9 @@
 package com.pepper.care.dialog.presentation.viewmodels
 
-import android.app.Activity
-import android.graphics.Typeface
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
@@ -11,10 +13,13 @@ import androidx.navigation.findNavController
 import com.example.awesomedialog.*
 import com.pepper.care.R
 import com.pepper.care.common.AppResult
+import com.pepper.care.common.DialogCallback
+import com.pepper.care.common.DialogUtil
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
-import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_MEDICATION
+import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_ANSWER
+import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_ID_LENGTH
+import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_MSG_LENGTH
 import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_NAME
-import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_QNA
 import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_QUESTION
 import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_TIME
 import com.pepper.care.dialog.DialogRoutes
@@ -25,15 +30,17 @@ import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.concurrent.schedule
 
-//todo why does viewmodel reset after change
-
 class DialogViewModelUsingUsecases(
     private val getName: GetPatientNameUseCaseUsingRepository,
     private val getAvailableScreens: GetAvailableScreensUseCaseUsingRepository
 ) : ViewModel(), DialogViewModel {
 
     override val bottomText: MutableLiveData<String> = MutableLiveData("")
+    override val inputText: MutableLiveData<String> = MutableLiveData("")
     override val isNextButtonVisible: MutableLiveData<Boolean> = MutableLiveData(false)
+    override val isKeyboardVisible: MutableLiveData<Boolean> = MutableLiveData(false)
+    override val isKeyboardNumeric: MutableLiveData<Boolean> = MutableLiveData(false)
+    override val inputTextLength: MutableLiveData<Int> = MutableLiveData(0)
     override val fabType: MutableLiveData<FabType> = MutableLiveData(FabType.NEXT)
 
     private val fetchedName: MutableLiveData<String> = MutableLiveData(DIALOG_MOCK_NAME)
@@ -53,7 +60,7 @@ class DialogViewModelUsingUsecases(
             DialogRoutes.INTRO -> {
                 bottomText.apply {
                     value =
-                        "Welkom, patient. Mijn naam is Pepper en ik zal het gesprek van mijn collega overnemen."
+                        "Welkom, mijn naam is Pepper! Vandaag, zal ik het werk van mijn collega overnemen."
                 }
                 setupNextButton()
             }
@@ -67,7 +74,7 @@ class DialogViewModelUsingUsecases(
                 fetchPatientDetails()
                 fetchUpcomingScreens()
                 bottomText.apply {
-                    value = "Welkom, ${fetchedName.value}. Wat fijn om u weer te zien!"
+                    value = "Wat fijn om u weer te zien, ${fetchedName.value}!"
                 }
                 setupNextButton()
             }
@@ -75,13 +82,13 @@ class DialogViewModelUsingUsecases(
                 fetchUpcomingScreens()
                 bottomText.apply {
                     value =
-                        "Goedendag, ${fetchedName.value}. Om ${DIALOG_MOCK_TIME}u moet u de volgende medicatie innemen, ${DIALOG_MOCK_MEDICATION}."
+                        "Om ${DIALOG_MOCK_TIME}u moet u medicatie innemen."
                 }
                 setupNextButton()
             }
             DialogRoutes.QUESTION -> {
                 bottomText.apply {
-                    value = "${DIALOG_MOCK_QUESTION}, ${fetchedName.value}?"
+                    value = "${DIALOG_MOCK_QUESTION}?"
                 }
                 setupKeyboardButton()
             }
@@ -92,10 +99,11 @@ class DialogViewModelUsingUsecases(
                 }
                 setupNextButton()
             }
+            else -> throw NotImplementedError("Not implemented")
         }
     }
 
-    override val nextCallback: FabCallback =
+    override val fabCallback: FabCallback =
         object : FabCallback {
             override fun onClick(view: View) {
                 when (fabType.value) {
@@ -164,17 +172,39 @@ class DialogViewModelUsingUsecases(
                     FabType.KEYBOARD -> {
                         when (currentScreen.value) {
                             DialogRoutes.ID -> {
-                                createDialog(view)
+                                inputTextLength.apply { value = DIALOG_MOCK_ID_LENGTH }
+                                isKeyboardNumeric.apply { value = true }
                             }
-                            DialogRoutes.QUESTION -> {
-                                createDialog(view)
+                            else -> {
+                                inputTextLength.apply { value = DIALOG_MOCK_MSG_LENGTH }
+                                isKeyboardNumeric.apply { value = false }
                             }
-                            else -> throw IllegalStateException("Not implemented")
                         }
+                        isKeyboardVisible.postValue(true)
                     }
                 }
             }
         }
+
+    private fun navigateToDialog(view: View) {
+        when (currentScreen.value) {
+            DialogRoutes.ID -> {
+                DialogUtil.buildDialog(
+                    view, fetchedName.value!!,
+                    currentScreen.value!!, dialogCallback
+                )
+            }
+            DialogRoutes.QUESTION -> {
+                DialogUtil.buildDialog(
+                    view,
+                    if (inputText.value!!.isNotBlank()) inputText.value!! else DIALOG_MOCK_ANSWER,
+                    currentScreen.value!!,
+                    dialogCallback
+                )
+            }
+            else -> throw IllegalStateException("Not implemented")
+        }
+    }
 
     private fun setupKeyboardButton() {
         fabType.apply {
@@ -192,37 +222,28 @@ class DialogViewModelUsingUsecases(
         }
     }
 
-    private fun createDialog(view: View) {
-        AwesomeDialog.build(view.context as Activity)
-            .title("Klopt het onderstaande?", Typeface.DEFAULT_BOLD, R.color.black)
-            .body(getDialogBody(), null, R.color.black)
-            .onPositive("Ja", R.color.green) {
-                navigateToDestination(view)
-            }
-            .onNegative("Nee", R.color.red)
-    }
-
-    private fun getDialogBody(): String {
-        return when (currentScreen.value) {
-            DialogRoutes.ID -> "Klopt het dat uw naam ${fetchedName.value} is?"
-            DialogRoutes.QUESTION -> "Het antwoord op de vraag was: $DIALOG_MOCK_QNA"
-            else -> throw IllegalStateException("Not implemented")
+    override val keyboardKeyListener: View.OnKeyListener =
+        View.OnKeyListener { view, keyCode, event ->
+            if (event?.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                isKeyboardVisible.postValue(false)
+                navigateToDialog(view)
+                true
+            } else false
         }
-    }
 
-    private fun navigateToDestination(view: View) {
-        when (currentScreen.value) {
-            DialogRoutes.ID -> {
-                view.findNavController().navigate(
-                    R.id.dialogFragment, bundleOf(
-                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.PATIENT)
-                    )
-                )
+    override val inputTextWatcher: TextWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            // Do nothing.
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            inputText.apply {
+                value = s.toString()
             }
-            DialogRoutes.QUESTION -> {
-                view.findNavController().navigate(R.id.feedbackFragment)
-            }
-            else -> throw IllegalStateException("Not implemented")
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            // Do nothing.
         }
     }
 
@@ -247,4 +268,23 @@ class DialogViewModelUsingUsecases(
             }
         }
     }
+
+    private val dialogCallback: DialogCallback =
+        object : DialogCallback {
+            override fun onDialogConfirm(view: View) {
+                when (currentScreen.value) {
+                    DialogRoutes.ID -> {
+                        view.findNavController().navigate(
+                            R.id.dialogFragment, bundleOf(
+                                Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.PATIENT)
+                            )
+                        )
+                    }
+                    DialogRoutes.QUESTION -> {
+                        view.findNavController().navigate(R.id.feedbackFragment)
+                    }
+                    else -> throw IllegalStateException("Not implemented")
+                }
+            }
+        }
 }
