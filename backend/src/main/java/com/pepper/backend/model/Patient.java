@@ -15,7 +15,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collation = "patient")
+@Document("patient")
 public class Patient {
 
     @Id

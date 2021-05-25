@@ -40,16 +40,18 @@ public class BotCommunicationController implements MqttCallbackExtended {
         }
     }
 
-    public void publish(String message) {
+    public boolean publish(String message) {
         if (!this.client.isConnected()) {
-            return;
+            return false;
         }
 
         try {
             this.client.publish(this.topic, this.createMqttMessage(message));
         } catch (MqttException e) {
-            e.printStackTrace();
+            return false;
         }
+
+        return true;
     }
 
     private MqttConnectOptions getOptions() {

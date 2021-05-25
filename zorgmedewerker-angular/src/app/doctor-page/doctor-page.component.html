@@ -4,10 +4,12 @@
             <mat-label>Patiëntenlijst</mat-label>
         </div>
         <div>
-            <mat-list role="list">
-                <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
-                <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
-                <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
+            <mat-list>
+                <mat-list-item *ngFor="let patient of patients" (click)="onClicked(patient.id)">
+                    <mat-card>
+                        <div>{{patient.id}} - {{patient.name}}</div>
+                    </mat-card>
+                </mat-list-item>
             </mat-list>
         </div>
         <div>
@@ -18,11 +20,18 @@
         <div>
             <mat-label>Patientinformatie</mat-label>
         </div>
-        <div>
-            <mat-list role="list">
-                <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
-                <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
-                <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
+        <div *ngIf="selectedPatient !== null">
+            <mat-list>
+                <mat-list-item>
+                    <mat-card>
+                        {{("0" + selectedPatient.birthdate.getDate()).slice(-2) + "-" + ("0"+(selectedPatient.birthdate.getMonth()+1)).slice(-2) + "-" + selectedPatient.birthdate.getFullYear()}}
+                    </mat-card>
+                </mat-list-item>
+                <mat-list-item>
+                    <mat-card>
+                        {{formatAllergies(selectedPatient.allergies)}}
+                    </mat-card>
+                </mat-list-item>
             </mat-list>
         </div>
     </div>

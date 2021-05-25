@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { Person } from 'src/model/person';
-import { Task } from 'src/model/task';
 import { MessageHandlerService } from './message-handler.service';
 
 @Component({
@@ -18,22 +16,16 @@ export class AppComponent {
     
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.messageHandler.init();
     this.isDarkTheme = localStorage.getItem('theme') === "Dark";
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.messageHandler.destroy();
   }
 
-  storeThemeSelection()
-  {
+  storeThemeSelection(): void {
     localStorage.setItem('theme', this.isDarkTheme ? "Dark" : "Light");
   }
-
-  test(): void {
-    this.messageHandler.send('1', Person.PATIENT, '2', Task.QUESTION, '1', 'get these bitches');
-  }
-
 }
