@@ -7,6 +7,8 @@ import com.pepper.backend.model.messaging.Sender;
 import com.pepper.backend.model.messaging.Task;
 import com.pepper.backend.services.messaging.MessageEncryptorService;
 import com.pepper.backend.services.messaging.MessageParserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import java.security.GeneralSecurityException;
 
 @Service
 public class StaffMessageHandlerService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StaffMessageHandlerService.class);
 
     @Value("${encryption.enabled}")
     private boolean encryptionEnabled;
@@ -72,7 +76,15 @@ public class StaffMessageHandlerService {
     }
 
     public void handleStaffMessage(Message message) {
-        System.out.println("Received staff message: " + message);
+
+        switch (message.getTask()) {
+            case QUESTION -> {
+                System.out.println("new question" + message.getData());
+            }
+            default -> {
+                LOGGER.error( "Not recognized as a valid staff command: " + message.getTask());
+            }
+        }
     }
 
 }

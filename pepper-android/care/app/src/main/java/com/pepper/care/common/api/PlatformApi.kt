@@ -6,7 +6,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 
 interface PlatformApi {
-    @GET("/meals")
+    @GET("zmk9m.json")
     @PlatformMeals
     suspend fun getAvailableMeals(): Response<List<PlatformMealsResponse>>
 }

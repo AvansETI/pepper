@@ -33,7 +33,7 @@ export class AppComponent {
   }
 
   test(): void {
-    this.messageHandler.send('1', Person.PATIENT, '2', Task.PATIENT_NAME, '1', 'get these bitches');
+    this.messageHandler.send('1', Person.PATIENT, '2', Task.QUESTION, '1', 'get these bitches');
   }
 
 }
