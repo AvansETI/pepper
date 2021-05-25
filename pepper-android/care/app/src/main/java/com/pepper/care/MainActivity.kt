@@ -151,26 +151,6 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks, MqttMessageCallba
                 Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_STANDBY)
                 this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.homeFragment)
             }
-            COMMON_MSG_NAV_ORDER-> {
-                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_ORDER)
-                this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.orderFragment)
-            }
-            COMMON_MSG_NAV_MEDICATION-> {
-                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_MEDICATION)
-                this.findNavController(R.id.child_nav_host_fragment).navigate(
-                    R.id.dialogFragment, bundleOf(
-                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.MEDICATION)
-                    )
-                )
-            }
-            COMMON_MSG_NAV_QUESTION-> {
-                Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_QUESTION)
-                this.findNavController(R.id.child_nav_host_fragment).navigate(
-                    R.id.dialogFragment, bundleOf(
-                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.QUESTION)
-                    )
-                )
-            }
             else -> throw IllegalStateException("Not a valid option")
         }
     }

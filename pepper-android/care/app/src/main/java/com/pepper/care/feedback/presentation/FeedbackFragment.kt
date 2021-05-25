@@ -44,4 +44,13 @@ class FeedbackFragment : BaseFragment() {
             viewModel = this@FeedbackFragment.viewModel
         }
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bindToEvents()
+    }
+
+    private fun bindToEvents() {
+        viewModel.onStart()
+    }
 }

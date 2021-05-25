@@ -20,4 +20,7 @@ interface OrderViewModel {
     val recyclerList: MutableLiveData<List<RecyclerAdapterItem>>
 
     val meal: MutableLiveData<PlatformMealsResponse>
+
+    val buttonDetailText: String
+    fun goToNextScreen(view: View)
 }
