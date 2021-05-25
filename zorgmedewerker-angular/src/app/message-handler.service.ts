@@ -48,8 +48,6 @@ export class MessageHandlerService {
   async send(senderId: string, person: Person, personId: string, task: Task, taskId: string, data: string): Promise<void> {
     let message: string = this.messageParser.stringify(Sender.STAFF, senderId, person, personId, task, taskId, data);
 
-    console.log(message)
-
     if (config.backend.encryption.enabled) {
       message = await this.messageEncryptor.encrypt(message, config.backend.encryption.password);
     }
@@ -139,6 +137,14 @@ export class MessageHandlerService {
 
   getEventHandler(): EventEmitter<Patient[]> {
     return this.eventHandler;
+  }
+
+  requestPatients(): void {
+    this.send('1', Person.PATIENT, '', Task.PATIENT_ID, '1', '');
+  }
+
+  sendQuestionToPatient(patientId: string, question: string): void {
+    this.send('1', Person.PATIENT, patientId, Task.QUESTION, '1', question);
   }
 
 }
