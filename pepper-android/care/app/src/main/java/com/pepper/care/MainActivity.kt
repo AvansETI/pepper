@@ -6,33 +6,23 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.aldebaran.qi.sdk.QiContext
 import com.aldebaran.qi.sdk.QiSDK
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
-import com.aldebaran.qi.sdk.`object`.conversation.Chat
-import com.aldebaran.qi.sdk.`object`.conversation.QiChatbot
-import com.aldebaran.qi.sdk.`object`.conversation.Topic
-import com.aldebaran.qi.sdk.builder.ChatBuilder
-import com.aldebaran.qi.sdk.builder.QiChatbotBuilder
-import com.aldebaran.qi.sdk.builder.TopicBuilder
+import com.aldebaran.qi.sdk.`object`.conversation.*
+import com.aldebaran.qi.sdk.builder.*
 import com.aldebaran.qi.sdk.design.activity.RobotActivity
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayPosition
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy
 import com.example.awesomedialog.*
-import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_MEDICATION
-import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_ORDER
-import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_QUESTION
 import com.pepper.care.common.CommonConstants.COMMON_MSG_NAV_STANDBY
 import com.pepper.care.common.CommonConstants.COMMON_SHARED_PREF_LIVE_THEME_KEY
-import com.pepper.care.core.services.Qi.RobotThreadingHelper
-import com.pepper.care.core.services.encryption.EncryptionService
 import com.pepper.care.core.services.mqtt.MqttMessageCallbacks
 import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
+import com.pepper.care.core.services.robot.RobotSpeechService
 import com.pepper.care.core.services.time.InterfaceTime
-import com.pepper.care.dialog.DialogRoutes
 import com.pepper.care.info.presentation.InfoSliderActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -43,10 +33,7 @@ import org.koin.android.ext.android.inject
 @ExperimentalCoroutinesApi
 class MainActivity : RobotActivity(), RobotLifecycleCallbacks, MqttMessageCallbacks {
 
-    private val encryptionService: EncryptionService by inject()
-    private val sharedPreferencesEditor: SharedPreferences.Editor by inject()
     private val sharedPreferences: SharedPreferences by inject()
-    private var qiContext: QiContext? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,94 +84,14 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks, MqttMessageCallba
         }
     }
 
-    // TODO find a way to change theme without affecting running services
     override fun onDestroy() {
-        //PlatformMqttListenerService.stop(this@MainActivity)
-        //TimeBasedInterfaceService.stop(this@MainActivity)
-        //sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
         QiSDK.unregister(this@MainActivity, this@MainActivity)
         super.onDestroy()
     }
 
-    override fun onRobotFocusGained(qiContext: QiContext) {
-        Log.i("MAIN", "Connected to robot brain")
-        this.qiContext = qiContext
-        RobotThreadingHelper.setChat(getChatBot(R.raw.nl_greet))
-        startChat(RobotThreadingHelper.getChat(), Regex("(order)"))
-    }
-
-    private fun getChatBot(chatResource: Int): Chat? {
-        val chat: Array<Chat?> = arrayOfNulls<Chat>(1)
-        RobotThreadingHelper.runOffMainThreadSynchronous(Runnable {
-            val topic: Topic = TopicBuilder.with(qiContext).withResource(chatResource).build()
-            val qiChatbot: QiChatbot = QiChatbotBuilder.with(qiContext).withTopic(topic).build()
-            chat[0] = ChatBuilder.with(qiContext).withChatbot(qiChatbot).build()
-        })
-        return chat[0]
-    }
-
-    private fun startChat(chat: Chat, exitPhraseRegex: Regex) {
-        RobotThreadingHelper.setChatFuture(chat.async().run())
-
-        RobotThreadingHelper.runOffMainThreadSynchronous(Runnable {
-            chat.addOnHeardListener { heardPhrase ->
-
-                Log.d("chat onheard", heardPhrase.text)
-
-                val phrase = heardPhrase.text.toLowerCase()
-
-                if (phrase.matches(exitPhraseRegex)) {
-                    Log.d("chat onheard", "input matches exit regex")
-
-                    runOnUiThread {
-                        navigateHandler(COMMON_MSG_NAV_ORDER)
-                    }
-
-                } else {
-                    Log.d("chat onheard", "input does not match exit regex")
-                }
-
-
-
-                Log.d("chat onheard", heardPhrase.text)
-            }
-        })
-    }
-
-    override fun onRobotFocusLost() {
-        Log.e("MAIN", "Connection is lost cannot communicate with robot brain")
-    }
-
-    override fun onRobotFocusRefused(reason: String) {
-        Log.e("MAIN", reason)
-    }
-
     override fun onMessageReceived(topic: String?, message: String?) {
-        //        var decrypted = ""
-//        try {
-//            decrypted = encryptionService.decrypt(message!!, "pepper")
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            return
-//        }
-//
-//        if (decrypted.contains("bot")) {
-//            return
-//        }
-//
-//        Log.d(
-//            MainActivity::class.java.simpleName,
-//            "Receive message: \"$decrypted\" from topic: \"$topic\""
-//        )
-//
-//        val message1 = "bot: " + java.util.UUID.randomUUID().toString()
-//        sharedPreferencesEditor.putString(CommonConstants.COMMON_SHARED_PREF_PUBLISH_MSG_KEY, message1).commit()
-        navigateHandler(message)
-    }
-
-    private fun navigateHandler(message: String?) {
-        when(message){
-            COMMON_MSG_NAV_STANDBY-> {
+        when (message) {
+            COMMON_MSG_NAV_STANDBY -> {
                 Log.d(MainActivity::class.simpleName, COMMON_MSG_NAV_STANDBY)
                 this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.homeFragment)
             }
@@ -201,7 +108,10 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks, MqttMessageCallba
         SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
             when (key) {
                 COMMON_SHARED_PREF_LIVE_THEME_KEY -> {
-                    when (sharedPreferences.getString(COMMON_SHARED_PREF_LIVE_THEME_KEY, InterfaceTime.DAY.name)) {
+                    when (sharedPreferences.getString(
+                        COMMON_SHARED_PREF_LIVE_THEME_KEY,
+                        InterfaceTime.DAY.name
+                    )) {
                         InterfaceTime.DAY.name -> {
                             //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                             Log.d(MainActivity::class.simpleName, "Applied Day Theme")
@@ -214,4 +124,63 @@ class MainActivity : RobotActivity(), RobotLifecycleCallbacks, MqttMessageCallba
                 }
             }
         }
+
+    override fun onRobotFocusGained(qiContext: QiContext) {
+        setSpeechActions(qiContext)
+    }
+
+    private fun setSpeechActions(qiContext: QiContext) {
+
+        /* Init */
+        val topic = TopicBuilder.with(qiContext).withResource(R.raw.dialog).build()
+        val chatBot = QiChatbotBuilder.with(qiContext).withTopic(topic).build()
+        RobotSpeechService.setChatBot(chatBot)
+
+        val chat = ChatBuilder.with(qiContext).withChatbot(chatBot).build()
+        RobotSpeechService.setChat(chat)
+
+        /* Get the greetings dynamic concept. */
+        RobotSpeechService.getDynamicConcept(chatBot)
+        RobotSpeechService.addDynamicContents(listOf(Phrase("hamburger"), Phrase("pizza")))
+
+        /* Run the Chat action asynchronously. */
+        val future = chat.async().run()
+
+        /* Callbacks */
+        chat.addOnHeardListener { humanInput ->
+            Log.d(MainActivity::class.simpleName, "Human: ${humanInput.text}")
+        }
+
+        chat.addOnSayingChangedListener { robotResponse ->
+            if (!robotResponse.text.isNullOrBlank()) Log.d(
+                MainActivity::class.simpleName,
+                "Robot: ${robotResponse.text}"
+            )
+        }
+
+        future.thenConsume { chatFuture ->
+            if (chatFuture.hasError()) {
+                Log.e(
+                    MainActivity::class.simpleName,
+                    "Discussion finished with error.",
+                    future.error
+                )
+            }
+        }
+    }
+
+    private fun speechNavigator(phrase: Phrase) {
+        when (phrase.text) {
+
+            else -> throw IllegalStateException("Not a valid option")
+        }
+    }
+
+    override fun onRobotFocusLost() {
+        RobotSpeechService.onLost()
+    }
+
+    override fun onRobotFocusRefused(reason: String) {
+
+    }
 }

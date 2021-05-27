@@ -1,6 +1,0 @@
-topic: ~nl_greet()
-# Defining extra concepts out of words or group of words
-concept:(hello) [goedendag goedenmorgen hallo]
-
-# Replying to speech
-u:(hoi) ~hello
