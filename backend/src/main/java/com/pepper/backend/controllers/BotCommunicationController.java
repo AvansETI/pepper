@@ -1,6 +1,6 @@
 package com.pepper.backend.controllers;
 
-import com.pepper.backend.services.messaging.bot.BotMessageHandlerService;
+import com.pepper.backend.services.messaging.BotMessageHandlerService;
 import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -22,7 +22,7 @@ public class BotCommunicationController implements MqttCallbackExtended {
     @Value("${mqtt.password}")
     private String password;
 
-    private IMqttClient client;
+    private IMqttAsyncClient client;
     private final BotMessageHandlerService messageHandler;
 
     public BotCommunicationController(@Lazy BotMessageHandlerService messageHandler) {
@@ -32,7 +32,7 @@ public class BotCommunicationController implements MqttCallbackExtended {
     @PostConstruct
     public void connect() {
         try {
-            this.client = new MqttClient(this.host, "client-1");
+            this.client = new MqttAsyncClient(this.host, "client-1");
             this.client.setCallback(this);
             this.client.connect(this.getOptions());
         } catch (MqttException e) {
@@ -41,6 +41,12 @@ public class BotCommunicationController implements MqttCallbackExtended {
     }
 
     public boolean publish(String message) {
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         if (!this.client.isConnected()) {
             return false;
         }

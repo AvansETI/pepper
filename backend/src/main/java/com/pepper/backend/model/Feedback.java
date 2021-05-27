@@ -21,7 +21,7 @@ public class Feedback {
 
     private String patientId;
 
-    private Status status;
+    private String status;
 
     private String explanation;
 

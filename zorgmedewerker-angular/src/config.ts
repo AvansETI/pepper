@@ -6,7 +6,7 @@ const config = {
       password: 'pepper'
     },
     encryption: {
-      enabled: true,
+      enabled: false,
       password: 'pepper'
     }
   }

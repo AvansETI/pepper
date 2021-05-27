@@ -5,17 +5,27 @@ export enum Sender {
 
 export enum Person {
     PATIENT,
-    ALL
+    NONE
 }
 
 export enum Task {
-    QUESTION,
+    QUESTION_ID,
+    QUESTION_TEXT,
+    QUESTION_TIMESTAMP,
+
+    MEAL,
+    MEAL_ID,
+    MEAL_NAME,
+    MEAL_DESCRIPTION,
+    MEAL_CALORIES,
+    MEAL_ALLERGIES,
+    MEAL_IMAGE,
 
     PATIENT,
     PATIENT_ID,
     PATIENT_NAME,
     PATIENT_BIRTHDATE,
-    PATIENT_ALLERGY,
+    PATIENT_ALLERGIES,
 }
 
 export interface Message {

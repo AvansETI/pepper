@@ -1,13 +1,13 @@
 package com.pepper.backend.controllers;
 
-import com.pepper.backend.model.messaging.Person;
-import com.pepper.backend.model.messaging.Task;
 import com.pepper.backend.services.database.DatabaseService;
-import com.pepper.backend.services.messaging.bot.BotMessageHandlerService;
-import com.pepper.backend.services.messaging.staff.StaffMessageHandlerService;
+import com.pepper.backend.services.messaging.BotMessageHandlerService;
+import com.pepper.backend.services.messaging.StaffMessageHandlerService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("api")
@@ -27,7 +27,7 @@ public class TestController {
     public void test() {
 //        this.botMessageHandler.send("3", Person.GENERAL, "", Task.FEEDBACK_STATUS, "6", "data frf4654");
 //        this.staffMessageHandler.send("3", Person.PATIENT, "", Task.PATIENT_NAME, "6", "data frf4654");
-        System.out.println(this.databaseService.findPatientIds());
+        //System.out.println(this.databaseService.findQuestionById("1"));
     }
 
 }

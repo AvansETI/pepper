@@ -1,6 +1,6 @@
 package com.pepper.backend.controllers;
 
-import com.pepper.backend.services.messaging.staff.StaffMessageHandlerService;
+import com.pepper.backend.services.messaging.StaffMessageHandlerService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

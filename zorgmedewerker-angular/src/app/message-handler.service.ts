@@ -6,6 +6,7 @@ import { config } from '../config'
 import { MessageParserService } from './message-parser.service';
 import { Message, Sender, Person, Task } from '../model/message';
 import { Patient, Allergy } from '../model/patient';
+import { Meal } from 'src/model/meal';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,8 @@ export class MessageHandlerService {
   private webSocketSubscription: Subscription;
   private eventHandler: EventEmitter<Patient[]>;
   private patients: Patient[];
+  private questionId = '';
+  private mealId = '';
 
   constructor(private webSocket: WebSocketService, private messageEncryptor: MessageEncryptorService, private messageParser: MessageParserService) {
     this.webSocketSubscription = this.webSocket.getEventHandler().subscribe((message) => this.handle(message));
@@ -22,11 +25,11 @@ export class MessageHandlerService {
     this.patients = [];
   }
 
-  init() {
+  init(): void {
     this.webSocket.connect();
   }
 
-  destroy() {
+  destroy(): void {
     this.webSocketSubscription.unsubscribe();
     this.webSocket.disconnect();
   }
@@ -60,11 +63,14 @@ export class MessageHandlerService {
     switch(Task[message.task] as unknown as Task) {
 
       case Task.PATIENT_ID: {
-        const ids: number[] = JSON.parse(message.data);
+
+        if (Person[message.person] as unknown as Person === Person.PATIENT) {
+          const ids: number[] = JSON.parse(message.data);
         
-        ids.forEach((id) => {
-          this.send('1', Person.PATIENT, id as unknown as string, Task.PATIENT, '1', '')
-        })
+          ids.forEach((id) => {
+            this.send('1', Person.PATIENT, id as unknown as string, Task.PATIENT, '1', '')
+          });
+        }
 
         break;
       }
@@ -73,13 +79,13 @@ export class MessageHandlerService {
         break;
       }
       case Task.PATIENT_BIRTHDATE: {
-        const date = new Date(0)
-        date.setDate(message.data as unknown as number)
+        const date = new Date(0);
+        date.setDate(message.data as unknown as number);
 
         this.addPatient({id: message.personId, name: null, birthdate: date, allergies: null});
         break;
       }
-      case Task.PATIENT_ALLERGY: {
+      case Task.PATIENT_ALLERGIES: {
         let allergies: Set<Allergy> = new Set();
 
         const tempAllergies: string[] = message.data.substring(1, message.data.length - 1).split(', ');
@@ -88,6 +94,14 @@ export class MessageHandlerService {
         })
 
         this.addPatient({id: message.personId, name: null, birthdate: null, allergies: allergies});
+        break;
+      }
+      case Task.QUESTION_ID: {
+        this.questionId = message.taskId;
+        break;
+      }
+      case Task.MEAL_ID: {
+        this.mealId = message.taskId;
         break;
       }
       default: {
@@ -109,7 +123,7 @@ export class MessageHandlerService {
     const patientFoundedIndex = this.patients.indexOf(patientFounded);
 
     if (patientFounded === undefined) {
-      this.patients.push(patient)
+      this.patients.push(patient);
       return;
     }
 
@@ -123,7 +137,7 @@ export class MessageHandlerService {
           patientFounded.allergies = new Set();
         }
         patientFounded.allergies.add(allergy);
-      })
+      });
     }
 
     this.patients[patientFoundedIndex] = patientFounded;
@@ -140,11 +154,47 @@ export class MessageHandlerService {
   }
 
   requestPatients(): void {
-    this.send('1', Person.PATIENT, '', Task.PATIENT_ID, '1', '');
+    this.send('1', Person.PATIENT, '-1', Task.PATIENT_ID, '-1', '');
   }
 
-  sendQuestionToPatient(patientId: string, question: string): void {
-    this.send('1', Person.PATIENT, patientId, Task.QUESTION, '1', question);
+  async sendQuestionToPatient(patientId: string, question: string): Promise<void> {
+    this.questionId = '-1';
+    this.send('1', Person.PATIENT, patientId, Task.QUESTION_TEXT, this.questionId, question);
+
+    for (let i = 0; i < 100; i++) {
+      await this.sleep(10);
+      if (this.questionId !== '-1') {
+        break;
+      }
+    }
+
+    if (this.questionId !== '-1') {
+      this.send('1', Person.PATIENT, patientId, Task.QUESTION_TIMESTAMP, this.questionId, (Date.parse(Date()) / 1000).toString());
+    }
+
+  }
+
+  async sendMeal(meal: Meal) {
+    this.mealId = '-1';
+    this.send('1', Person.NONE, '-1', Task.MEAL_NAME, this.mealId, meal.name);
+
+    for (let i = 0; i < 100; i++) {
+      await this.sleep(10);
+      if (this.mealId !== '-1') {
+        break;
+      }
+    }
+
+    if (this.mealId !== '-1') {
+      this.send('1', Person.NONE, '-1', Task.MEAL_DESCRIPTION, this.mealId, meal.description);
+      this.send('1', Person.NONE, '-1', Task.MEAL_CALORIES, this.mealId, meal.calories);
+      this.send('1', Person.NONE, '-1', Task.MEAL_ALLERGIES, this.mealId, '[]');
+      this.send('1', Person.NONE, '-1', Task.MEAL_IMAGE, this.mealId, meal.image);
+    }
+  }
+
+  async sleep(millis: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, millis));
   }
 
 }
