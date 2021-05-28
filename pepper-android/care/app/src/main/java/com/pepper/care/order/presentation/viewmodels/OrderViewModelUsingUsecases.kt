@@ -118,7 +118,7 @@ class OrderViewModelUsingUsecases(
                 mealPhrases.add(Phrase(it.name))
             }
         }
-        //RobotManager.addDynamicContents(DynamicConcepts.MEALS, mealPhrases)
+        RobotManager.addDynamicContents(DynamicConcepts.MEALS, mealPhrases)
     }
 
     private fun showProgressView(boolean: Boolean) {

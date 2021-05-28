@@ -15,9 +15,8 @@ class PepperRobot(
 ): RobotLifecycleCallbacks {
 
 
-    private val resourceIds: IntArray = intArrayOf(R.raw.greet, R.raw.dialog)
-//    private val conceptHashMap: HashMap<DynamicConcepts, EditablePhraseSet?> = HashMap()
-    private var dynamicMeals: EditablePhraseSet? = null
+    private val resourceIds: IntArray = intArrayOf(R.raw.greet, R.raw.dialog, R.raw.order)
+    private val conceptHashMap: HashMap<DynamicConcepts, EditablePhraseSet?> = HashMap()
 
     private lateinit var future: Future<Void>
     private lateinit var context: QiContext
@@ -49,12 +48,7 @@ class PepperRobot(
         chat = ChatBuilder.with(context)
             .withChatbot(chatBot)
             .build()
-
-//        setDynamicConcepts()
-
-//        dynamicMeals = this@PepperRobot.chatBot.dynamicConcept("meals")
-//        dynamicMeals?.async()?.addPhrases(listOf(Phrase("hamburger"), Phrase("pizza")))
-
+        setDynamicConcepts()
         setChatListeners()
         future = chat.async().run()
         setFutureListeners()
@@ -129,17 +123,13 @@ class PepperRobot(
     }
 
     private fun setDynamicConcepts() {
-        dynamicMeals = chatBot.dynamicConcept("meals")
-        dynamicMeals?.async()?.addPhrases(listOf(Phrase("hamburger"), Phrase("pizza")))
-        //        DynamicConcepts.values().forEach { concept ->
-//            chatBot.dynamicConcept(concept.name)
-//        }
+        DynamicConcepts.values().forEach { concept ->
+            conceptHashMap[concept] = chatBot.dynamicConcept(concept.name)
+        }
     }
 
     fun addContents(concept: DynamicConcepts, list: List<Phrase>) {
-//        conceptHashMap[concept]?.async()?.addPhrases(list)
-        dynamicMeals?.async()?.addPhrases(list)
-        Log.d(PepperRobot::class.simpleName, "Add phrases: $list")
+        conceptHashMap[concept]?.async()?.addPhrases(list)
     }
 
     private fun removeChatListeners() {
