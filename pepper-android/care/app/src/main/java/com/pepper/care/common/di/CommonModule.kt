@@ -11,6 +11,7 @@ import com.pepper.care.common.repo.*
 import com.pepper.care.common.usecases.GetPatientBirthdayUseCaseUsingRepository
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
 import com.pepper.care.core.services.encryption.EncryptionService
+import com.pepper.care.core.services.robot.PepperRobot
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidApplication
 import retrofit2.Retrofit

@@ -1,7 +1,3 @@
 topic: ~dialog()
 
-concept:(hello) [hallo hi hey "goede morgen" "goeie morgen"]
-dynamic: meals
-
-u:(~hello) ~hello
-u:(~meals) U heeft gekozen voor ~meals
+u:(test) Er wordt nu een actie uitgevoerd

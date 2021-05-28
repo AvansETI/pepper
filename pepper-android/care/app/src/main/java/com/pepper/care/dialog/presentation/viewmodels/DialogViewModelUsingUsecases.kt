@@ -2,7 +2,6 @@ package com.pepper.care.dialog.presentation.viewmodels
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import androidx.core.os.bundleOf
@@ -10,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
-import com.example.awesomedialog.*
 import com.pepper.care.R
 import com.pepper.care.common.AppResult
 import com.pepper.care.common.DialogCallback
@@ -63,6 +61,7 @@ class DialogViewModelUsingUsecases(
                         "Welkom, mijn naam is Pepper! Vandaag, zal ik het werk van mijn collega overnemen."
                 }
                 setupNextButton()
+                //RobotSpeechService.sayPhrase( "Welkom, mijn naam is Pepper! Vandaag, zal ik het werk van mijn collega overnemen.")
             }
             DialogRoutes.ID -> {
                 bottomText.apply {
