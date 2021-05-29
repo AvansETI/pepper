@@ -52,9 +52,6 @@ proposal: %ending Nog een fijne dag toegewenst!
 u:(~time) Het is nu ^currentTime
 u:(~day) Vandaag is het ^currentDate
 
-#### Events ####
-u:(e:Dialog/NotUnderstood) ~notUnderstood
-
 #### Moppen ####
 concept:(jokes) [
     "Hoe noem je het kind van een slechte jager? Een vegetariër dot"

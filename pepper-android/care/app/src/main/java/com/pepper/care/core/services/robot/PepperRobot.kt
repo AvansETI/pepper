@@ -153,6 +153,5 @@ class PepperRobot(
 
 enum class DynamicConcepts(name: String) {
     MEALS("meals"),
-    NAME("name"),
-    SCREEN("screen")
+    NAME("name")
 }

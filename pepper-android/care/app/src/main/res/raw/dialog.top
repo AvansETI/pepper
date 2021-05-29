@@ -9,7 +9,6 @@ concept:(favorite) [favo favoriet "Wat is jouw favoriet"]
 
 dynamic: name
 dynamic: meals
-dynamic: screen
 
 #### Dialoog ####
 u:(~robot ~start ^exact) ^execute(navigateScreen, nav, INTRO) ^enableThenGoto(INTRO)
@@ -25,9 +24,26 @@ proposal: %IDCHECK Klopt het dat dit uw id is?
     u1: (~yes)  ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateScreen, nav, PATIENT) ^enableThenGoto(PATIENT)
     u1: (~repeat) ^sameProposal
 
-proposal: %PATIENT Wat fijn om u weer te zien! ^execute(navigateChoice, navch, PATIENT) ^enableThenGoto(QUESTION)
+proposal: %PATIENT Wat fijn om u weer te zien! ^execute(navigateChoice, navch, PATIENT) ^enableThenGoto(ORDER)
 
-proposal: %QUESTION De verpleegkundige heeft de volgende vraag gesteld dot ^enableThenGoto(QUESTIONEXPLAIN)
+proposal: %ORDER Het maaltijd menu ^currentDate
+    u1:(~options) ^enumerate(~meals) ^enableThenGoto(ORDERFALLBACK)
+    u1:(~favorite) ~meals ^enableThenGoto(ORDERFALLBACK)
+    u1:(~order _~meals) ^execute(selectMealItem, sel, $1) ^enableThenGoto(ORDERCHECK)
+
+proposal: %ORDERFALLBACK ^empty #Fallback needed otherwise discussion will stop
+    u1:(~options) ^enumerate(~meals) ^sameProposal
+    u1:(~favorite) ~meals ^sameProposal
+    u1:(~order _~meals) ^execute(selectMealItem, sel, $1) ^enableThenGoto(ORDERCHECK)
+
+proposal: %ORDERCHECK Klopt uw gekozen maaltijd?
+    u1: (~no) ^execute(confirmDialogSelect, cfdlg, NO) ^enableThenGoto(ORDER)
+    u1: (~yes) ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateChoice, navch, ORDER) ^enableThenGoto(MEDICATION)
+    u1: (~repeat) ^sameProposal
+
+proposal: %MEDICATION Dit zijn de herinneringen voor vandaag! ^execute(navigateChoice, navch, MEDICATION) ^enableThenGoto(QUESTION)
+
+proposal: %QUESTION De verpleegkundige heeft de volgende vraag gesteld dot ^enableThenGoto(QUESTIONEXPLAIN) ^enableThenGoto(QUESTIONEXPLAIN)
 
 proposal: %QUESTIONEXPLAIN Wat is jouw antwoord hierop?
     u1: (_*) ^execute(inputFeedbackExplain, qexp, $1) ^enableThenGoto(QUESTIONCHECK)

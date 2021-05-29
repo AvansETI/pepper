@@ -20,6 +20,7 @@ import com.example.awesomedialog.*
 import com.pepper.care.common.AppResult
 import com.pepper.care.common.DialogCallback
 import com.pepper.care.common.DialogUtil
+import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
 import com.pepper.care.core.services.mqtt.MqttMessageCallbacks
 import org.koin.android.ext.android.inject
 import com.pepper.care.core.services.robot.*
@@ -38,6 +39,7 @@ import java.util.*
 class MainActivity : RobotActivity(), MqttMessageCallbacks {
 
     private val getAvailableScreens: GetAvailableScreensUseCaseUsingRepository by inject()
+    private val getPatientName: GetPatientNameUseCaseUsingRepository by inject()
     private val showingDialog: MutableLiveData<AlertDialog> = MutableLiveData()
     private val givenFeedbackNumber: MutableLiveData<Int> = MutableLiveData()
 
@@ -57,11 +59,6 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
         setSpeechBarDisplayStrategy(SpeechBarDisplayStrategy.IMMERSIVE)
         setSpeechBarDisplayPosition(SpeechBarDisplayPosition.BOTTOM)
         QiSDK.register(this@MainActivity, RobotManager.robot)
-
-        RobotManager.addDynamicContents(
-            DynamicConcepts.SCREEN,
-            Collections.singletonList(Phrase(DialogRoutes.ORDER.name.uppercase()))
-        )
     }
 
     private fun startDeviceServices() {
@@ -108,11 +105,38 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                     PepperAction.SELECT_PATIENT_ID -> {
                         val patientId = string!!
                         Log.d(MainActivity::class.simpleName, "Patient id: $patientId")
+
+                        val fetchedName: MutableLiveData<String> =
+                            MutableLiveData()
+
+                        this@MainActivity.lifecycleScope.launch {
+                            when (val result = getPatientName.invoke()) {
+                                is AppResult.Success -> {
+                                    fetchedName.postValue(result.successData)
+                                }
+                                is AppResult.Error -> result.exception.message
+                            }
+                        }
+
+                        fetchedName.observeForever {
+                            this@MainActivity.showingDialog.postValue(
+                                DialogUtil.buildDialog(
+                                    this@MainActivity,
+                                    it,
+                                    DialogRoutes.ID,
+                                    dialogCallback
+                                )
+                            )
+                        }
+                    }
+                    PepperAction.SELECT_MEAL_ITEM -> {
+                        val selectedMeal = string!!
+                        Log.d(MainActivity::class.simpleName, "Meal selected: $selectedMeal")
                         this@MainActivity.showingDialog.postValue(
                             DialogUtil.buildDialog(
                                 this@MainActivity,
-                                patientId,
-                                DialogRoutes.ID,
+                                selectedMeal,
+                                DialogRoutes.ORDER,
                                 dialogCallback
                             )
                         )
@@ -161,6 +185,7 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                         Log.d(MainActivity::class.simpleName, "Confirm dialog: $selected")
                         showingDialog.apply { value!!.cancel() }
                     }
+                    else -> throw IllegalStateException("Not a valid option")
                 }
             }
         }
@@ -204,17 +229,9 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                 )
             }
             DialogRoutes.ORDER -> {
-                RobotManager.addDynamicContents(
-                    DynamicConcepts.SCREEN,
-                    Collections.singletonList(Phrase(DialogRoutes.ORDER.name.uppercase()))
-                )
                 this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.orderFragment)
             }
             DialogRoutes.MEDICATION -> {
-                RobotManager.addDynamicContents(
-                    DynamicConcepts.SCREEN,
-                    Collections.singletonList(Phrase(DialogRoutes.MEDICATION.name.uppercase()))
-                )
                 this.findNavController(R.id.child_nav_host_fragment).navigate(
                     R.id.dialogFragment, bundleOf(
                         Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.MEDICATION)
@@ -222,10 +239,6 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                 )
             }
             DialogRoutes.QUESTION -> {
-                RobotManager.addDynamicContents(
-                    DynamicConcepts.SCREEN,
-                    Collections.singletonList(Phrase(DialogRoutes.QUESTION.name.uppercase()))
-                )
                 this.findNavController(R.id.child_nav_host_fragment).navigate(
                     R.id.dialogFragment, bundleOf(
                         Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.QUESTION)
@@ -242,7 +255,6 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                     )
                 )
             }
-            else -> throw IllegalStateException("Not a valid option")
         }
     }
 
