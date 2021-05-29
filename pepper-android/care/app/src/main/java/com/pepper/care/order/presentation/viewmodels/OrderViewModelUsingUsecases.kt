@@ -76,6 +76,10 @@ class OrderViewModelUsingUsecases(
                     }
                 }
             }
+
+            override fun onDialogDeny(view: View) {
+
+            }
         }
 
     override val recyclerList = MutableLiveData<List<RecyclerAdapterItem>>(emptyList())

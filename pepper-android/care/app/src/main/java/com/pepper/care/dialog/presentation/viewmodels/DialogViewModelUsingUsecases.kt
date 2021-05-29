@@ -64,7 +64,6 @@ class DialogViewModelUsingUsecases(
                         "Welkom, mijn naam is Pepper! Vandaag, zal ik het werk van mijn collega overnemen."
                 }
                 setupNextButton()
-                //RobotSpeechService.sayPhrase( "Welkom, mijn naam is Pepper! Vandaag, zal ik het werk van mijn collega overnemen.")
             }
             DialogRoutes.ID -> {
                 bottomText.apply {
@@ -288,6 +287,10 @@ class DialogViewModelUsingUsecases(
                     }
                     else -> throw IllegalStateException("Not implemented")
                 }
+            }
+
+            override fun onDialogDeny(view: View) {
+
             }
         }
 }

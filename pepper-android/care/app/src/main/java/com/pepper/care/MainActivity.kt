@@ -3,7 +3,9 @@ package com.pepper.care
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +18,8 @@ import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayP
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy
 import com.example.awesomedialog.*
 import com.pepper.care.common.AppResult
+import com.pepper.care.common.DialogCallback
+import com.pepper.care.common.DialogUtil
 import com.pepper.care.core.services.mqtt.MqttMessageCallbacks
 import org.koin.android.ext.android.inject
 import com.pepper.care.core.services.robot.*
@@ -31,6 +35,7 @@ import kotlinx.coroutines.launch
 class MainActivity : RobotActivity(), MqttMessageCallbacks {
 
     private val getAvailableScreens: GetAvailableScreensUseCaseUsingRepository by inject()
+    private val showingDialog: MutableLiveData<AlertDialog> = MutableLiveData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,22 +96,50 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                         Log.d(MainActivity::class.simpleName, "Navigate choice to: ${string!!}")
                         navigateToCorrectCustomScreen(DialogRoutes.valueOf(string))
                     }
-                    PepperAction.SELECT_MEAL_ITEM -> {
-                        Log.d(MainActivity::class.simpleName, "Item selected: ${string!!}")
-                    }
-                    PepperAction.SHOW_CONFIRM_DIALOG -> {
-                        Log.d(
-                            MainActivity::class.simpleName,
-                            "Showing dialog with content: ${string!!}"
+                    PepperAction.SELECT_PATIENT_ID -> {
+                        val patientId = string!!
+                        Log.d(MainActivity::class.simpleName, "Patient id: $patientId")
+                        this@MainActivity.showingDialog.postValue(
+                            DialogUtil.buildDialog(
+                                this@MainActivity,
+                                patientId,
+                                DialogRoutes.ID,
+                                dialogCallback
+                            )
                         )
                     }
-                    PepperAction.SELECT_ID -> {
-                        Log.d(MainActivity::class.simpleName, "ID selected: ${string!!}")
+                    PepperAction.SELECT_FEEDBACK_NUMBER -> {
+                        val feedbackNumber = string!!
+                        Log.d(MainActivity::class.simpleName, "Feedback number: $feedbackNumber")
+                        this@MainActivity.showingDialog.postValue(
+                            DialogUtil.buildDialog(
+                                this@MainActivity,
+                                feedbackNumber,
+                                DialogRoutes.FEEDBACK,
+                                dialogCallback
+                            )
+                        )
+                    }
+                    PepperAction.CONFIRM_DIALOG_SELECT -> {
+                        val selected = string!!
+                        Log.d(MainActivity::class.simpleName, "Confirm dialog: $selected")
+                        showingDialog.apply { value!!.cancel() }
                     }
                 }
             }
         }
     }
+
+    private val dialogCallback: DialogCallback =
+        object : DialogCallback {
+            override fun onDialogConfirm(view: View) {
+
+            }
+
+            override fun onDialogDeny(view: View) {
+
+            }
+        }
 
     private fun screenNavigationHandler(route: DialogRoutes) {
         when (route) {
@@ -179,7 +212,7 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
         }
 
         fetchedAvailableScreens.observeForever {
-            when (currentScreen){
+            when (currentScreen) {
                 DialogRoutes.ORDER -> {
                     when {
                         it[1] == 1 -> screenNavigationHandler(DialogRoutes.MEDICATION)

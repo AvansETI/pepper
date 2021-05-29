@@ -1,7 +1,5 @@
 package com.pepper.care.feedback.presentation.viewmodels
 
-import android.app.Activity
-import android.graphics.Typeface
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -11,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
-import com.example.awesomedialog.*
 import com.pepper.care.R
 import com.pepper.care.common.DialogCallback
 import com.pepper.care.common.DialogUtil
@@ -28,8 +25,6 @@ import com.pepper.care.feedback.common.usecases.AddPatientHealthFeedbackUseCaseU
 import com.pepper.care.feedback.entities.FeedbackEntity
 import kotlinx.coroutines.launch
 import java.lang.IllegalStateException
-import java.util.*
-import kotlin.concurrent.schedule
 
 class FeedbackViewModelUsingUsecases(
     private val feedbackType: AddPatientHealthFeedbackUseCaseUsingRepository,
@@ -64,6 +59,10 @@ class FeedbackViewModelUsingUsecases(
                         Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.GOODBYE)
                     )
                 )
+            }
+
+            override fun onDialogDeny(view: View) {
+
             }
         }
 
