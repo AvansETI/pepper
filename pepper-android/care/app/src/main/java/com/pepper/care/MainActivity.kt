@@ -30,7 +30,9 @@ import com.pepper.care.info.presentation.InfoSliderActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
+import java.util.*
 
+@ExperimentalStdlibApi
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MainActivity : RobotActivity(), MqttMessageCallbacks {
@@ -55,6 +57,11 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
         setSpeechBarDisplayStrategy(SpeechBarDisplayStrategy.IMMERSIVE)
         setSpeechBarDisplayPosition(SpeechBarDisplayPosition.BOTTOM)
         QiSDK.register(this@MainActivity, RobotManager.robot)
+
+        RobotManager.addDynamicContents(
+            DynamicConcepts.SCREEN,
+            Collections.singletonList(Phrase(DialogRoutes.ORDER.name.uppercase()))
+        )
     }
 
     private fun startDeviceServices() {
@@ -110,10 +117,26 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                             )
                         )
                     }
+                    PepperAction.INPUT_EXPLAIN_QUESTION -> {
+                        val questionExplanation = string!!
+                        Log.d(MainActivity::class.simpleName, "Question explained: $questionExplanation")
+                        this@MainActivity.showingDialog.postValue(
+                            DialogUtil.buildDialog(
+                                this@MainActivity,
+                                questionExplanation,
+                                DialogRoutes.FEEDBACK,
+                                dialogCallback
+                            )
+                        )
+                    }
                     PepperAction.SELECT_FEEDBACK_NUMBER -> {
                         val feedbackNumber = string!!
                         Log.d(MainActivity::class.simpleName, "Feedback number: $feedbackNumber")
-                        this@MainActivity.givenFeedbackNumber.postValue(Integer.parseInt(feedbackNumber))
+                        this@MainActivity.givenFeedbackNumber.postValue(
+                            Integer.parseInt(
+                                feedbackNumber
+                            )
+                        )
                     }
                     PepperAction.INPUT_EXPLAIN_FEEDBACK -> {
                         val givenFeedback = string!!
@@ -181,9 +204,17 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                 )
             }
             DialogRoutes.ORDER -> {
+                RobotManager.addDynamicContents(
+                    DynamicConcepts.SCREEN,
+                    Collections.singletonList(Phrase(DialogRoutes.ORDER.name.uppercase()))
+                )
                 this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.orderFragment)
             }
             DialogRoutes.MEDICATION -> {
+                RobotManager.addDynamicContents(
+                    DynamicConcepts.SCREEN,
+                    Collections.singletonList(Phrase(DialogRoutes.MEDICATION.name.uppercase()))
+                )
                 this.findNavController(R.id.child_nav_host_fragment).navigate(
                     R.id.dialogFragment, bundleOf(
                         Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.MEDICATION)
@@ -191,6 +222,10 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                 )
             }
             DialogRoutes.QUESTION -> {
+                RobotManager.addDynamicContents(
+                    DynamicConcepts.SCREEN,
+                    Collections.singletonList(Phrase(DialogRoutes.QUESTION.name.uppercase()))
+                )
                 this.findNavController(R.id.child_nav_host_fragment).navigate(
                     R.id.dialogFragment, bundleOf(
                         Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.QUESTION)
@@ -239,7 +274,6 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                         else -> screenNavigationHandler(DialogRoutes.FEEDBACK)
                     }
                 }
-                DialogRoutes.QUESTION -> screenNavigationHandler(DialogRoutes.FEEDBACK)
                 else -> {
                     when {
                         it[0] == 1 -> screenNavigationHandler(DialogRoutes.ORDER)

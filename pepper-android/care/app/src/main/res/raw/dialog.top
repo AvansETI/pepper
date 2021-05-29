@@ -3,9 +3,13 @@ topic: ~dialog ^resetOnFocus()
 concept:(numbers) [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99]
 concept:(start) [start "Ik wil graag een gesprek starten"]
 concept:(feedbackScale) [1 2 3 4 5 6 7 8 9 10]
+concept:(options) [opties "Welke maaltijden zijn er"]
+concept:(order) [bestel order een "Doe mij maar" "Ik wil graag" "Ik kies"]
+concept:(favorite) [favo favoriet "Wat is jouw favoriet"]
 
 dynamic: name
 dynamic: meals
+dynamic: screen
 
 #### Dialoog ####
 u:(~robot ~start ^exact) ^execute(navigateScreen, nav, INTRO) ^enableThenGoto(INTRO)
@@ -21,7 +25,18 @@ proposal: %IDCHECK Klopt het dat dit uw id is?
     u1: (~yes)  ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateScreen, nav, PATIENT) ^enableThenGoto(PATIENT)
     u1: (~repeat) ^sameProposal
 
-proposal: %PATIENT Wat fijn om u weer te zien! ^execute(navigateScreen, nav, FEEDBACK) ^enableThenGoto(FEEDBACK)
+proposal: %PATIENT Wat fijn om u weer te zien! ^execute(navigateChoice, navch, PATIENT) ^enableThenGoto(QUESTION)
+
+proposal: %QUESTION De verpleegkundige heeft de volgende vraag gesteld dot ^enableThenGoto(QUESTIONEXPLAIN)
+
+proposal: %QUESTIONEXPLAIN Wat is jouw antwoord hierop?
+    u1: (_*) ^execute(inputFeedbackExplain, qexp, $1) ^enableThenGoto(QUESTIONCHECK)
+    u1: (~repeat) ^sameProposal
+
+proposal: %QUESTIONCHECK Klopt het antwoord gegeven in de dialoog?
+    u1: (~no) ^execute(confirmDialogSelect, cfdlg, NO) ^enableThenGoto(QUESTION)
+    u1: (~yes) ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateScreen, nav, FEEDBACK) ^enableThenGoto(FEEDBACK)
+    u1: (~repeat) ^sameProposal
 
 proposal: %FEEDBACK Hoe voelt u zich momenteel op een schaal van 1 tot 10?
     u1: (_~feedbackScale) ^execute(selectFeedbackNumber, fnum, $1) ^enableThenGoto(FEEDBACKEXPLAIN)

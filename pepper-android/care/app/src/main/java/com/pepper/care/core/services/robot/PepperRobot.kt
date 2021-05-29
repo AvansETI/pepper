@@ -111,9 +111,12 @@ class PepperRobot(
     private fun setExecutor() {
         val executors: HashMap<String, QiChatExecutor> = HashMap()
         executors["navigateScreen"] = PepperQiChatExecutor(context, callback)
+        executors["navigateChoice"] = PepperQiChatExecutor(context, callback)
         executors["selectPatientId"] = PepperQiChatExecutor(context, callback)
+        executors["selectMealItem"] = PepperQiChatExecutor(context, callback)
         executors["selectFeedbackNumber"] = PepperQiChatExecutor(context, callback)
         executors["inputFeedbackExplain"] = PepperQiChatExecutor(context, callback)
+        executors["inputQuestionExplain"] = PepperQiChatExecutor(context, callback)
         executors["confirmDialogSelect"] = PepperQiChatExecutor(context, callback)
         chatBot.executors = executors
     }
@@ -150,5 +153,6 @@ class PepperRobot(
 
 enum class DynamicConcepts(name: String) {
     MEALS("meals"),
-    NAME("name")
+    NAME("name"),
+    SCREEN("screen")
 }

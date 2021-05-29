@@ -9,6 +9,6 @@ interface AvailableScreenRepository {
 class AvailableScreenRepositoryImpl : AvailableScreenRepository {
 
     override suspend fun fetchScreens(): AppResult<IntArray> {
-        return AppResult.Success(intArrayOf(0, 0, 0))
+        return AppResult.Success(intArrayOf(0, 0, 1))
     }
 }
