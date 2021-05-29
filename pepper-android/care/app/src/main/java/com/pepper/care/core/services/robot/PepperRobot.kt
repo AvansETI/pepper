@@ -113,6 +113,7 @@ class PepperRobot(
         executors["navigateScreen"] = PepperQiChatExecutor(context, callback)
         executors["selectPatientId"] = PepperQiChatExecutor(context, callback)
         executors["selectFeedbackNumber"] = PepperQiChatExecutor(context, callback)
+        executors["inputFeedbackExplain"] = PepperQiChatExecutor(context, callback)
         executors["confirmDialogSelect"] = PepperQiChatExecutor(context, callback)
         chatBot.executors = executors
     }

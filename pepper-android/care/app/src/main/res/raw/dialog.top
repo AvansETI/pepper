@@ -24,11 +24,15 @@ proposal: %IDCHECK Klopt het dat dit uw id is?
 proposal: %PATIENT Wat fijn om u weer te zien! ^execute(navigateScreen, nav, FEEDBACK) ^enableThenGoto(FEEDBACK)
 
 proposal: %FEEDBACK Hoe voelt u zich momenteel op een schaal van 1 tot 10?
-    u1: (_~feedbackScale) ^execute(selectFeedbackNumber, fnum, $1) ^enableThenGoto(FEEDBACKCHECK)
+    u1: (_~feedbackScale) ^execute(selectFeedbackNumber, fnum, $1) ^enableThenGoto(FEEDBACKEXPLAIN)
+    u1: (~repeat) ^sameProposal
+
+proposal: %FEEDBACKEXPLAIN Waarom heb je voor dit nummer gekozen?
+    u1: (_*) ^execute(inputFeedbackExplain, fexp, $1) ^enableThenGoto(FEEDBACKCHECK)
     u1: (~repeat) ^sameProposal
 
 proposal: %FEEDBACKCHECK Klopt het antwoord gegeven in de dialoog?
-    u1: (~no) ^execute(confirmDialogSelect, cfdlg, NO) ^previousProposal
+    u1: (~no) ^execute(confirmDialogSelect, cfdlg, NO) ^enableThenGoto(FEEDBACK)
     u1: (~yes) ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateScreen, nav, GOODBYE) ^enableThenGoto(GOODBYE)
     u1: (~repeat) ^sameProposal
 

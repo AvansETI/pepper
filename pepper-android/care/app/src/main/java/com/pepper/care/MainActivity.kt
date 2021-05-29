@@ -25,6 +25,7 @@ import org.koin.android.ext.android.inject
 import com.pepper.care.core.services.robot.*
 import com.pepper.care.dialog.DialogRoutes
 import com.pepper.care.dialog.common.usecases.GetAvailableScreensUseCaseUsingRepository
+import com.pepper.care.feedback.entities.FeedbackEntity
 import com.pepper.care.info.presentation.InfoSliderActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -36,6 +37,7 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
 
     private val getAvailableScreens: GetAvailableScreensUseCaseUsingRepository by inject()
     private val showingDialog: MutableLiveData<AlertDialog> = MutableLiveData()
+    private val givenFeedbackNumber: MutableLiveData<Int> = MutableLiveData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,10 +113,21 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                     PepperAction.SELECT_FEEDBACK_NUMBER -> {
                         val feedbackNumber = string!!
                         Log.d(MainActivity::class.simpleName, "Feedback number: $feedbackNumber")
+                        this@MainActivity.givenFeedbackNumber.postValue(Integer.parseInt(feedbackNumber))
+                    }
+                    PepperAction.INPUT_EXPLAIN_FEEDBACK -> {
+                        val givenFeedback = string!!
+                        Log.d(MainActivity::class.simpleName, "Given feedback: $givenFeedback")
                         this@MainActivity.showingDialog.postValue(
                             DialogUtil.buildDialog(
                                 this@MainActivity,
-                                feedbackNumber,
+                                "${
+                                    when {
+                                        givenFeedbackNumber.value!! >= 7 -> FeedbackEntity.FeedbackMessage.GOOD.text
+                                        givenFeedbackNumber.value!! < 5 -> FeedbackEntity.FeedbackMessage.BAD.text
+                                        else -> FeedbackEntity.FeedbackMessage.OKAY.text
+                                    }
+                                }, $givenFeedback",
                                 DialogRoutes.FEEDBACK,
                                 dialogCallback
                             )
