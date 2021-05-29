@@ -1,7 +1,0 @@
-topic: ~greet()
-
-concept:(greeting) [hallo hi hey "goede morgen" "goeie morgen"]
-concept:(robot) [pepper]
-
-u:(~greeting) ~greeting
-u:(~greeting ~robot) ~greeting

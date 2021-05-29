@@ -7,6 +7,7 @@ import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
 import com.aldebaran.qi.sdk.`object`.conversation.*
 import com.aldebaran.qi.sdk.builder.ChatBuilder
 import com.aldebaran.qi.sdk.builder.QiChatbotBuilder
+import com.aldebaran.qi.sdk.builder.SayBuilder
 import com.aldebaran.qi.sdk.builder.TopicBuilder
 import com.pepper.care.R
 
@@ -14,8 +15,7 @@ class PepperRobot(
     val callback: PepperActionCallback
 ): RobotLifecycleCallbacks {
 
-
-    private val resourceIds: IntArray = intArrayOf(R.raw.greet, R.raw.dialog, R.raw.order)
+    private val resourceIds: IntArray = intArrayOf(R.raw.main, R.raw.dialog)
     private val conceptHashMap: HashMap<DynamicConcepts, EditablePhraseSet?> = HashMap()
 
     private lateinit var future: Future<Void>
@@ -57,7 +57,7 @@ class PepperRobot(
     private fun createQiBot(): QiChatbot {
         return QiChatbotBuilder.with(context)
             .withTopics(getTopics())
-            .build();
+            .build()
     }
 
     private fun getTopics(): MutableList<out Topic> {
@@ -89,7 +89,6 @@ class PepperRobot(
 
         chat.addOnHeardListener { humanInput ->
             Log.d(PepperRobot::class.simpleName, "Human: ${humanInput.text}")
-            if (humanInput.text.contains("test")) callback.onRobotAction(PepperAction.MOVE_TO_INTRO)
         }
 
         chat.addOnNoPhraseRecognizedListener {
@@ -111,13 +110,18 @@ class PepperRobot(
 
     private fun setExecutor() {
         val executors: HashMap<String, QiChatExecutor> = HashMap()
+        executors["selectMealItem"] = PepperQiChatExecutor(context, callback)
+        executors["navigateScreen"] = PepperQiChatExecutor(context, callback)
+        executors["navigateChoice"] = PepperQiChatExecutor(context, callback)
+        executors["confirmationDialog"] = PepperQiChatExecutor(context, callback)
+        executors["selectId"] = PepperQiChatExecutor(context, callback)
         chatBot.executors = executors
     }
 
     private fun setFutureListeners(){
         future.thenConsume { chatFuture ->
             if (chatFuture.hasError()) {
-                Log.e(PepperRobot::class.simpleName,"Discussion finished with error.", future.error)
+                Log.e(PepperRobot::class.simpleName,"Discussion finished with error: ${chatFuture.error}")
             }
         }
     }
@@ -145,5 +149,6 @@ class PepperRobot(
 }
 
 enum class DynamicConcepts(name: String) {
-    MEALS("meals")
+    MEALS("meals"),
+    NAME("name")
 }

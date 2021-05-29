@@ -9,11 +9,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
+import com.aldebaran.qi.sdk.`object`.conversation.Phrase
 import com.pepper.care.R
 import com.pepper.care.common.AppResult
 import com.pepper.care.common.DialogCallback
 import com.pepper.care.common.DialogUtil
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
+import com.pepper.care.core.services.robot.DynamicConcepts
+import com.pepper.care.core.services.robot.RobotManager
 import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_ANSWER
 import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_ID_LENGTH
 import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_MSG_LENGTH
@@ -262,6 +265,7 @@ class DialogViewModelUsingUsecases(
             when (val result = getName.invoke()) {
                 is AppResult.Success -> {
                     fetchedName.postValue(result.successData)
+                    RobotManager.addDynamicContents(DynamicConcepts.NAME, listOf(Phrase(result.successData)))
                 }
                 is AppResult.Error -> result.exception.message
             }

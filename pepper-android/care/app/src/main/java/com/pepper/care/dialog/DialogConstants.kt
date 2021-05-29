@@ -1,7 +1,7 @@
 package com.pepper.care.dialog
 
 object DialogConstants {
-    const val DIALOG_MOCK_ID_LENGTH = 6
+    const val DIALOG_MOCK_ID_LENGTH = 3
     const val DIALOG_MOCK_MSG_LENGTH = 140
 
     const val DIALOG_MOCK_NAME = "Jan"

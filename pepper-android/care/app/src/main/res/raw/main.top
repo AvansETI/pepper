@@ -1,0 +1,81 @@
+topic: ~main ^resetOnFocus()
+#### DIT DOCUMENT BEVAT ALLE DIALOGEN VOOR HET ONTMOETEN ####
+concept:(robot) [pepper care robot wereld]
+concept:(greeting) [hallo hi hey goedemorgen]
+concept:(time) [hoelaat "Hoelaat is het nu?" "Wat is de tijd?" "Hoelaat is het?"]
+concept:(day) [dag "Welke dag is het?" "Wat is de dag vandaag?" "Welke dag?"]
+concept:(good) [goed prima "Het gaat goed" "Ik voel me prima"]
+concept:(bad) [slecht moe "Het gaat slecht" "Ik voel me slecht"]
+concept:(yes) [ja jazeker]
+concept:(no) [nee niet]
+concept:(silence) [""]
+
+concept:(repeat) [herhaal "Kan je het herhalen?"]
+concept:(robotRepeat) ["Ik zal het voor je herhalen dot"]
+
+concept:(notUnderstood) ["Ik begrijp u niet helemaal dot" "Ik kan u niet goed verstaan dot"]
+concept:(failure) ["Ik kan dit niet beantwoorden dot" "Ik ondervind momenteel wat spraak problemen dot"]
+
+#### Begroeting ####
+u:(~greeting ~robot) ~greeting ^nextProposal
+
+#### Interactie ####
+proposal: Hoe gaat het?
+  u1:(~good ^exact) Wat fijn om te horen!
+  u1:(~bad ^exact) ^gotoRandom(badfeeling)
+  u1: (~repeat) ~robotRepeat ^sameProposal
+
+proposal: %badfeeling Wil je een mop horen?
+    u1: (~no) ~silence
+    u1: (~yes) ~jokes ^goto(feelingbetter)
+    u1: (~repeat) ~robotRepeat ^sameProposal
+
+proposal: %badfeeling Wil je een quote horen?
+    u1: (~no) ~silence
+    u1: (~yes) ~quotes ^goto(feelingbetter)
+    u1: (~repeat) ~robotRepeat ^sameProposal
+
+proposal: %badfeeling Wil je een raadsel horen?
+    u1: (~no) ~silence
+    u1: (~yes) ~riddles ^goto(feelingbetter)
+    u1: (~repeat) ~robotRepeat ^sameProposal
+
+proposal: %feelingbetter Wil je meer horen?
+    u1: (~no) ~silence
+    u1: (~yes) ^gotoRandom(badfeeling)
+    u1: (~repeat) ~robotRepeat ^sameProposal
+
+#### Extra ####
+u:(~time) ^currentTime
+u:(~day) ^currentDate
+
+#### Events ####
+u:(e:Dialog/NotUnderstood) ~notUnderstood ^sameProposal
+u:(e:Dialog/SpeakFailure) ~failure ^sameProposal
+
+#### Moppen ####
+concept:(jokes) [
+    "Hoe noem je het kind van een slechte jager? Een vegetariër dot"
+    "Wat zit er tussen de hemel en aarde? en dot"
+    "Wat is het voordeel van dement zijn? Je kan je eigen paaseieren verstoppen dot"
+    "Hoe komt het dat de kerstman nooit vooruit gaat? Hij roept altijd ho ho ho dot"
+    "Waar koopt een koe zijn kleren? In de boe tiek dot"
+]
+
+#### Quotes ####
+concept:(quotes) [
+    "Om nieuwe dingen in je leven toe te laten zul je soms eerst oude dingen los moeten laten dot"
+    "Als je denkt dat alles tegenzit denk dan opnieuw dot"
+    "Blijf niet hangen in het verleden dot Dat is voorbij dot Raak niet gestrest van de toekomst dot Zo ver is het nog niet dot Leef in het heden en geniet dot"
+    "Wacht niet op een goede dag maak er een dot"
+    "Wees dankbaar voor wat je hebt dot Je wil niet weten hoeveel mensen er zijn die dat willen hebben wat jij hebt dot"
+]
+
+#### Raadsels ####
+concept:(riddles) [
+    "Waarom loopt een schaap nogal wankelig?" #Omdat hij lam is geweest
+    "Wat is ver te zoeken op een verening voor doven en slechthorenden?" #Saamhorigheid
+    "Wat is het meervoud van auto?" #file
+    "Hoe noem je een raadselachtige kerst?" #Een Quizmas
+    "Wat staat er op het graf van een robot?" #Roest in vrede
+]
