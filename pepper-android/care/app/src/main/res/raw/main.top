@@ -2,56 +2,62 @@ topic: ~main ^resetOnFocus()
 #### DIT DOCUMENT BEVAT ALLE DIALOGEN VOOR HET ONTMOETEN ####
 concept:(robot) [pepper care robot wereld]
 concept:(greeting) [hallo hi hey goedemorgen]
-concept:(time) [hoelaat "Hoelaat is het nu?" "Wat is de tijd?" "Hoelaat is het?"]
+concept:(goingGreat) ["Wat fijn om te horen!" "Fantastisch!"]
+concept:(time) [tijd hoelaat "Hoelaat is het nu?" "Wat is de tijd?" "Hoelaat is het?"]
 concept:(day) [dag "Welke dag is het?" "Wat is de dag vandaag?" "Welke dag?"]
 concept:(good) [goed prima "Het gaat goed" "Ik voel me prima"]
 concept:(bad) [slecht moe "Het gaat slecht" "Ik voel me slecht"]
 concept:(yes) [ja jazeker]
 concept:(no) [nee niet]
 concept:(silence) [""]
+concept:(end) ["Einde interactie"]
 
 concept:(repeat) [herhaal "Kan je het herhalen?"]
 concept:(robotRepeat) ["Ik zal het voor je herhalen dot"]
 
 concept:(notUnderstood) ["Ik begrijp u niet helemaal dot" "Ik kan u niet goed verstaan dot"]
-concept:(failure) ["Ik kan dit niet beantwoorden dot" "Ik ondervind momenteel wat spraak problemen dot"]
 
 #### Begroeting ####
-u:(~greeting ~robot) ~greeting ^nextProposal
+u:(~greeting ~robot) ~greeting ^enableThenGoto(convo)
 
 #### Interactie ####
-proposal: Hoe gaat het?
-  u1:(~good ^exact) Wat fijn om te horen!
+proposal: %convo Hoe gaat het?
+  u1:(~good ^exact) ~goingGreat ^enableThenGoto(ending)
   u1:(~bad ^exact) ^gotoRandom(badfeeling)
+  u1:(~repeat) ~robotRepeat ^sameProposal
+
+proposal: %badfeeling Wil je een mop horen? $feelingEvent=mop
+  u1: (~no) ^enableThenGoto(ending)
+  u1: (~yes) ~jokes ^enableThenGoto(feelingbetter)
   u1: (~repeat) ~robotRepeat ^sameProposal
 
-proposal: %badfeeling Wil je een mop horen?
-    u1: (~no) ~silence
-    u1: (~yes) ~jokes ^goto(feelingbetter)
-    u1: (~repeat) ~robotRepeat ^sameProposal
+proposal: %badfeeling Wil je een quote horen? $feelingEvent=quote
+  u1: (~no) ^enableThenGoto(ending)
+  u1: (~yes) ~quotes ^enableThenGoto(feelingbetter)
+  u1: (~repeat) ~robotRepeat ^sameProposal
 
-proposal: %badfeeling Wil je een quote horen?
-    u1: (~no) ~silence
-    u1: (~yes) ~quotes ^goto(feelingbetter)
-    u1: (~repeat) ~robotRepeat ^sameProposal
+proposal: %badfeeling Wil je een raadsel horen? $feelingEvent=raadsel
+  u1: (~no) ^enableThenGoto(ending)
+  u1: (~yes) ~riddles ^enableThenGoto(feelingbetter)
+  u1: (~repeat) ~robotRepeat ^sameProposal
 
-proposal: %badfeeling Wil je een raadsel horen?
-    u1: (~no) ~silence
-    u1: (~yes) ~riddles ^goto(feelingbetter)
-    u1: (~repeat) ~robotRepeat ^sameProposal
+proposal: %feelingbetter Wil je nog een $feelingEvent horen?
+  u1: (~no) ^enableThenGoto(ending)
+  u1: (~yes) ^first[
+                "$feelingEvent==mop ~jokes ^sameProposal"
+                "$feelingEvent==quote ~quotes ^sameProposal"
+                "$feelingEvent==raadsel ~riddles ^sameProposal"
+            ]
+  u1: (~repeat) ~robotRepeat ^sameProposal
 
-proposal: %feelingbetter Wil je meer horen?
-    u1: (~no) ~silence
-    u1: (~yes) ^gotoRandom(badfeeling)
-    u1: (~repeat) ~robotRepeat ^sameProposal
+proposal: %ending Nog een fijne dag toegewenst!
 
 #### Extra ####
-u:(~time) ^currentTime
-u:(~day) ^currentDate
+u:(~time) Het is nu ^currentTime
+u:(~day) Vandaag is het ^currentDate
 
 #### Events ####
-u:(e:Dialog/NotUnderstood) ~notUnderstood ^sameProposal
-u:(e:Dialog/SpeakFailure) ~failure ^sameProposal
+u:(e:Dialog/NotUnderstood) ~notUnderstood
 
 #### Moppen ####
 concept:(jokes) [
