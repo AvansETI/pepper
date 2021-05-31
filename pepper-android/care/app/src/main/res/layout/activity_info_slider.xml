@@ -59,7 +59,7 @@
         android:text="Volgende"
         android:visibility="gone"
         android:background="@drawable/button_round"
-        app:icon="@drawable/ic_baseline_chevron_right_24"
+        app:backgroundTint="@color/whiteAlternative"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -72,6 +72,8 @@
         android:layout_marginRight="16dp"
         android:labelFor="@string/app_intro_skip_button"
         android:text="Sluiten"
+        android:background="@drawable/button_round"
+        app:backgroundTint="@color/whiteAlternative"
         app:icon="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -86,6 +88,7 @@
         android:labelFor="@string/app_intro_done_button"
         android:text="Volgende"
         android:background="@drawable/button_round"
+        app:backgroundTint="@color/whiteAlternative"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

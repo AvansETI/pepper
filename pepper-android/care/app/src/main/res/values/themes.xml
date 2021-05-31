@@ -15,7 +15,18 @@
         <item name="android:navigationBarColor">@color/blackAlternative</item>
     </style>
 
+
     <style name="Pepper_Care_Title_Text" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="fontFamily">@font/montserrat_bold</item>
+        <item name="android:fontFamily">@font/montserrat_bold</item>
+        <item name="android:textColor">@color/bodyTextColor</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:singleLine">false</item>
+    </style>
+
+    <style name="Pepper_Care_Title_Text_Green" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
         <item name="fontFamily">@font/montserrat_bold</item>
         <item name="android:fontFamily">@font/montserrat_bold</item>
         <item name="android:textColor">@color/titleTextColor</item>
