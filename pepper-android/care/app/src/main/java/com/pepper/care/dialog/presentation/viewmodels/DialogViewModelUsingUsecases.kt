@@ -94,6 +94,7 @@ class DialogViewModelUsingUsecases(
                 setupKeyboardButton()
             }
             DialogRoutes.GOODBYE -> {
+                fetchPatientDetails()
                 bottomText.apply {
                     value =
                         "Tot ziens, ${fetchedName.value}. Ik wens u nog een fijne dag tegemoet!"
