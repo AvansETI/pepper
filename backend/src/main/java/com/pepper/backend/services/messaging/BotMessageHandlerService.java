@@ -124,6 +124,25 @@ public class BotMessageHandlerService {
                     this.sendId(Person.PATIENT, message.getPersonId(), Task.FEEDBACK_ID, response.getId(), response.getId());
                 }
             }
+            case MEAL -> {
+                LOG.info("New meal request");
+
+                if (message.getTaskId().equals("-1")) {
+                    break;
+                }
+
+                this.sendMeal(this.databaseService.findMeal(message.getTaskId()));
+            }
+            case MEAL_ID -> {
+                LOG.info("New meal id request");
+
+                if (message.getPersonId().equals("-1")) {
+                    break;
+                }
+
+                Set<String> ids = this.databaseService.findNonAllergicMealIds(message.getPersonId());
+                this.sendIds(Person.PATIENT, message.getPersonId(), Task.MEAL_ID, message.getTaskId(), ids);
+            }
             case MEAL_ORDER_MEAL_ID -> {
                 LOG.info("New meal order meal: " + message.getData());
                 Response response = this.databaseService.saveMealOrder(MealOrder.builder()
@@ -148,6 +167,15 @@ public class BotMessageHandlerService {
                     this.sendId(Person.PATIENT, message.getPersonId(), Task.MEAL_ORDER_ID, response.getId(), response.getId());
                 }
             }
+            case QUESTION -> {
+                LOG.info("New question request: " + message.getData());
+
+                if (message.getTaskId().equals("-1")) {
+                    break;
+                }
+
+                this.sendQuestion(this.databaseService.findQuestion(message.getTaskId()));
+            }
             case QUESTION_ID -> {
                 LOG.info("New question ids request: " + message.getData());
 
@@ -157,15 +185,6 @@ public class BotMessageHandlerService {
 
                 Set<String> ids = this.databaseService.findUnansweredQuestionIds(message.getPersonId());
                 this.sendIds(Person.PATIENT, message.getPersonId(), Task.QUESTION_ID, message.getTaskId(), ids);
-            }
-            case QUESTION -> {
-                LOG.info("New question request: " + message.getData());
-
-                if (message.getTaskId().equals("-1")) {
-                    break;
-                }
-
-                this.sendQuestion(this.databaseService.findQuestion(message.getTaskId()));
             }
             case ANSWER_QUESTION_ID -> {
                 LOG.info("New answer question id: " + message.getData());
@@ -267,6 +286,18 @@ public class BotMessageHandlerService {
             }
         }
 
+    }
+
+    public void sendMeal(Meal meal) {
+        if (meal == null) {
+            return;
+        }
+
+        this.send(Person.NONE, "-1", Task.MEAL_NAME, meal.getId(), meal.getName());
+        this.send(Person.NONE, "-1", Task.MEAL_DESCRIPTION, meal.getId(), meal.getDescription());
+        this.send(Person.NONE, "-1", Task.MEAL_CALORIES, meal.getId(), meal.getCalories());
+        this.send(Person.NONE, "-1", Task.MEAL_ALLERGIES, meal.getId(), String.valueOf(meal.getAllergies() == null ? new HashSet<>() : meal.getAllergies()));
+        this.send(Person.NONE, "-1", Task.MEAL_IMAGE, meal.getId(), meal.getImage());
     }
 
     public void sendQuestion(Question question) {

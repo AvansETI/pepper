@@ -1,10 +1,7 @@
 package com.pepper.backend.services.messaging;
 
 import com.pepper.backend.controllers.StaffCommunicationController;
-import com.pepper.backend.model.Allergy;
-import com.pepper.backend.model.Meal;
-import com.pepper.backend.model.Patient;
-import com.pepper.backend.model.Question;
+import com.pepper.backend.model.*;
 import com.pepper.backend.model.database.Response;
 import com.pepper.backend.model.messaging.Message;
 import com.pepper.backend.model.messaging.Person;
@@ -109,8 +106,28 @@ public class StaffMessageHandlerService {
                 if (message.getPerson() == Person.PATIENT) {
                     LOG.info("Get patient ids request");
 
-                    this.sendPersonIds(this.databaseService.findPatientIds(), message.getTaskId());
+                    Set<String> ids = this.databaseService.findPatientIds();
+                    this.sendIds(Person.NONE, "-1", Task.PATIENT_ID, message.getTaskId(), ids);
                 }
+            }
+            case MEAL -> {
+                LOG.info("New meal request");
+
+                if (message.getTaskId().equals("-1")) {
+                    break;
+                }
+
+                this.sendMeal(this.databaseService.findMeal(message.getTaskId()));
+            }
+            case MEAL_ID -> {
+                LOG.info("New meal id request");
+
+                if (message.getPersonId().equals("-1")) {
+                    break;
+                }
+
+                Set<String> ids = this.databaseService.findMealIds(message.getPersonId());
+                this.sendIds(Person.PATIENT, message.getPersonId(), Task.MEAL_ID, message.getTaskId(), ids);
             }
             case MEAL_NAME -> {
                 LOG.info("New meal name");
@@ -182,6 +199,44 @@ public class StaffMessageHandlerService {
                     this.sendId(Person.PATIENT, message.getPersonId(), Task.MEAL_ID, response.getId(), response.getId());
                 }
             }
+            case ANSWER -> {
+                LOG.info("New answer request");
+
+                if (message.getTaskId().equals("-1")) {
+                    break;
+                }
+
+                this.sendAnswer(this.databaseService.findAnswer(message.getTaskId()));
+            }
+            case ANSWER_ID -> {
+                LOG.info("New answer id request");
+
+                if (message.getPersonId().equals("-1")) {
+                    break;
+                }
+
+                Set<String> ids = this.databaseService.findAnswerIds(message.getPersonId());
+                this.sendIds(Person.PATIENT, message.getPersonId(), Task.ANSWER_ID, message.getTaskId(), ids);
+            }
+            case QUESTION -> {
+                LOG.info("New question request: " + message.getData());
+
+                if (message.getTaskId().equals("-1")) {
+                    break;
+                }
+
+                this.sendQuestion(this.databaseService.findQuestion(message.getTaskId()));
+            }
+            case QUESTION_ID -> {
+                LOG.info("New question ids request: " + message.getData());
+
+                if (message.getPersonId().equals("-1")) {
+                    break;
+                }
+
+                Set<String> ids = this.databaseService.findQuestionIds(message.getPersonId());
+                this.sendIds(Person.PATIENT, message.getPersonId(), Task.QUESTION_ID, message.getTaskId(), ids);
+            }
             case QUESTION_TEXT -> {
                 if (message.getPerson() == Person.PATIENT) {
                     LOG.info("Received new question for patient " + message.getPersonId() + ": " + message.getData());
@@ -218,6 +273,18 @@ public class StaffMessageHandlerService {
         }
     }
 
+    public void sendMeal(Meal meal) {
+        if (meal == null) {
+            return;
+        }
+
+        this.send(Person.NONE, "-1", Task.MEAL_NAME, meal.getId(), meal.getName());
+        this.send(Person.NONE, "-1", Task.MEAL_DESCRIPTION, meal.getId(), meal.getDescription());
+        this.send(Person.NONE, "-1", Task.MEAL_CALORIES, meal.getId(), meal.getCalories());
+        this.send(Person.NONE, "-1", Task.MEAL_ALLERGIES, meal.getId(), String.valueOf(meal.getAllergies() == null ? new HashSet<>() : meal.getAllergies()));
+        this.send(Person.NONE, "-1", Task.MEAL_IMAGE, meal.getId(), meal.getImage());
+    }
+
     public void sendPatient(Patient patient, String taskId) {
         if (patient == null) {
             return;
@@ -228,8 +295,27 @@ public class StaffMessageHandlerService {
         this.send(Person.PATIENT, patient.getId(), Task.PATIENT_ALLERGIES, taskId, String.valueOf(patient.getAllergies() == null ? new HashSet<>() : patient.getAllergies()));
     }
 
-    public void sendPersonIds(Set<String> ids, String taskId) {
-        this.send(Person.PATIENT, "-1", Task.PATIENT_ID, taskId, String.valueOf(ids));
+    public void sendQuestion(Question question) {
+        if (question == null) {
+            return;
+        }
+
+        this.send(Person.PATIENT, question.getPatientId(), Task.QUESTION_TEXT, question.getId(), question.getText());
+        this.send(Person.PATIENT, question.getPatientId(), Task.QUESTION_TIMESTAMP, question.getId(), String.valueOf(question.getTimestamp().toEpochSecond(ZoneOffset.UTC)));
+    }
+
+    public void sendAnswer(Answer answer) {
+        if (answer == null) {
+            return;
+        }
+
+        this.send(Person.PATIENT, answer.getPatientId(), Task.ANSWER_QUESTION_ID, answer.getId(), answer.getQuestionId());
+        this.send(Person.PATIENT, answer.getPatientId(), Task.ANSWER_TEXT, answer.getId(), answer.getText());
+        this.send(Person.PATIENT, answer.getPatientId(), Task.ANSWER_TIMESTAMP, answer.getId(), String.valueOf(answer.getTimestamp().toEpochSecond(ZoneOffset.UTC)));
+    }
+
+    public void sendIds(Person person, String personId, Task task, String taskId, Set<String> ids) {
+        this.send(person, personId, task, taskId, String.valueOf(ids));
     }
 
     public void sendId(Person person, String personId, Task task, String taskId, String id) {

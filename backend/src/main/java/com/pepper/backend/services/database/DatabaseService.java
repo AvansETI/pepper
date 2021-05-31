@@ -142,6 +142,38 @@ public class DatabaseService {
         return new Response(id, isNew);
     }
 
+    public Set<String> findNonAllergicMealIds(String patientId) {
+        Set<String> ids = new HashSet<>();
+
+        Patient patient = this.patientRepository.findById(patientId).orElse(null);
+
+        if (patient != null) {
+            for (Meal meal : this.mealRepository.findAll()) {
+                for (Allergy allergyMeal : meal.getAllergies()) {
+                    if (!patient.getAllergies().contains(allergyMeal)) {
+                        ids.add(meal.getId());
+                    }
+                }
+            }
+        }
+
+        return ids;
+    }
+
+    public Set<String> findMealIds(String patientId) {
+        Set<String> ids = new HashSet<>();
+
+        for (Meal meal : this.mealRepository.findAll()) {
+            ids.add(meal.getId());
+        }
+
+        return ids;
+    }
+
+    public Meal findMeal(String id) {
+        return this.mealRepository.findById(id).orElse(null);
+    }
+
     public Response saveMealOrder(MealOrder order) {
         String id;
         boolean isNew = false;
@@ -239,6 +271,22 @@ public class DatabaseService {
         return new Response(id, isNew);
     }
 
+    public Set<String> findAnswerIds(String patientId) {
+        Set<String> ids = new HashSet<>();
+
+        for (Answer answer : this.answerRepository.findAll()) {
+            if (answer.getPatientId().equals(patientId)) {
+                ids.add(answer.getId());
+            }
+        }
+
+        return ids;
+    }
+
+    public Answer findAnswer(String id) {
+        return this.answerRepository.findById(id).orElse(null);
+    }
+
     public Response saveQuestion(Question question) {
         String id;
         boolean isNew = false;
@@ -288,6 +336,18 @@ public class DatabaseService {
             }
 
             if (!match) {
+                ids.add(question.getId());
+            }
+        }
+
+        return ids;
+    }
+
+    public Set<String> findQuestionIds(String patientId) {
+        Set<String> ids = new HashSet<>();
+
+        for (Question question : this.questionRepository.findAll()) {
+            if (question.getPatientId().equals(patientId)) {
                 ids.add(question.getId());
             }
         }
