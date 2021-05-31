@@ -13,9 +13,9 @@ dynamic: meals
 #### Dialoog ####
 u:(~robot ~start ^exact) ^execute(navigateScreen, nav, INTRO) ^enableThenGoto(INTRO)
 
-proposal: %INTRO Welkom mijn naam is Pepper! Vandaag zal ik het werk van mijn collega overnemen dot ^execute(navigateScreen, nav, ID) ^enableThenGoto(ID)
+proposal: %INTRO Welkom mijn naam is Pepper! Vandaag zal ik het werk van mijn collega overnemen ^execute(navigateScreen, nav, ID) ^enableThenGoto(ID)
 
-proposal: %ID Om verder te gaan met het proces heb ik uw ID nodig dot
+proposal: %ID Om verder te gaan met het proces heb ik uw ID nodig
     u1: (_~numbers) ^execute(selectPatientId, pid, $1) ^enableThenGoto(IDCHECK)
     u1: (~repeat) ^sameProposal
 
@@ -43,7 +43,7 @@ proposal: %ORDERCHECK Klopt uw gekozen maaltijd?
 
 proposal: %MEDICATION Dit zijn de herinneringen voor vandaag! ^execute(navigateChoice, navch, MEDICATION) ^enableThenGoto(QUESTION)
 
-proposal: %QUESTION De verpleegkundige heeft de volgende vraag gesteld dot ^enableThenGoto(QUESTIONEXPLAIN) ^enableThenGoto(QUESTIONEXPLAIN)
+proposal: %QUESTION De verpleegkundige heeft de volgende vraag gesteld ^enableThenGoto(QUESTIONEXPLAIN)
 
 proposal: %QUESTIONEXPLAIN Wat is jouw antwoord hierop?
     u1: (_*) ^execute(inputFeedbackExplain, qexp, $1) ^enableThenGoto(QUESTIONCHECK)
@@ -67,4 +67,4 @@ proposal: %FEEDBACKCHECK Klopt het antwoord gegeven in de dialoog?
     u1: (~yes) ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateScreen, nav, GOODBYE) ^enableThenGoto(GOODBYE)
     u1: (~repeat) ^sameProposal
 
-proposal: %GOODBYE Tot ziens ~name dot Ik wens u nog een fijne dag tegemoet! ^execute(navigateScreen, nav, STANDBY)
+proposal: %GOODBYE Tot ziens ~name Ik wens u nog een fijne dag tegemoet! ^execute(navigateScreen, nav, STANDBY)

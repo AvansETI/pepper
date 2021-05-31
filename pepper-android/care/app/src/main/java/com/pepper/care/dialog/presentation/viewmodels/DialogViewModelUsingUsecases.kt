@@ -263,8 +263,11 @@ class DialogViewModelUsingUsecases(
         viewModelScope.launch {
             when (val result = getName.invoke()) {
                 is AppResult.Success -> {
-                    fetchedName.postValue(result.successData)
-                    RobotManager.addDynamicContents(DynamicConcepts.NAME, listOf(Phrase(result.successData)))
+                    fetchedName.apply { value = result.successData }
+                    RobotManager.addDynamicContents(
+                        DynamicConcepts.NAME,
+                        listOf(Phrase(result.successData))
+                    )
                 }
                 is AppResult.Error -> result.exception.message
             }
