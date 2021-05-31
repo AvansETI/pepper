@@ -19,7 +19,7 @@ proposal: %ID Om verder te gaan met het proces heb ik uw ID nodig
     u1: (_~numbers) ^execute(selectPatientId, pid, $1) ^enableThenGoto(IDCHECK)
     u1: (~repeat) ^sameProposal
 
-proposal: %IDCHECK Klopt het dat dit uw id is?
+proposal: %IDCHECK Bent u deze persoon?
     u1: (~no)  ^execute(confirmDialogSelect, cfdlg, NO) ^previousProposal
     u1: (~yes)  ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateScreen, nav, PATIENT) ^enableThenGoto(PATIENT)
     u1: (~repeat) ^sameProposal

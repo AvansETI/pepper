@@ -1,9 +1,9 @@
 package com.pepper.care
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
@@ -18,7 +18,7 @@ import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayP
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy
 import com.example.awesomedialog.*
 import com.pepper.care.common.AppResult
-import com.pepper.care.common.DialogCallback
+import com.pepper.care.common.CommonConstants
 import com.pepper.care.common.DialogUtil
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
 import com.pepper.care.core.services.mqtt.MqttMessageCallbacks
@@ -41,6 +41,7 @@ import java.util.*
 class MainActivity : RobotActivity(), MqttMessageCallbacks {
 
     private val getAvailableScreens: GetAvailableScreensUseCaseUsingRepository by inject()
+    private val sharedPreferences: SharedPreferences.Editor by inject()
     private val getPatientName: GetPatientNameUseCaseUsingRepository by inject()
     private val showingDialog: MutableLiveData<AlertDialog> = MutableLiveData()
     private val givenFeedbackNumber: MutableLiveData<Int> = MutableLiveData()
@@ -145,7 +146,10 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                     }
                     PepperAction.INPUT_EXPLAIN_QUESTION -> {
                         val questionExplanation = string!!
-                        Log.d(MainActivity::class.simpleName, "Question explained: $questionExplanation")
+                        Log.d(
+                            MainActivity::class.simpleName,
+                            "Question explained: $questionExplanation"
+                        )
                         this@MainActivity.showingDialog.postValue(
                             DialogUtil.buildDialog(
                                 this@MainActivity,
@@ -156,13 +160,10 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                         )
                     }
                     PepperAction.SELECT_FEEDBACK_NUMBER -> {
-                        val feedbackNumber = string!!
+                        val feedbackNumber = Integer.parseInt(string!!)
                         Log.d(MainActivity::class.simpleName, "Feedback number: $feedbackNumber")
-                        this@MainActivity.givenFeedbackNumber.postValue(
-                            Integer.parseInt(
-                                feedbackNumber
-                            )
-                        )
+                        this@MainActivity.givenFeedbackNumber.postValue(feedbackNumber)
+                        sharedPreferences.putInt(CommonConstants.COMMON_SHARED_PREF_UPDATE_FEEDBACK_SLIDER, feedbackNumber).commit()
                     }
                     PepperAction.INPUT_EXPLAIN_FEEDBACK -> {
                         val givenFeedback = string!!
@@ -199,7 +200,7 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
     }
 
     private fun navigationSliderActionHandler(action: SliderAction) {
-        when(action){
+        when (action) {
             SliderAction.LAUNCH -> {
                 startActivity(Intent(this, InfoSliderActivity::class.java))
             }
