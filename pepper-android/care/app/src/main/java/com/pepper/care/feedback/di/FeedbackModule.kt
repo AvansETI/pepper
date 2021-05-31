@@ -20,7 +20,7 @@ val feedbackModule = module {
         AddPatientGivenHealthFeedbackUseCaseUsingRepository(get())
     }
     viewModel {
-        FeedbackViewModelUsingUsecases(get(), get())
+        FeedbackViewModelUsingUsecases(get(), get(), get())
     }
 }
 

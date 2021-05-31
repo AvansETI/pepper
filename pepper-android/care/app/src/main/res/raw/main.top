@@ -1,0 +1,80 @@
+topic: ~main ^resetOnFocus()
+#### DIT DOCUMENT BEVAT DE STANDAARD DIALOGEN ####
+concept:(robot) [pepper care robot wereld]
+concept:(greeting) [hallo hi hey goedemorgen]
+concept:(goingGreat) ["Wat fijn om te horen!" "Fantastisch!"]
+concept:(time) [tijd hoelaat "Hoelaat is het nu?" "Wat is de tijd?" "Hoelaat is het?"]
+concept:(day) [dag "Welke dag is het?" "Wat is de dag vandaag?" "Welke dag?"]
+concept:(good) [goed prima "Het gaat goed" "Ik voel me prima"]
+concept:(bad) [slecht moe "Het gaat slecht" "Ik voel me slecht"]
+concept:(yes) [ja jazeker]
+concept:(no) [nee niet]
+
+concept:(repeat) [herhaal "Kan je het herhalen?"]
+concept:(notUnderstood) ["Ik begrijp u niet helemaal" "Ik kan u niet goed verstaan"]
+
+#### Begroeting ####
+u:(~greeting ~robot) ~greeting ^enableThenGoto(convo)
+
+#### Interactie ####
+proposal: %convo Hoe gaat het?
+  u1:(~good ^exact) ~goingGreat ^enableThenGoto(ending)
+  u1:(~bad ^exact) ^gotoRandom(badfeeling)
+  u1:(~repeat) ^sameProposal
+
+proposal: %badfeeling Wil je een mop horen? $feelingEvent=mop
+  u1: (~no) ^enableThenGoto(ending)
+  u1: (~yes) ~jokes ^enableThenGoto(feelingbetter)
+  u1: (~repeat) ^sameProposal
+
+proposal: %badfeeling Wil je een quote horen? $feelingEvent=quote
+  u1: (~no) ^enableThenGoto(ending)
+  u1: (~yes) ~quotes ^enableThenGoto(feelingbetter)
+  u1: (~repeat) ^sameProposal
+
+proposal: %badfeeling Wil je een raadsel horen? $feelingEvent=raadsel
+  u1: (~no) ^enableThenGoto(ending)
+  u1: (~yes) ~riddles ^enableThenGoto(feelingbetter)
+  u1: (~repeat) ^sameProposal
+
+proposal: %feelingbetter Wil je nog een $feelingEvent horen?
+  u1: (~no) ^enableThenGoto(ending)
+  u1: (~yes) ^first[
+                "$feelingEvent==mop ~jokes ^sameProposal"
+                "$feelingEvent==quote ~quotes ^sameProposal"
+                "$feelingEvent==raadsel ~riddles ^sameProposal"
+            ]
+  u1: (~repeat) ^sameProposal
+
+proposal: %ending Nog een fijne dag toegewenst!
+
+#### Extra ####
+u:(~time) Het is nu ^currentTime
+u:(~day) Vandaag is het ^currentDate
+
+#### Moppen ####
+concept:(jokes) [
+    "Hoe noem je het kind van een slechte jager? Een vegetariër"
+    "Wat zit er tussen de hemel en aarde? en"
+    "Wat is het voordeel van dement zijn? Je kan je eigen paaseieren verstoppen"
+    "Hoe komt het dat de kerstman nooit vooruit gaat? Hij roept altijd ho ho ho"
+    "Waar koopt een koe zijn kleren? In de boe tiek"
+]
+
+#### Quotes ####
+concept:(quotes) [
+    "Om nieuwe dingen in je leven toe te laten zul je soms eerst oude dingen los moeten laten"
+    "Als je denkt dat alles tegenzit denk dan opnieuw"
+    "Blijf niet hangen in het verleden Dat is voorbij Raak niet gestrest van de toekomst Zo ver is het nog niet Leef in het heden en geniet"
+    "Wacht niet op een goede dag maak er een"
+    "Wees dankbaar voor wat je hebt Je wil niet weten hoeveel mensen er zijn die dat willen hebben wat jij hebt"
+]
+
+#### Raadsels ####
+concept:(riddles) [
+    "Waarom loopt een schaap nogal wankelig? Omdat hij lam is geweest"
+    "Wat is ver te zoeken op een verening voor doven en slechthorenden? Saamhorigheid"
+    "Wat is het meervoud van auto? file"
+    "Hoe noem je een raadselachtige kerst? Een Quizmas"
+    "Wat staat er op het graf van een robot? Roest in vrede"
+]

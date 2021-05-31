@@ -46,6 +46,6 @@ class HomeFragment : BaseFragment() {
     }
 
     private fun bindToEvents() {
-
+        viewModel.onCreated()
     }
 }

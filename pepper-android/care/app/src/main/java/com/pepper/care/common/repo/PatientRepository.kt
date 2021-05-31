@@ -12,7 +12,7 @@ interface PatientRepository {
 class PatientRepositoryImpl : PatientRepository {
 
     override suspend fun fetchName(): AppResult<String> {
-        return AppResult.Success("Peter de Jonge")
+        return AppResult.Success("Peter")
     }
 
     override suspend fun fetchBirthDate(): AppResult<DateTime> {

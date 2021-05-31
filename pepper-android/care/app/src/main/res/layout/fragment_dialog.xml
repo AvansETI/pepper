@@ -85,19 +85,19 @@
                 app:layout_constraintTop_toTopOf="@+id/guideline11"
                 app:layout_constraintVertical_weight="3" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/nextFab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:layout_margin="16dp"
-                android:onClick="@{() -> viewModel.fabCallback.onClick(nextFab)}"
-                android:src="@drawable/ic_baseline_chevron_right_24"
-                app:fabIcon="@{viewModel.fabType}"
-                app:isVisible="@{viewModel.isNextButtonVisible()}"
-                app:backgroundTint="@color/whiteAlternative"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+<!--            <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--                android:id="@+id/nextFab"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="end|bottom"-->
+<!--                android:layout_margin="16dp"-->
+<!--                android:onClick="@{() -> viewModel.fabCallback.onClick(nextFab)}"-->
+<!--                android:src="@drawable/ic_baseline_chevron_right_24"-->
+<!--                app:fabIcon="@{viewModel.fabType}"-->
+<!--                app:isVisible="@{viewModel.isNextButtonVisible()}"-->
+<!--                app:backgroundTint="@color/whiteAlternative"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent" />-->
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline11"

@@ -54,21 +54,21 @@
                 app:layout_constraintTop_toBottomOf="@+id/imageView2"
                 app:layout_constraintVertical_weight="3" />
 
-            <Button
-                android:id="@+id/more_info"
-                style="@style/Pepper_Care_Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="16dp"
-                android:text="@{viewModel.buttonText}"
-                android:textSize="11sp"
-                android:textColor="@color/colorAccent"
-                android:background="@drawable/button_round"
-                android:onClick="@{() -> viewModel.goToNextScreen(moreInfo)}"
-                app:icon="@null"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/description" />
+<!--            <Button-->
+<!--                android:id="@+id/more_info"-->
+<!--                style="@style/Pepper_Care_Button"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginVertical="16dp"-->
+<!--                android:text="@{viewModel.buttonText}"-->
+<!--                android:textSize="11sp"-->
+<!--                android:textColor="@color/colorAccent"-->
+<!--                android:background="@drawable/button_round"-->
+<!--                android:onClick="@{() -> viewModel.goToNextScreen(moreInfo)}"-->
+<!--                app:icon="@null"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/description" />-->
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline11"
