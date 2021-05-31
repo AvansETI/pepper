@@ -34,7 +34,7 @@ public enum Task {
 
     REMINDER,
     REMINDER_ID,
-    REMINDER_MEDICINE,
+    REMINDER_THING,
     REMINDER_TIMESTAMP,
 
     PATIENT,

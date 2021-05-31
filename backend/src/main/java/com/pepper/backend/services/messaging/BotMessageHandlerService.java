@@ -222,9 +222,6 @@ public class BotMessageHandlerService {
                     this.sendId(Person.PATIENT, message.getPersonId(), Task.ANSWER_ID, response.getId(), response.getId());
                 }
             }
-            case REMINDER -> {
-                LOG.info("New reminder: " + message.getData());
-            }
             case PATIENT -> {
                 LOG.info("Get patient request");
 
@@ -281,6 +278,25 @@ public class BotMessageHandlerService {
                     this.sendId(Person.PATIENT, response.getId(), Task.PATIENT_ID, message.getTaskId(), response.getId());
                 }
             }
+            case REMINDER -> {
+                LOG.info("New reminder request");
+
+                if (message.getTaskId().equals("-1")) {
+                    break;
+                }
+
+                this.sendReminder(this.databaseService.findReminder(message.getTaskId()));
+            }
+            case REMINDER_ID -> {
+                LOG.info("New reminder id request");
+
+                if (message.getPersonId().equals("-1")) {
+                    break;
+                }
+
+                Set<String> ids = this.databaseService.findReminderTodayIds(message.getPersonId());
+                this.sendIds(Person.PATIENT, message.getPersonId(), Task.REMINDER_ID, message.getTaskId(), ids);
+            }
             default -> {
                 LOG.error("Unknown command: " + message.getTask());
             }
@@ -298,6 +314,15 @@ public class BotMessageHandlerService {
         this.send(Person.NONE, "-1", Task.MEAL_CALORIES, meal.getId(), meal.getCalories());
         this.send(Person.NONE, "-1", Task.MEAL_ALLERGIES, meal.getId(), String.valueOf(meal.getAllergies() == null ? new HashSet<>() : meal.getAllergies()));
         this.send(Person.NONE, "-1", Task.MEAL_IMAGE, meal.getId(), meal.getImage());
+    }
+
+    public void sendReminder(Reminder reminder) {
+        if (reminder == null) {
+            return;
+        }
+
+        this.send(Person.PATIENT, reminder.getPatientId(), Task.REMINDER_THING, reminder.getId(), reminder.getThing());
+        this.send(Person.PATIENT, reminder.getPatientId(), Task.REMINDER_TIMESTAMP, reminder.getId(), String.valueOf(reminder.getTimestamp().toEpochSecond(ZoneOffset.UTC)));
     }
 
     public void sendQuestion(Question question) {

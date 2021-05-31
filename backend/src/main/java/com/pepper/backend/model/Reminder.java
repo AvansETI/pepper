@@ -21,7 +21,7 @@ public class Reminder {
 
     private String patientId;
 
-    private String medicine;
+    private String thing;
 
     private LocalDateTime timestamp;
 

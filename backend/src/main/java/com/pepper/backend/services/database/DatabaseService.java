@@ -160,7 +160,7 @@ public class DatabaseService {
         return ids;
     }
 
-    public Set<String> findMealIds(String patientId) {
+    public Set<String> findMealIds() {
         Set<String> ids = new HashSet<>();
 
         for (Meal meal : this.mealRepository.findAll()) {
@@ -205,6 +205,22 @@ public class DatabaseService {
         return new Response(id, isNew);
     }
 
+    public Set<String> findMealOrderTodayIds() {
+        Set<String> ids = new HashSet<>();
+
+        for (MealOrder order : this.mealOrderRepository.findAll()) {
+            if (order.getTimestamp().toLocalDate().equals(LocalDate.now())) {
+                ids.add(order.getId());
+            }
+        }
+
+        return ids;
+    }
+
+    public MealOrder findMealOrder(String id) {
+        return this.mealOrderRepository.findById(id).orElse(null);
+    }
+
     public Response saveFeedback(Feedback feedback) {
         String id;
         boolean isNew = false;
@@ -236,6 +252,22 @@ public class DatabaseService {
         }
 
         return new Response(id, isNew);
+    }
+
+    public Set<String> findFeedbackIds(String patientId) {
+        Set<String> ids = new HashSet<>();
+
+        for (Feedback feedback : this.feedbackRepository.findAll()) {
+            if (feedback.getPatientId().equals(patientId)) {
+                ids.add(feedback.getId());
+            }
+        }
+
+        return ids;
+    }
+
+    public Feedback findFeedback(String id) {
+        return this.feedbackRepository.findById(id).orElse(null);
     }
 
     public Response saveAnswer(Answer answer) {
@@ -357,6 +389,53 @@ public class DatabaseService {
 
     public Question findQuestion(String id) {
         return this.questionRepository.findById(id).orElse(null);
+    }
+
+    public Response saveReminder(Reminder reminder) {
+        String id;
+        boolean isNew = false;
+
+        if (reminder.getId().equals("-1")) {
+            id = this.nextSequenceService.getNextSequence("reminder");
+            isNew = true;
+        } else {
+            id = reminder.getId();
+        }
+
+        Optional<Reminder> founded = this.reminderRepository.findById(id);
+
+        if (founded.isEmpty()) {
+            reminder.setId(id);
+            this.reminderRepository.save(reminder);
+        } else {
+            Reminder reminderFounded = founded.get();
+
+            if (reminder.getThing() != null) {
+                reminderFounded.setThing(reminder.getThing());
+            } else if (reminder.getTimestamp() != null) {
+                reminderFounded.setTimestamp(reminder.getTimestamp());
+            }
+
+            this.reminderRepository.save(reminderFounded);
+        }
+
+        return new Response(id, isNew);
+    }
+
+    public Set<String> findReminderTodayIds(String patientId) {
+        Set<String> ids = new HashSet<>();
+
+        for (Reminder reminder : this.reminderRepository.findAll()) {
+            if (reminder.getPatientId().equals(patientId) && reminder.getTimestamp().toLocalDate().equals(LocalDate.now())) {
+                ids.add(reminder.getId());
+            }
+        }
+
+        return ids;
+    }
+
+    public Reminder findReminder(String id) {
+        return this.reminderRepository.findById(id).orElse(null);
     }
 
 }
