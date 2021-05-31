@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document("order")
+@Document("mealOrder")
 public class MealOrder {
 
     @Id
@@ -21,7 +21,7 @@ public class MealOrder {
 
     private String patientId;
 
-    private String meal;
+    private String mealId;
 
     private LocalDateTime timestamp;
 

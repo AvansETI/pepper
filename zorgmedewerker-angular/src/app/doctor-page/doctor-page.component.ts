@@ -11,6 +11,7 @@ export class DoctorPageComponent implements OnInit {
 
   patients: Patient[] = [];
   selectedPatient: Patient = null;
+  question: string = ''
 
   constructor(private messageHandler: MessageHandlerService) {
     this.messageHandler.getEventHandler().subscribe((patients) => { this.patients = patients });
@@ -30,6 +31,11 @@ export class DoctorPageComponent implements OnInit {
 
   formatAllergies(allergies: Set<Allergy>): string {
     return Array.from(allergies).join(', ').toLowerCase()
+  }
+
+  onSend(id: string): void {
+    this.messageHandler.sendQuestionToPatient(id, this.question);
+    this.question = '';
   }
 
 }

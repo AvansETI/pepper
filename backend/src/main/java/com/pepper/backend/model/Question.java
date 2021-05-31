@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,5 +22,7 @@ public class Question {
     private String patientId;
 
     private String text;
+
+    private LocalDateTime timestamp;
 
 }
