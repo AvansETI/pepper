@@ -170,22 +170,22 @@
                 app:layout_constraintTop_toTopOf="@+id/guideline8" />
 
 
-            <Button
-                android:id="@+id/select_meal"
-                style="@style/Pepper_Care_Button"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="16dp"
-                android:layout_marginStart="28dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/button_round"
-                android:onClick="@{() -> viewModel.goToNextScreen(selectMeal)}"
-                android:text="@{viewModel.buttonDetailText}"
-                android:textColor="@color/colorAccent"
-                android:textSize="11sp"
-                app:icon="@null"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline7" />
+<!--            <Button-->
+<!--                android:id="@+id/select_meal"-->
+<!--                style="@style/Pepper_Care_Button"-->
+<!--                android:layout_width="120dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginVertical="16dp"-->
+<!--                android:layout_marginStart="28dp"-->
+<!--                android:layout_marginBottom="16dp"-->
+<!--                android:background="@drawable/button_round"-->
+<!--                android:onClick="@{() -> viewModel.goToNextScreen(selectMeal)}"-->
+<!--                android:text="@{viewModel.buttonDetailText}"-->
+<!--                android:textColor="@color/colorAccent"-->
+<!--                android:textSize="11sp"-->
+<!--                app:icon="@null"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="@+id/guideline7" />-->
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline7"

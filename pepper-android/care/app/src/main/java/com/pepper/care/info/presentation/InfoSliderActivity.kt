@@ -1,17 +1,14 @@
 package com.pepper.care.info.presentation
 
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.github.appintro.AppIntro
 import com.github.appintro.AppIntroCustomLayoutFragment
 import com.github.appintro.AppIntroPageTransformerType
-import com.pepper.care.MainActivity
 import com.pepper.care.R
 
-class InfoSliderActivity : AppIntro() {
+class InfoSliderActivity : AppIntro(), SliderCallback {
 
     override val layoutId = R.layout.activity_info_slider
 
@@ -35,8 +32,16 @@ class InfoSliderActivity : AppIntro() {
         isSystemBackButtonLocked = true
 
         setIndicatorColor(
-            selectedIndicatorColor = ResourcesCompat.getColor(resources, R.color.colorAccent, theme),
-            unselectedIndicatorColor = ResourcesCompat.getColor(resources, R.color.transparentNotSelected, theme)
+            selectedIndicatorColor = ResourcesCompat.getColor(
+                resources,
+                R.color.colorAccent,
+                theme
+            ),
+            unselectedIndicatorColor = ResourcesCompat.getColor(
+                resources,
+                R.color.transparentNotSelected,
+                theme
+            )
         )
 
         setTransformer(AppIntroPageTransformerType.Flow)
@@ -52,6 +57,14 @@ class InfoSliderActivity : AppIntro() {
 
     override fun onDonePressed(currentFragment: Fragment?) {
         super.onDonePressed(currentFragment)
+        finish()
+    }
+
+    override fun nextSlide() {
+        this@InfoSliderActivity.goToNextSlide(false)
+    }
+
+    override fun cancelSlides() {
         finish()
     }
 }

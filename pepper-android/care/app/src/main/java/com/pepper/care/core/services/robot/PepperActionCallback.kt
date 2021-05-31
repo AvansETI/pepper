@@ -7,6 +7,7 @@ interface PepperActionCallback {
 enum class PepperAction {
     NAVIGATE_TO,
     NAVIGATE_TO_CHOICE,
+    NAVIGATE_SLIDER,
     SELECT_PATIENT_ID,
     SELECT_FEEDBACK_NUMBER,
     INPUT_EXPLAIN_FEEDBACK,

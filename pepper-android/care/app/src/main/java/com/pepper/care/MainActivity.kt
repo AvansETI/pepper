@@ -28,6 +28,8 @@ import com.pepper.care.dialog.DialogRoutes
 import com.pepper.care.dialog.common.usecases.GetAvailableScreensUseCaseUsingRepository
 import com.pepper.care.feedback.entities.FeedbackEntity
 import com.pepper.care.info.presentation.InfoSliderActivity
+import com.pepper.care.info.presentation.SliderAction
+import com.pepper.care.info.presentation.SliderCallback
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
@@ -124,7 +126,7 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                                     this@MainActivity,
                                     it,
                                     DialogRoutes.ID,
-                                    dialogCallback
+                                    null
                                 )
                             )
                         }
@@ -137,7 +139,7 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                                 this@MainActivity,
                                 selectedMeal,
                                 DialogRoutes.ORDER,
-                                dialogCallback
+                                null
                             )
                         )
                     }
@@ -149,7 +151,7 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                                 this@MainActivity,
                                 questionExplanation,
                                 DialogRoutes.FEEDBACK,
-                                dialogCallback
+                                null
                             )
                         )
                     }
@@ -176,7 +178,7 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                                     }
                                 }, $givenFeedback",
                                 DialogRoutes.FEEDBACK,
-                                dialogCallback
+                                null
                             )
                         )
                     }
@@ -185,22 +187,30 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                         Log.d(MainActivity::class.simpleName, "Confirm dialog: $selected")
                         showingDialog.apply { value!!.cancel() }
                     }
+                    PepperAction.NAVIGATE_SLIDER -> {
+                        val action = string!!
+                        Log.d(MainActivity::class.simpleName, "Navigation slider: $action")
+                        navigationSliderActionHandler(SliderAction.valueOf(action))
+                    }
                     else -> throw IllegalStateException("Not a valid option")
                 }
             }
         }
     }
 
-    private val dialogCallback: DialogCallback =
-        object : DialogCallback {
-            override fun onDialogConfirm(view: View) {
+    private fun navigationSliderActionHandler(action: SliderAction) {
+        when(action){
+            SliderAction.LAUNCH -> {
+                startActivity(Intent(this, InfoSliderActivity::class.java))
+            }
+            SliderAction.NEXT -> {
 
             }
-
-            override fun onDialogDeny(view: View) {
+            SliderAction.CANCEL -> {
 
             }
         }
+    }
 
     private fun screenNavigationHandler(route: DialogRoutes) {
         when (route) {

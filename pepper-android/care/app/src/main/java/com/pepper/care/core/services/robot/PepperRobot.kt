@@ -15,7 +15,7 @@ class PepperRobot(
     val callback: PepperActionCallback
 ): RobotLifecycleCallbacks {
 
-    private val resourceIds: IntArray = intArrayOf(R.raw.main, R.raw.dialog)
+    private val resourceIds: IntArray = intArrayOf(R.raw.main, R.raw.dialog, R.raw.inform)
     private val conceptHashMap: HashMap<DynamicConcepts, EditablePhraseSet?> = HashMap()
 
     private lateinit var future: Future<Void>
@@ -118,6 +118,7 @@ class PepperRobot(
         executors["inputFeedbackExplain"] = PepperQiChatExecutor(context, callback)
         executors["inputQuestionExplain"] = PepperQiChatExecutor(context, callback)
         executors["confirmDialogSelect"] = PepperQiChatExecutor(context, callback)
+        executors["navigateSlider"] = PepperQiChatExecutor(context, callback)
         chatBot.executors = executors
     }
 

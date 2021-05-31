@@ -8,6 +8,7 @@ import androidx.core.content.res.ResourcesCompat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
+@ExperimentalStdlibApi
 @FlowPreview
 @ExperimentalCoroutinesApi
 class SplashScreenActivity : AppCompatActivity() {

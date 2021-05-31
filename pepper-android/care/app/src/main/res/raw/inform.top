@@ -1,0 +1,23 @@
+topic: ~inform ^resetOnFocus()
+#### DIT DOCUMENT BEVAT DE DIALOOG VOOR HET INFORMATIE SCHERM ####
+concept:(info) [info informatie "meer informatie"]
+
+#### Dialoog ####
+u:(~robot ~info ^exact) ^execute(navigateSlider, navsr, LAUNCH)
+
+proposal: %ISLIDE ^enumerate(~icontent) ^enableThenGoto(FUNCSLIDE)
+
+proposal: %FUNCSLIDE Pepper maakt gebruik van technische snufjes om jouw op weg te helpen dot Om met Pepper te communiceren kan je gebruik maken van de spraak of schermfunctionaliteit dot ^execute(navigateSlider, navsr, NEXT) ^enableThenGoto(DATASLIDE)
+
+proposal: %DATASLIDE Tijdens het voeren van een dialoog wordt informatie over de gebruiker tijdelijk opgeslagen dot Deze informatie wordt na elk scherm weer verwijderd dot ^execute(navigateSlider, navsr, NEXT) ^enableThenGoto(ERRORSLIDE)
+
+proposal: %ERRORSLIDE Het kan gebeuren dat mijn software niet naar toebehoren werkt dot In deze situatie moet men contact opnemen met een werknemer op de vloer dot ^execute(navigateSlider, navsr, NEXT) ^enableThenGoto(MADESLIDE)
+
+proposal: %MADESLIDE De Pepper is een initiatief van het GET lab een plek waarbij de wereld van zorg en technologie samenkomen dot Het project ondersteund {toekomstige} zorgprofessionals dot ^execute(navigateSlider, navsr, CANCEL)
+
+#### Tekst op slides ####
+concept:(icontent) [
+    "Hallo ik ben Pepper de robot assistent van de toekomst dot"
+    "Ik verlicht het werk van mijn collegas op de werkvloer dot"
+    "Dit maakt het leven van jou en werknemers net wat makkelijker dot"
+]

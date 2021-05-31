@@ -10,19 +10,19 @@ import com.pepper.care.dialog.DialogRoutes
 
 object DialogUtil {
 
-    fun buildDialog(view: View, body: String, screen: DialogRoutes, callback: DialogCallback) : AlertDialog{
+    fun buildDialog(view: View, body: String, screen: DialogRoutes, callback: DialogCallback?) : AlertDialog{
         return buildDialog(view.context as Activity, body, screen, callback)
     }
 
-    fun buildDialog(activity: Activity, body: String, screen: DialogRoutes, callback: DialogCallback) : AlertDialog{
+    fun buildDialog(activity: Activity, body: String, screen: DialogRoutes, callback: DialogCallback?) : AlertDialog{
         return AwesomeDialog.build(activity)
             .title(getDialogTitle(screen), Typeface.DEFAULT_BOLD, R.color.black)
             .body(getDialogBody(body, screen), null, R.color.black)
             .onPositive("Ja, dit klopt!", R.color.green) {
-                callback.onDialogConfirm(activity.window.decorView.rootView)
+                callback?.onDialogConfirm(activity.window.decorView.rootView)
             }
             .onNegative("Nee, dit klopt niet!", R.color.red) {
-                callback.onDialogDeny(activity.window.decorView.rootView)
+                callback?.onDialogDeny(activity.window.decorView.rootView)
             }
     }
 
