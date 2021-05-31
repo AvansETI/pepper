@@ -33,5 +33,6 @@
     <color name="ButtonStrokeColor">@color/colorAccent</color>
     <color name="ButtonIconTintColor">@color/colorAccent</color>
     <color name="ButtonBackgroundColor">@color/whiteAlternative</color>
+    <color name="iconColor">@color/white</color>
 
 </resources>

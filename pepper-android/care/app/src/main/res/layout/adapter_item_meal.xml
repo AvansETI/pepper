@@ -47,7 +47,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    style="@style/Pepper_Care_Title_Text"
+                    style="@style/Pepper_Care_Title_Text_Green"
                     android:id="@+id/meal_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

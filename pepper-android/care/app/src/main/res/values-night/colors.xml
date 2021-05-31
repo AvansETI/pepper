@@ -7,11 +7,12 @@
     <color name="toolBarIconsColor">@color/whiteAlternative</color>
     <color name="titleTextColor">@color/colorPrimary</color>
     <color name="bodyTextColor">@color/white</color>
-    <color name="materialCardColor">@color/grey</color>
+    <color name="materialCardColor">@color/whiteAlternative</color>
     <color name="materialCardIconColor">@color/whiteAlternative</color>
-    <color name="ButtonTextColor">@color/white</color>
+    <color name="ButtonTextColor">@color/colorAccent</color>
     <color name="ButtonStrokeColor">@color/colorAccent</color>
     <color name="ButtonIconTintColor">@color/white</color>
     <color name="ButtonBackgroundColor">@color/whiteAlternative</color>
+    <color name="iconColor">@color/colorAccent</color>
 
 </resources>
