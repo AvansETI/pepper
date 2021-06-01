@@ -1,19 +1,15 @@
 package com.pepper.care.dialog.presentation
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.pepper.care.R
 import com.pepper.care.common.presentation.views.BaseFragment
 import com.pepper.care.databinding.FragmentDialogBinding
-import com.pepper.care.databinding.FragmentFeedbackBinding
 import com.pepper.care.dialog.DialogRoutes
 import com.pepper.care.dialog.presentation.viewmodels.DialogViewModel
 import com.pepper.care.dialog.presentation.viewmodels.DialogViewModelUsingUsecases
-import com.pepper.care.feedback.presentation.viewmodels.FeedbackViewModel
-import com.pepper.care.feedback.presentation.viewmodels.FeedbackViewModelUsingUsecases
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.koin.androidx.viewmodel.ext.android.viewModel

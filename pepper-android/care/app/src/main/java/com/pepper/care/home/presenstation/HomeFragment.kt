@@ -42,10 +42,5 @@ class HomeFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bindToEvents()
-    }
-
-    private fun bindToEvents() {
-        viewModel.onCreated()
     }
 }

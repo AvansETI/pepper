@@ -1,7 +1,6 @@
 package com.pepper.care.common.usecases
 
 import com.pepper.care.common.AppResult
-import com.pepper.care.common.entities.PatientDetails
 import com.pepper.care.common.repo.PatientRepository
 
 interface GetPatientNameUseCase {

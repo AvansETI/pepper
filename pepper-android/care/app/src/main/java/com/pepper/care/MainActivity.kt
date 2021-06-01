@@ -186,7 +186,6 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                         Log.d(MainActivity::class.simpleName, "Confirm dialog: $selected")
                         showingDialog.apply { value!!.cancel() }
                     }
-                    else -> throw IllegalStateException("Not a valid option")
                 }
             }
         }

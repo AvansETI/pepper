@@ -8,7 +8,7 @@ import com.github.appintro.AppIntroCustomLayoutFragment
 import com.github.appintro.AppIntroPageTransformerType
 import com.pepper.care.R
 
-class InfoSliderActivity : AppIntro(), SliderCallback {
+class InfoSliderActivity : AppIntro() {
 
     override val layoutId = R.layout.activity_info_slider
 
@@ -57,14 +57,6 @@ class InfoSliderActivity : AppIntro(), SliderCallback {
 
     override fun onDonePressed(currentFragment: Fragment?) {
         super.onDonePressed(currentFragment)
-        finish()
-    }
-
-    override fun nextSlide() {
-        this@InfoSliderActivity.goToNextSlide(false)
-    }
-
-    override fun cancelSlides() {
         finish()
     }
 }
