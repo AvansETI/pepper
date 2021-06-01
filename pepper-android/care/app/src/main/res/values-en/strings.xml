@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PepperCare</string>
+    <string name="pepper_greet">Welcome, my name is Pepper! I will assist my collueges today.</string>
+    <string name="pepper_askid">To continue i need your ID.</string>
+    <string name="pepper_known_greet">How great to see you again,</string>
+    <string name="at">At</string>
+    <string name="Pepper_meds">" you need to take your medication."</string>
+    <string name="pepper_bye">"Goodbye, "</string>
+    <string name="pepper_bye2">I wish you a good day!</string>
+</resources>

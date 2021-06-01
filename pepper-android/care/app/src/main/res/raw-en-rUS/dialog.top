@@ -1,0 +1,85 @@
+topic: ~dialog()
+#### THIS DOC CONTAINS THE DIAGLOG IN EN-US ####
+concept:(numbers) [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99]
+concept:(start) [start "I wan to start a convesation"]
+concept:(scale) [1 2 3 4 5 6 7 8 9 10]
+concept:(options) [options "What meals are available" "What are my options"]
+concept:(order) [order "can i have" "i want" "i choose"]
+concept:(favorite) [favo favorite "what is your favorite"]
+concept:(myfav) ["my favorite dish is" "i dont have a favorite but i recommend"]
+
+#### DISCLAIMER - make sure dynamics are ALL lowercase otherwise chatbot will crash ####
+
+#### Init through code ####
+dynamic: name
+dynamic: meals
+dynamic: reminders
+dynamic: questions
+
+#### Init through topic ####
+dynamic: meal
+dynamic: answered
+dynamic: number
+dynamic: explain
+
+#### Dialoog ####
+u:(~robot ~start ^exact) ^execute(navigateScreen, nav, INTRO) ^enableThenGoto(INTRO)
+
+proposal: %INTRO Welcome my name is Pepper! Today i will assist my colleague ^execute(navigateScreen, nav, ID) ^enableThenGoto(ID)
+
+proposal: %ID To continue i need you identification number
+    u1: (_~numbers) ^execute(selectPatientId, pid, $1) ^enableThenGoto(IDCHECK)
+    u1: (~repeat) ^sameProposal
+
+proposal: %IDCHECK Is this you ?
+    u1: (~no)  ^execute(confirmDialogSelect, cfdlg, NO) ^previousProposal
+    u1: (~yes)  ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateScreen, nav, PATIENT) ^enableThenGoto(PATIENT)
+    u1: (~repeat) ^sameProposal
+
+proposal: %PATIENT How great to see you again {~name} ! ^execute(navigateChoice, navch, PATIENT) ^enableThenGoto(ORDER)
+
+proposal: %ORDER Today the following meals are availible {^enumerate(~meals)} ^enableThenGoto(ORDERASK)
+
+#### DISCLAIMER - Make sure to use AddToConcept first otherwise chatbot will crash ####
+proposal: %ORDERASK What would you like to order {~name} ?
+    u1:(~options) ^enumerate(~meals) ^enableThenGoto(ORDERFALLBACK)
+    u1:(~favorite) ~myfav ^rand[~meals] ^enableThenGoto(ORDERFALLBACK)
+    u1:(~order _~meals) ^addToConcept(~meal, $1) ^execute(selectMealItem, sel, $1) ^enableThenGoto(ORDERCHECK)
+
+proposal: %ORDERFALLBACK ^empty #Fallback needed otherwise discussion will stop
+    u1:(~options) ^enumerate(~meals) ^enableThenGoto(ORDERFALLBACK)
+    u1:(~favorite) ~myfav ^rand[~meals] ^enableThenGoto(ORDERFALLBACK)
+    u1:(~order _~meals) ^addToConcept(~meal, $1) ^execute(selectMealItem, sel, $1) ^enableThenGoto(ORDERCHECK)
+
+proposal: %ORDERCHECK Is it correct that you chose ~meal ?
+    u1: (~no) ^execute(confirmDialogSelect, cfdlg, NO) ^enableThenGoto(ORDER)
+    u1: (~yes) ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateChoice, navch, ORDER) ^enableThenGoto(MEDICATION)
+    u1: (~repeat) ^sameProposal
+
+proposal: %MEDICATION {~name} Your reminders for today are te following {^enumerate(~reminders)} ! ^execute(navigateChoice, navch, MEDICATION) ^enableThenGoto(QUESTION)
+
+proposal: %QUESTION {~name} The nurse asks you the following {~questions} ! ^enableThenGoto(QUESTIONEXPLAIN)
+
+proposal: %QUESTIONEXPLAIN What would you like to reply
+    u1: (_*) ^addToConcept(~answered, $1) ^execute(inputFeedbackExplain, qexp, $1) ^enableThenGoto(QUESTIONCHECK)
+    u1: (~repeat) ^enableThenGoto(QUESTION)
+
+proposal: %QUESTIONCHECK You awnserd {~answered} is this correct?
+    u1: (~no) ^execute(confirmDialogSelect, cfdlg, NO) ^enableThenGoto(QUESTION)
+    u1: (~yes) ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateScreen, nav, FEEDBACK) ^enableThenGoto(FEEDBACK)
+    u1: (~repeat) ^sameProposal
+
+proposal: %FEEDBACK {~name} How well would you say you currently feel from 1 to 10
+    u1: (_~scale) ^addToConcept(~number, $1) ^execute(selectFeedbackNumber, fnum, $1) ^enableThenGoto(FEEDBACKEXPLAIN)
+    u1: (~repeat) ^sameProposal
+
+proposal: %FEEDBACKEXPLAIN Could you explain why you chose {~number} ?
+    u1: (_*) ^addToConcept(~explain, $1) ^execute(inputFeedbackExplain, fexp, $1) ^enableThenGoto(FEEDBACKCHECK)
+    u1: (~repeat) ^sameProposal
+
+proposal: %FEEDBACKCHECK You awnserd {~explain} shall i send it in?
+    u1: (~no) ^execute(confirmDialogSelect, cfdlg, NO) ^enableThenGoto(FEEDBACK)
+    u1: (~yes) ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateScreen, nav, GOODBYE) ^enableThenGoto(GOODBYE)
+    u1: (~repeat) ^sameProposal
+
+proposal: %GOODBYE Goodbye {~name} I wish you a good day! ^execute(navigateScreen, nav, STANDBY)

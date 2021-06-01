@@ -2,4 +2,11 @@
     <string name="app_name">PepperCare</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pepper_greet">Welkom, mijn naam is Pepper! Vandaag, zal ik het werk van mijn collega overnemen.</string>
+    <string name="pepper_askid">Om verder te gaan met het proces, heb ik uw ID nodig.</string>
+    <string name="pepper_known_greet">Wat fijn om u weer te zien,</string>
+    <string name="at">Om</string>
+    <string name="Pepper_meds">" moet u medicatie innemen."</string>
+    <string name="pepper_bye">Tot ziens,</string>
+    <string name="pepper_bye2">Ik wens u nog een fijne dag tegemoet!</string>
 </resources>
