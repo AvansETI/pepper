@@ -42,14 +42,6 @@ fun setIsVisible(view: View, isVisible: Boolean) {
     view.isVisible = isVisible
 }
 
-@BindingAdapter("setSpanCount")
-fun setSpanCount(recyclerView: RecyclerView, amount: Int) {
-    if (recyclerView.layoutManager != null) {
-        recyclerView.layoutManager = GridLayoutManager(recyclerView.context, amount)
-        Log.d("Databinding", "Recyclerview updated, columns $amount")
-    }
-}
-
 @BindingAdapter("colorMoodSource")
 fun setMoodColorSource(circleImageView: CircleImageView, type: FeedbackEntity.FeedbackMessage) {
     val image = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888)

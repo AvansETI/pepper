@@ -22,6 +22,8 @@ import com.pepper.care.dialog.DialogRoutes
 import com.pepper.care.dialog.common.usecases.GetAvailableScreensUseCaseUsingRepository
 import com.pepper.care.order.common.usecases.GetPatientAllergiesUseCaseUsingRepository
 import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
+import com.pepper.care.order.common.view.MealSliderItem
+import com.pepper.care.order.common.view.SliderAdapterItem
 import kotlinx.coroutines.launch
 import org.joda.time.LocalDateTime
 import java.util.*
@@ -34,63 +36,19 @@ class OrderViewModelUsingUsecases(
     private val getAvailableScreens: GetAvailableScreensUseCaseUsingRepository
 ) : ViewModel(), OrderViewModel {
 
-    override val orderText: String =
-        "Het maaltijd menu, ${LocalDateTime().toString("EEEE d MMMM", Locale("nl"))}"
-
-    override val meal: MutableLiveData<PlatformMealsResponse> = MutableLiveData()
-    override val buttonDetailText: String = "Selecteer deze maaltijd"
-
-    private val fetchedName: MutableLiveData<String> = MutableLiveData(DialogConstants.DIALOG_MOCK_NAME)
-
-    private val fetchedAvailableScreens: MutableLiveData<IntArray> =
-        MutableLiveData(intArrayOf(0, 0, 0))
-
-    override fun goToNextScreen(view: View) {
-        DialogUtil.buildDialog(
-            view, meal.value!!.name,
-            DialogRoutes.ORDER, dialogCallback
-        )
-    }
-
-    private val dialogCallback: DialogCallback =
-        object : DialogCallback {
-            override fun onDialogConfirm(view: View) {
-                when {
-                    fetchedAvailableScreens.value!![1] == 1 -> {
-                        view.findNavController().navigate(
-                            R.id.dialogFragment, bundleOf(
-                                Pair<String, DialogRoutes>(
-                                    "ROUTE_TYPE",
-                                    DialogRoutes.REMINDER
-                                )
-                            )
-                        )
-                    }
-                    fetchedAvailableScreens.value!![2] == 1 -> {
-                        view.findNavController().navigate(
-                            R.id.dialogFragment, bundleOf(
-                                Pair<String, DialogRoutes>(
-                                    "ROUTE_TYPE",
-                                    DialogRoutes.QUESTION
-                                )
-                            )
-                        )
-                    }
-                    else -> {
-                        view.findNavController().navigate(R.id.feedbackFragment)
-                    }
-                }
-            }
-
-            override fun onDialogDeny(view: View) {
-
-            }
-        }
-
-    override val recyclerList = MutableLiveData<List<RecyclerAdapterItem>>(emptyList())
+    override val recyclerList = MutableLiveData<ArrayList<SliderAdapterItem>>(arrayListOf())
     override val recyclerVisibility: MutableLiveData<Boolean> = MutableLiveData(false)
     override val progressVisibility: MutableLiveData<Boolean> = MutableLiveData(true)
     override val recyclerSpanCount: MutableLiveData<Int> = MutableLiveData(3)
+
+    override val meal: MutableLiveData<MealSliderItem> = MutableLiveData()
+    override val orderText: String =
+        "Het maaltijd menu, ${LocalDateTime().toString("EEEE d MMMM", Locale("nl"))}"
+
+    private val fetchedName: MutableLiveData<String> =
+        MutableLiveData(DialogConstants.DIALOG_MOCK_NAME)
+    private val fetchedAvailableScreens: MutableLiveData<IntArray> =
+        MutableLiveData(intArrayOf(0, 0, 0))
 
     override fun onStart() {
         fetchPatientDetails()
@@ -98,15 +56,27 @@ class OrderViewModelUsingUsecases(
         viewModelScope.launch {
             when (val result = getPlatformMealsUseCaseUsingRepository.invoke()) {
                 is AppResult.Success -> {
-                    if (result.successData.isNotEmpty()) recyclerList.value =
-                        result.successData else recyclerList.value =
-                        listOf(InformUserRecyclerItem(InformUserRecyclerItem.InformText.NO_MEALS_RESULTS_FOUND))
+                    if (result.successData.isNotEmpty()) {
+                        val responseList = result.successData
+
+                        responseList.forEach { item ->
+                            recyclerList.value!!.add(
+                                MealSliderItem(
+                                    item.id,
+                                    item.name,
+                                    item.description,
+                                    item.allergies,
+                                    item.calories,
+                                    item.source
+                                )
+                            )
+                        }
+
+                        addDynamicContents(recyclerList.value!!)
+                    }
                     showProgressView(false)
-                    addDynamicContents(recyclerList.value!!)
                 }
                 is AppResult.Error -> {
-                    recyclerList.value =
-                        listOf(InformUserRecyclerItem(InformUserRecyclerItem.InformText.INTERNET_ERROR))
                     result.exception.message
                     showProgressView(false)
                 }
@@ -120,61 +90,41 @@ class OrderViewModelUsingUsecases(
         }
     }
 
-    private fun addDynamicContents(list: List<RecyclerAdapterItem>) {
-        val mealPhrases : ArrayList<Phrase> = ArrayList()
+    private fun addDynamicContents(list: List<SliderAdapterItem>) {
+        val mealPhrases: ArrayList<Phrase> = ArrayList()
         list.forEach {
-            if (it.getViewType() == RecyclerAdapterItem.ViewTypes.MEAL) {
-                it as PlatformMealsResponse
+            if (it.getViewType() == SliderAdapterItem.ViewTypes.MEAL) {
+                it as MealSliderItem
                 mealPhrases.add(Phrase(it.name))
             }
         }
         RobotManager.addDynamicContents(DynamicConcepts.MEALS, mealPhrases)
     }
 
+    override val adapterClickedListener: ClickCallback<SliderAdapterItem> =
+        object : ClickCallback<SliderAdapterItem> {
+
+            override fun onClicked(view: View, item: SliderAdapterItem) {
+                when (item.getViewType()) {
+                    SliderAdapterItem.ViewTypes.MEAL -> {
+                        Log.d(OrderViewModelUsingUsecases::class.simpleName, "Clicked on Item")
+
+                        this@OrderViewModelUsingUsecases.meal.apply {
+                            value = item as MealSliderItem
+                        }
+                    }
+                }
+            }
+        }
+
     private fun showProgressView(boolean: Boolean) {
-        updateSpanCount()
         this@OrderViewModelUsingUsecases.progressVisibility.apply { value = boolean }
         this@OrderViewModelUsingUsecases.recyclerVisibility.apply { value = !boolean }
-    }
-
-    private fun updateSpanCount() {
-        this@OrderViewModelUsingUsecases.recyclerSpanCount.apply {
-            value = calculateSpanCount()
-        }
-    }
-
-    private fun calculateSpanCount(): Int {
-        return when {
-            recyclerList.value!!.size == 2 -> 2
-            recyclerList.value!!.size <= 1 -> 1
-            else -> 3
-        }
     }
 
     override fun onBackPress(view: View) {
         view.findNavController().popBackStack()
     }
-
-    override val adapterClickedListener: ClickCallback<RecyclerAdapterItem> =
-        object : ClickCallback<RecyclerAdapterItem> {
-
-            override fun onClicked(view: View, item: RecyclerAdapterItem) {
-                when (item.getViewType()) {
-                    RecyclerAdapterItem.ViewTypes.MEAL -> {
-                        Log.d(OrderViewModelUsingUsecases::class.simpleName, "Clicked on Item")
-
-                        this@OrderViewModelUsingUsecases.meal.apply {
-                            value = item as PlatformMealsResponse
-                        }
-
-                        view.findNavController().navigate(R.id.orderViewMealFragment)
-                    }
-                    RecyclerAdapterItem.ViewTypes.INFORM -> {
-                        Log.d(OrderViewModelUsingUsecases::class.simpleName, "Clicked on Item!")
-                    }
-                }
-            }
-        }
 
     private fun fetchPatientDetails() {
         viewModelScope.launch {

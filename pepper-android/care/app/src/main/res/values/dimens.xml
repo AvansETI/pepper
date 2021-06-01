@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="left_offset">61dp</dimen>
+    <dimen name="card_width">400dp</dimen>
+    <dimen name="card_gap">16dp</dimen>
+</resources>

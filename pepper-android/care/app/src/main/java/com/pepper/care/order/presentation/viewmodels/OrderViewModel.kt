@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.pepper.care.common.ClickCallback
 import com.pepper.care.common.entities.PlatformMealsResponse
 import com.pepper.care.common.entities.RecyclerAdapterItem
+import com.pepper.care.order.common.view.MealSliderItem
+import com.pepper.care.order.common.view.SliderAdapterItem
 
 interface OrderViewModel {
     fun onStart()
@@ -16,11 +18,8 @@ interface OrderViewModel {
     val recyclerSpanCount: MutableLiveData<Int>
 
     val orderText: String
-    val adapterClickedListener: ClickCallback<RecyclerAdapterItem>
-    val recyclerList: MutableLiveData<List<RecyclerAdapterItem>>
+    val adapterClickedListener: ClickCallback<SliderAdapterItem>
+    val recyclerList: MutableLiveData<ArrayList<SliderAdapterItem>>
 
-    val meal: MutableLiveData<PlatformMealsResponse>
-
-    val buttonDetailText: String
-    fun goToNextScreen(view: View)
+    val meal: MutableLiveData<MealSliderItem>
 }
