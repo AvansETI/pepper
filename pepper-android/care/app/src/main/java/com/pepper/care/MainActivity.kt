@@ -75,7 +75,7 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
             when (this.findNavController(R.id.child_nav_host_fragment).currentDestination?.id) {
                 R.id.orderViewMealFragment -> {
                     this.findNavController(R.id.child_nav_host_fragment)
-                        .popBackStack(R.id.orderFragment, true);
+                        .popBackStack(R.id.orderFragment, true)
                     this.findNavController(R.id.child_nav_host_fragment)
                         .navigate(R.id.orderFragment)
                 }
