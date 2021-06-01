@@ -22,6 +22,7 @@ import com.pepper.care.common.CommonConstants
 import com.pepper.care.common.DialogUtil
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
 import com.pepper.care.core.services.mqtt.MqttMessageCallbacks
+import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
 import org.koin.android.ext.android.inject
 import com.pepper.care.core.services.robot.*
 import com.pepper.care.dialog.DialogRoutes
@@ -63,10 +64,10 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
     }
 
     private fun startDeviceServices() {
+        initUiElements()
         lifecycleScope.launch {
             //PlatformMqttListenerService.start(this@MainActivity, this@MainActivity)
         }
-        initUiElements()
     }
 
     private fun initUiElements() {

@@ -53,10 +53,10 @@ proposal: %ORDERFALLBACK ^empty #Fallback is nodig om de applicatie niet te late
 
 proposal: %ORDERCHECK Klopt het dat je hebt gekozen voor ~meal ?
     u1: (~no) ^execute(confirmDialogSelect, cfdlg, NO) ^enableThenGoto(ORDER)
-    u1: (~yes) ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateChoice, navch, ORDER) ^enableThenGoto(MEDICATION)
+    u1: (~yes) ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateChoice, navch, ORDER) ^enableThenGoto(REMINDER)
     u1: (~repeat) ^sameProposal
 
-proposal: %MEDICATION {~name} Dit zijn de herinneringen voor vandaag {^enumerate(~reminders)} ! ^execute(navigateChoice, navch, MEDICATION) ^enableThenGoto(QUESTION)
+proposal: %REMINDER {~name} Dit zijn de herinneringen voor vandaag {^enumerate(~reminders)} ! ^execute(navigateChoice, navch, REMINDER) ^enableThenGoto(QUESTION)
 
 proposal: %QUESTION {~name} De verpleegkundige heeft de volgende vraag gesteld {~questions} ! ^enableThenGoto(QUESTIONEXPLAIN)
 
