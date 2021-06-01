@@ -19,11 +19,7 @@ export class WebSocketService {
 
   connect(): void {
     this.client.connect(
-      {
-        login: config.backend.auth.username,
-        passcode: config.backend.auth.password,
-        host: config.backend.host
-      },
+      {},
       () => {
         this.subscribe();
       },

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Meal } from 'src/model/meal';
 import { Allergy } from 'src/model/patient';
 import { MessageHandlerService } from '../message-handler.service';
 
@@ -15,15 +16,18 @@ export class OrderPageComponent implements OnInit {
   allergies = '';
   image = '';
 
-  constructor(private messageHandler: MessageHandlerService) {
+  meals: Meal[] = [];
 
+  constructor(private messageHandler: MessageHandlerService) {
+    this.messageHandler.getMealEmitter().subscribe((meals) => { this.meals = meals })
   }
 
   ngOnInit(): void {
   }
 
   onTest(): void {
-    this.messageHandler.sendMeal({id: '', name: this.name, description: this.description, calories: this.calories, allergies: new Set<Allergy>(), image: this.image});
+    // this.messageHandler.sendMeal({id: '', name: this.name, description: this.description, calories: this.calories, allergies: new Set<Allergy>(), image: this.image});
+    this.messageHandler.requestMeals();
 
     this.name = '';
     this.description = '';

@@ -14,15 +14,22 @@ import { Meal } from 'src/model/meal';
 export class MessageHandlerService {
 
   private webSocketSubscription: Subscription;
-  private eventHandler: EventEmitter<Patient[]>;
-  private patients: Patient[];
+  private patientEmitter: EventEmitter<Patient[]>;
+  private mealEmitter: EventEmitter<Meal[]>;
+
+  private patients: Patient[] = [];
+  private meals: Meal[] = [];
+
   private questionId = '';
   private mealId = '';
 
+  private patientRequestId = '1000'
+  private mealRequestId = '1001';
+
   constructor(private webSocket: WebSocketService, private messageEncryptor: MessageEncryptorService, private messageParser: MessageParserService) {
     this.webSocketSubscription = this.webSocket.getEventHandler().subscribe((message) => this.handle(message));
-    this.eventHandler = new EventEmitter<Patient[]>();
-    this.patients = [];
+    this.patientEmitter = new EventEmitter<Patient[]>();
+    this.mealEmitter = new EventEmitter<Meal[]>();
   }
 
   init(): void {
@@ -64,12 +71,14 @@ export class MessageHandlerService {
 
       case Task.PATIENT_ID: {
 
-        if (Person[message.person] as unknown as Person === Person.PATIENT) {
-          const ids: number[] = JSON.parse(message.data);
-        
-          ids.forEach((id) => {
-            this.send('1', Person.PATIENT, id as unknown as string, Task.PATIENT, '1', '')
-          });
+        if (message.taskId === this.patientRequestId) {
+          if (Person[message.person] as unknown as Person === Person.PATIENT) {
+            const ids: number[] = JSON.parse(message.data);
+          
+            ids.forEach((id) => {
+              this.send('1', Person.PATIENT, id as unknown as string, Task.PATIENT, '1', '')
+            });
+          }
         }
 
         break;
@@ -87,10 +96,11 @@ export class MessageHandlerService {
       }
       case Task.PATIENT_ALLERGIES: {
         let allergies: Set<Allergy> = new Set();
-
-        const tempAllergies: string[] = message.data.substring(1, message.data.length - 1).split(', ');
+        const tempAllergies: string[] = message.data.substring(1, message.data.length - 1).replace(' ', '').split(',');
         tempAllergies.forEach((allergy) => {
-          allergies.add(allergy as unknown as Allergy);
+          if (allergy !== '') {
+            allergies.add(allergy as unknown as Allergy);
+          }
         })
 
         this.addPatient({id: message.personId, name: null, birthdate: null, allergies: allergies});
@@ -101,7 +111,46 @@ export class MessageHandlerService {
         break;
       }
       case Task.MEAL_ID: {
-        this.mealId = message.taskId;
+
+        if (message.taskId === this.mealRequestId) {
+          const ids: number[] = JSON.parse(message.data);
+          
+          ids.forEach((id) => {
+            this.send('1', Person.NONE, "-1", Task.MEAL, id as unknown as string, '')
+          });
+        } else {
+          this.mealId = message.taskId;
+        }
+        
+        break;
+      }
+      case Task.MEAL_NAME: {
+        this.addMeal({ id: message.taskId, name: message.data, description: null, calories: null, allergies: null, image: null });
+        break;
+      }
+      case Task.MEAL_DESCRIPTION: {
+        this.addMeal({ id: message.taskId, name: null, description: message.data, calories: null, allergies: null, image: null });
+        break;
+      }
+      case Task.MEAL_CALORIES: {
+        this.addMeal({ id: message.taskId, name: null, description: null, calories: message.data, allergies: null, image: null });
+        break;
+      }
+      case Task.MEAL_ALLERGIES: {
+        let allergies: Set<Allergy> = new Set();
+
+        const tempAllergies: string[] = message.data.substring(1, message.data.length - 1).split(', ');
+        tempAllergies.forEach((allergy) => {
+          if (allergy !== '') {
+            allergies.add(allergy as unknown as Allergy);
+          }
+        })
+
+        this.addMeal({ id: message.taskId, name: null, description: null, calories: null, allergies: allergies, image: null });
+        break;
+      }
+      case Task.MEAL_IMAGE: {
+        this.addMeal({ id: message.taskId, name: null, description: null, calories: null, allergies: null, image: message.data });
         break;
       }
       default: {
@@ -132,29 +181,79 @@ export class MessageHandlerService {
     } else if (patient.birthdate !== null) {
       patientFounded.birthdate = patient.birthdate;
     } else if (patient.allergies !== null) {
+      if (patientFounded.allergies === null) {
+        patientFounded.allergies = new Set();
+      }
+
       patient.allergies.forEach((allergy) => {
-        if (patientFounded.allergies === null) {
-          patientFounded.allergies = new Set();
-        }
         patientFounded.allergies.add(allergy);
       });
     }
 
     this.patients[patientFoundedIndex] = patientFounded;
 
-    this.eventHandler.emit(this.patients);
+    this.patientEmitter.emit(this.patients);
+  }
+
+  addMeal(meal: Meal): void {
+    if (meal.id === null) {
+      console.error('Meal id cannot be null')
+      return;
+    }
+
+    const mealFounded: Meal = this.findMealById(meal.id);
+    const mealFoundedIndex = this.meals.indexOf(mealFounded);
+
+    if (mealFounded === undefined) {
+      this.meals.push(meal);
+      return;
+    }
+
+    if (meal.name !== null) {
+      mealFounded.name = meal.name;
+    } else if (meal.description !== null) {
+      mealFounded.description = meal.description;
+    } else if (meal.calories !== null) {
+      mealFounded.calories = meal.calories;
+    } else if (meal.allergies !== null) {
+      if (mealFounded.allergies === null) {
+        mealFounded.allergies = new Set();
+      }
+      
+      meal.allergies.forEach((allergy) => {
+        mealFounded.allergies.add(allergy);
+      })
+    } else if (meal.image !== null) {
+      mealFounded.image = meal.image;
+    }
+
+    this.meals[mealFoundedIndex] = mealFounded;
+
+    this.mealEmitter.emit(this.meals);
   }
 
   findPatientById(id: string): Patient {
     return this.patients.find((patient) => patient.id === id);
   }
 
-  getEventHandler(): EventEmitter<Patient[]> {
-    return this.eventHandler;
+  findMealById(id: string): Meal {
+    return this.meals.find((meal) => meal.id === id);
+  }
+
+  getPatientEmitter(): EventEmitter<Patient[]> {
+    return this.patientEmitter;
+  }
+
+  getMealEmitter(): EventEmitter<Meal[]> {
+    return this.mealEmitter;
   }
 
   requestPatients(): void {
-    this.send('1', Person.PATIENT, '-1', Task.PATIENT_ID, '-1', '');
+    this.send('1', Person.PATIENT, '-1', Task.PATIENT_ID, this.patientRequestId, '');
+  }
+
+  requestMeals(): void {
+    this.send('1', Person.NONE, '-1', Task.MEAL_ID, this.mealRequestId, '')
   }
 
   async sendQuestionToPatient(patientId: string, question: string): Promise<void> {

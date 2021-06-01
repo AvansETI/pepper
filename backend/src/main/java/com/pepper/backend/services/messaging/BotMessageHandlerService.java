@@ -269,6 +269,8 @@ public class BotMessageHandlerService {
             }
             case PATIENT_ALLERGIES -> {
                 LOG.info("New patient allergies: " + message.getData());
+
+                // TODO: Change .allergies from single Allergy insertion to list insertion
                 Response response = this.databaseService.savePatient(Patient.builder()
                         .id(message.getPersonId())
                         .allergies(new HashSet<>(Arrays.asList(Allergy.valueOf(message.getData()))))

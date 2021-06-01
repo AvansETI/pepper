@@ -14,7 +14,7 @@ export class DoctorPageComponent implements OnInit {
   question: string = ''
 
   constructor(private messageHandler: MessageHandlerService) {
-    this.messageHandler.getEventHandler().subscribe((patients) => { this.patients = patients });
+    this.messageHandler.getPatientEmitter().subscribe((patients) => { this.patients = patients });
   }
 
   ngOnInit(): void {
