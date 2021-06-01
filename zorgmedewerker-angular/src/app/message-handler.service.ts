@@ -4,8 +4,10 @@ import { MessageEncryptorService } from './message-encryptor.service';
 import { WebSocketService } from './web-socket.service'
 import { config } from '../config'
 import { MessageParserService } from './message-parser.service';
-import { Message, Sender, Person, Task } from '../model/message';
-import { Patient, Allergy } from '../model/patient';
+import { Message, Sender, Person, Task } from 'src/model/message';
+import { Patient } from 'src/model/patient';
+import { Allergy } from 'src/model/allergy';
+import { Question } from 'src/model/question';
 import { Meal } from 'src/model/meal';
 
 @Injectable({
@@ -23,8 +25,9 @@ export class MessageHandlerService {
   private questionId = '';
   private mealId = '';
 
-  private patientRequestId = '1000'
+  private patientRequestId = '1000';
   private mealRequestId = '1001';
+  private mealOrderRequestId = '1002';
 
   constructor(private webSocket: WebSocketService, private messageEncryptor: MessageEncryptorService, private messageParser: MessageParserService) {
     this.webSocketSubscription = this.webSocket.getEventHandler().subscribe((message) => this.handle(message));
@@ -256,9 +259,9 @@ export class MessageHandlerService {
     this.send('1', Person.NONE, '-1', Task.MEAL_ID, this.mealRequestId, '')
   }
 
-  async sendQuestionToPatient(patientId: string, question: string): Promise<void> {
+  async sendQuestion(question: Question): Promise<void> {
     this.questionId = '-1';
-    this.send('1', Person.PATIENT, patientId, Task.QUESTION_TEXT, this.questionId, question);
+    this.send('1', Person.PATIENT, question.patientId, Task.QUESTION_TEXT, this.questionId, question.text);
 
     for (let i = 0; i < 100; i++) {
       await this.sleep(10);
@@ -268,7 +271,7 @@ export class MessageHandlerService {
     }
 
     if (this.questionId !== '-1') {
-      this.send('1', Person.PATIENT, patientId, Task.QUESTION_TIMESTAMP, this.questionId, (Date.parse(Date()) / 1000).toString());
+      this.send('1', Person.PATIENT, question.patientId, Task.QUESTION_TIMESTAMP, this.questionId, (Date.parse(question.timestamp.toString()) / 1000).toString());
     }
 
   }

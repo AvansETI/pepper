@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Meal } from 'src/model/meal';
-import { Allergy } from 'src/model/patient';
 import { MessageHandlerService } from '../message-handler.service';
 
 @Component({

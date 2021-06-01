@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Patient, Allergy } from 'src/model/patient';
+import { Patient } from 'src/model/patient';
+import { Allergy } from 'src/model/allergy';
 import { MessageHandlerService } from 'src/app/message-handler.service';
 
 @Component({
@@ -33,8 +34,8 @@ export class DoctorPageComponent implements OnInit {
     return Array.from(allergies).join(', ').toLowerCase()
   }
 
-  onSend(id: string): void {
-    this.messageHandler.sendQuestionToPatient(id, this.question);
+  onSend(patientId: string): void {
+    this.messageHandler.sendQuestion({ id: '-1', patientId: patientId, text: this.question, timestamp: new Date() });
     this.question = '';
   }
 
