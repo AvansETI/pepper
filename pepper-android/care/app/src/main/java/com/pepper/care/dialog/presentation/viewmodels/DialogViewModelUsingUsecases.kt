@@ -79,7 +79,7 @@ class DialogViewModelUsingUsecases(
                 }
                 setupNextButton()
             }
-            DialogRoutes.MEDICATION -> {
+            DialogRoutes.REMINDER -> {
                 fetchPatientDetails()
                 fetchReminders()
                 fetchUpcomingScreens()
@@ -132,7 +132,7 @@ class DialogViewModelUsingUsecases(
                                             R.id.dialogFragment, bundleOf(
                                                 Pair<String, DialogRoutes>(
                                                     "ROUTE_TYPE",
-                                                    DialogRoutes.MEDICATION
+                                                    DialogRoutes.REMINDER
                                                 )
                                             )
                                         )
@@ -152,7 +152,7 @@ class DialogViewModelUsingUsecases(
                                     }
                                 }
                             }
-                            DialogRoutes.MEDICATION -> {
+                            DialogRoutes.REMINDER -> {
                                 when {
                                     fetchedAvailableScreens.value!![2] == 1 -> {
                                         view.findNavController().navigate(

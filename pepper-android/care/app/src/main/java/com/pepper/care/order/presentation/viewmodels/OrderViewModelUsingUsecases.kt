@@ -61,7 +61,7 @@ class OrderViewModelUsingUsecases(
                             R.id.dialogFragment, bundleOf(
                                 Pair<String, DialogRoutes>(
                                     "ROUTE_TYPE",
-                                    DialogRoutes.MEDICATION
+                                    DialogRoutes.REMINDER
                                 )
                             )
                         )

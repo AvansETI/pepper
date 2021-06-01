@@ -9,7 +9,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import com.aldebaran.qi.sdk.QiSDK
 import com.aldebaran.qi.sdk.`object`.conversation.*
@@ -29,8 +28,6 @@ import com.pepper.care.dialog.DialogRoutes
 import com.pepper.care.dialog.common.usecases.GetAvailableScreensUseCaseUsingRepository
 import com.pepper.care.feedback.entities.FeedbackEntity
 import com.pepper.care.info.presentation.InfoSliderActivity
-import com.pepper.care.info.presentation.SliderAction
-import com.pepper.care.info.presentation.SliderCallback
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
@@ -224,10 +221,10 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
             DialogRoutes.ORDER -> {
                 this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.orderFragment)
             }
-            DialogRoutes.MEDICATION -> {
+            DialogRoutes.REMINDER -> {
                 this.findNavController(R.id.child_nav_host_fragment).navigate(
                     R.id.dialogFragment, bundleOf(
-                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.MEDICATION)
+                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.REMINDER)
                     )
                 )
             }
@@ -268,12 +265,12 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
             when (currentScreen) {
                 DialogRoutes.ORDER -> {
                     when {
-                        it[1] == 1 -> screenNavigationHandler(DialogRoutes.MEDICATION)
+                        it[1] == 1 -> screenNavigationHandler(DialogRoutes.REMINDER)
                         it[2] == 1 -> screenNavigationHandler(DialogRoutes.QUESTION)
                         else -> screenNavigationHandler(DialogRoutes.FEEDBACK)
                     }
                 }
-                DialogRoutes.MEDICATION -> {
+                DialogRoutes.REMINDER -> {
                     when {
                         it[2] == 1 -> screenNavigationHandler(DialogRoutes.QUESTION)
                         else -> screenNavigationHandler(DialogRoutes.FEEDBACK)
@@ -282,7 +279,7 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                 else -> {
                     when {
                         it[0] == 1 -> screenNavigationHandler(DialogRoutes.ORDER)
-                        it[1] == 1 -> screenNavigationHandler(DialogRoutes.MEDICATION)
+                        it[1] == 1 -> screenNavigationHandler(DialogRoutes.REMINDER)
                         it[2] == 1 -> screenNavigationHandler(DialogRoutes.QUESTION)
                         else -> screenNavigationHandler(DialogRoutes.FEEDBACK)
                     }
