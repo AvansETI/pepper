@@ -80,6 +80,8 @@ class DialogViewModelUsingUsecases(
                 setupNextButton()
             }
             DialogRoutes.MEDICATION -> {
+                fetchPatientDetails()
+                fetchReminders()
                 fetchUpcomingScreens()
                 bottomText.apply {
                     value =
@@ -88,6 +90,8 @@ class DialogViewModelUsingUsecases(
                 setupNextButton()
             }
             DialogRoutes.QUESTION -> {
+                fetchPatientDetails()
+                fetchQuestions()
                 bottomText.apply {
                     value = "${DIALOG_MOCK_QUESTION}?"
                 }
@@ -272,6 +276,24 @@ class DialogViewModelUsingUsecases(
                 }
                 is AppResult.Error -> result.exception.message
             }
+        }
+    }
+
+    private fun fetchReminders() {
+        viewModelScope.launch {
+            RobotManager.addDynamicContents(
+                DynamicConcepts.REMINDERS,
+                listOf(Phrase(bottomText.value))
+            )
+        }
+    }
+
+    private fun fetchQuestions() {
+        viewModelScope.launch {
+            RobotManager.addDynamicContents(
+                DynamicConcepts.QUESTIONS,
+                listOf(Phrase(bottomText.value))
+            )
         }
     }
 

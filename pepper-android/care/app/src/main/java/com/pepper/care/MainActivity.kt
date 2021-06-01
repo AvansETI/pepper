@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import com.aldebaran.qi.sdk.QiSDK
 import com.aldebaran.qi.sdk.`object`.conversation.*
@@ -188,27 +189,8 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                         Log.d(MainActivity::class.simpleName, "Confirm dialog: $selected")
                         showingDialog.apply { value!!.cancel() }
                     }
-                    PepperAction.NAVIGATE_SLIDER -> {
-                        val action = string!!
-                        Log.d(MainActivity::class.simpleName, "Navigation slider: $action")
-                        navigationSliderActionHandler(SliderAction.valueOf(action))
-                    }
                     else -> throw IllegalStateException("Not a valid option")
                 }
-            }
-        }
-    }
-
-    private fun navigationSliderActionHandler(action: SliderAction) {
-        when (action) {
-            SliderAction.LAUNCH -> {
-                startActivity(Intent(this, InfoSliderActivity::class.java))
-            }
-            SliderAction.NEXT -> {
-
-            }
-            SliderAction.CANCEL -> {
-
             }
         }
     }

@@ -1,6 +1,6 @@
 topic: ~main ^resetOnFocus()
 #### DIT DOCUMENT BEVAT DE STANDAARD DIALOGEN ####
-concept:(robot) [pepper care robot wereld]
+concept:(robot) [pepper robot]
 concept:(greeting) [hallo hi hey goedemorgen]
 concept:(goingGreat) ["Wat fijn om te horen!" "Fantastisch!"]
 concept:(time) [tijd hoelaat "Hoelaat is het nu?" "Wat is de tijd?" "Hoelaat is het?"]

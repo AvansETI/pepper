@@ -11,11 +11,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
+import com.aldebaran.qi.sdk.`object`.conversation.Phrase
 import com.pepper.care.R
+import com.pepper.care.common.AppResult
 import com.pepper.care.common.CommonConstants
 import com.pepper.care.common.DialogCallback
 import com.pepper.care.common.DialogUtil
+import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
 import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
+import com.pepper.care.core.services.robot.DynamicConcepts
+import com.pepper.care.core.services.robot.RobotManager
 import com.pepper.care.dialog.DialogConstants
 import com.pepper.care.dialog.DialogRoutes
 import com.pepper.care.dialog.FabType
@@ -32,6 +37,7 @@ import kotlinx.coroutines.launch
 import java.lang.IllegalStateException
 
 class FeedbackViewModelUsingUsecases(
+    private val getName: GetPatientNameUseCaseUsingRepository,
     private val feedbackType: AddPatientHealthFeedbackUseCaseUsingRepository,
     private val feedbackExplain: AddPatientGivenHealthFeedbackUseCaseUsingRepository,
     private val sharedPreferences: SharedPreferences
@@ -39,12 +45,14 @@ class FeedbackViewModelUsingUsecases(
 
     override val headerText: String = "Hoe voelt u zich momenteel?"
     override val sliderRange: Pair<Int, Int> = Pair(FEEDBACK_MIN_RANGE, FEEDBACK_MAX_RANGE)
+    private val fetchedName: MutableLiveData<String> = MutableLiveData(DialogConstants.DIALOG_MOCK_NAME)
 
     override val givenFeedbackType: MutableLiveData<FeedbackEntity.FeedbackMessage> =
         MutableLiveData(FeedbackEntity.FeedbackMessage.GOOD)
 
     override fun onStart() {
         setupKeyboardButton()
+        fetchPatientDetails()
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
     }
 
@@ -143,4 +151,19 @@ class FeedbackViewModelUsingUsecases(
                 }
             }
         }
+
+    private fun fetchPatientDetails() {
+        viewModelScope.launch {
+            when (val result = getName.invoke()) {
+                is AppResult.Success -> {
+                    fetchedName.apply { value = result.successData }
+                    RobotManager.addDynamicContents(
+                        DynamicConcepts.NAME,
+                        listOf(Phrase(result.successData))
+                    )
+                }
+                is AppResult.Error -> result.exception.message
+            }
+        }
+    }
 }

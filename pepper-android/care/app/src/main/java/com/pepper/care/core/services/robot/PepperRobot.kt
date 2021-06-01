@@ -118,7 +118,6 @@ class PepperRobot(
         executors["inputFeedbackExplain"] = PepperQiChatExecutor(context, callback)
         executors["inputQuestionExplain"] = PepperQiChatExecutor(context, callback)
         executors["confirmDialogSelect"] = PepperQiChatExecutor(context, callback)
-        executors["navigateSlider"] = PepperQiChatExecutor(context, callback)
         chatBot.executors = executors
     }
 
@@ -154,5 +153,11 @@ class PepperRobot(
 
 enum class DynamicConcepts(name: String) {
     MEALS("meals"),
-    NAME("name")
+    NAME("name"),
+    REMINDERS("reminders"),
+    QUESTIONS("questions"),
+    MEAL("meal"),
+    ANSWERED("answered"),
+    NUMBER("number"),
+    EXPLAIN("explain")
 }

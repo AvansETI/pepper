@@ -14,8 +14,10 @@ import com.pepper.care.common.DialogUtil
 import com.pepper.care.common.entities.InformUserRecyclerItem
 import com.pepper.care.common.entities.PlatformMealsResponse
 import com.pepper.care.common.entities.RecyclerAdapterItem
+import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
 import com.pepper.care.core.services.robot.DynamicConcepts
 import com.pepper.care.core.services.robot.RobotManager
+import com.pepper.care.dialog.DialogConstants
 import com.pepper.care.dialog.DialogRoutes
 import com.pepper.care.dialog.common.usecases.GetAvailableScreensUseCaseUsingRepository
 import com.pepper.care.order.common.usecases.GetPatientAllergiesUseCaseUsingRepository
@@ -26,6 +28,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class OrderViewModelUsingUsecases(
+    private val getName: GetPatientNameUseCaseUsingRepository,
     private val getPlatformMealsUseCaseUsingRepository: GetPlatformMealsUseCaseUsingRepository,
     private val getPatientAllergiesUseCaseUsingRepository: GetPatientAllergiesUseCaseUsingRepository,
     private val getAvailableScreens: GetAvailableScreensUseCaseUsingRepository
@@ -36,6 +39,8 @@ class OrderViewModelUsingUsecases(
 
     override val meal: MutableLiveData<PlatformMealsResponse> = MutableLiveData()
     override val buttonDetailText: String = "Selecteer deze maaltijd"
+
+    private val fetchedName: MutableLiveData<String> = MutableLiveData(DialogConstants.DIALOG_MOCK_NAME)
 
     private val fetchedAvailableScreens: MutableLiveData<IntArray> =
         MutableLiveData(intArrayOf(0, 0, 0))
@@ -88,6 +93,7 @@ class OrderViewModelUsingUsecases(
     override val recyclerSpanCount: MutableLiveData<Int> = MutableLiveData(3)
 
     override fun onStart() {
+        fetchPatientDetails()
         showProgressView(true)
         viewModelScope.launch {
             when (val result = getPlatformMealsUseCaseUsingRepository.invoke()) {
@@ -169,4 +175,19 @@ class OrderViewModelUsingUsecases(
                 }
             }
         }
+
+    private fun fetchPatientDetails() {
+        viewModelScope.launch {
+            when (val result = getName.invoke()) {
+                is AppResult.Success -> {
+                    fetchedName.apply { value = result.successData }
+                    RobotManager.addDynamicContents(
+                        DynamicConcepts.NAME,
+                        listOf(Phrase(result.successData))
+                    )
+                }
+                is AppResult.Error -> result.exception.message
+            }
+        }
+    }
 }
