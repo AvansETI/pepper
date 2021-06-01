@@ -4,6 +4,7 @@ import com.pepper.backend.services.database.DatabaseService;
 import com.pepper.backend.services.messaging.BotMessageHandlerService;
 import com.pepper.backend.services.messaging.StaffMessageHandlerService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,11 +24,11 @@ public class TestController {
         this.databaseService = databaseService;
     }
 
-    @GetMapping("test")
-    public void test() {
+    @GetMapping("test/{test}")
+    public void test(@PathVariable String test) {
 //        this.botMessageHandler.send("3", Person.GENERAL, "", Task.FEEDBACK_STATUS, "6", "data frf4654");
 //        this.staffMessageHandler.send("3", Person.PATIENT, "", Task.PATIENT_NAME, "6", "data frf4654");
-        //System.out.println(this.databaseService.findQuestionById("1"));
+        System.out.println(this.databaseService.findMeal(test));
     }
 
 }

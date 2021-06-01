@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
+@Transactional
 public class StaffMessageHandlerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(StaffMessageHandlerService.class);
@@ -173,7 +175,7 @@ public class StaffMessageHandlerService {
                 }
             }
             case MEAL_DESCRIPTION -> {
-                LOG.info("New meal description");
+                LOG.info("New meal description: " + message.getData());
 
                 Response response = this.databaseService.saveMeal(Meal.builder()
                         .id(message.getTaskId())
@@ -185,7 +187,7 @@ public class StaffMessageHandlerService {
                 }
             }
             case MEAL_CALORIES -> {
-                LOG.info("New meal calories");
+                LOG.info("New meal calories: " + message.getData());
 
                 Response response = this.databaseService.saveMeal(Meal.builder()
                         .id(message.getTaskId())
@@ -197,9 +199,9 @@ public class StaffMessageHandlerService {
                 }
             }
             case MEAL_ALLERGIES -> {
-                LOG.info("New meal allergies");
+                LOG.info("New meal allergies: " + message.getData());
 
-                String[] allergiesString = message.getData().replace(" ", "").substring(1, message.getData().length() - 1).split(",");
+                String[] allergiesString = message.getData().substring(1, message.getData().length() - 1).replace(" ", "").split(",");
                 Set<Allergy> allergies = new HashSet<>();
 
                 for (String allergyString : allergiesString) {
@@ -219,7 +221,7 @@ public class StaffMessageHandlerService {
                 }
             }
             case MEAL_IMAGE -> {
-                LOG.info("New meal image");
+                LOG.info("New meal image: " + message.getData());
 
                 Response response = this.databaseService.saveMeal(Meal.builder()
                         .id(message.getTaskId())
@@ -227,7 +229,7 @@ public class StaffMessageHandlerService {
                         .build());
 
                 if (response.isNew()) {
-                    this.sendId(Person.PATIENT, message.getPersonId(), Task.MEAL_ID, response.getId(), response.getId());
+                    this.sendId(Person.NONE, "-1", Task.MEAL_ID, response.getId(), response.getId());
                 }
             }
             case ANSWER -> {

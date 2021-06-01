@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Meal } from 'src/model/meal';
+import { Allergy } from 'src/model/allergy'
 import { MessageHandlerService } from '../message-handler.service';
 
 @Component({
@@ -25,8 +26,13 @@ export class OrderPageComponent implements OnInit {
   }
 
   onTest(): void {
-    // this.messageHandler.sendMeal({id: '', name: this.name, description: this.description, calories: this.calories, allergies: new Set<Allergy>(), image: this.image});
-    this.messageHandler.requestMeals();
+    let temp = new Set<Allergy>()
+    temp.add(Allergy.DIABETES)
+    temp.add(Allergy.CELERY)
+    temp.add(Allergy.EGGS)
+
+    this.messageHandler.sendMeal({id: '-1', name: this.name, description: this.description, calories: this.calories, allergies: temp, image: this.image});
+    // this.messageHandler.requestMeals();
 
     this.name = '';
     this.description = '';

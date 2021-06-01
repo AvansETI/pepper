@@ -38,7 +38,7 @@ public class DatabaseService {
         this.nextSequenceService = nextSequenceService;
     }
 
-    public Response savePatient(Patient patient) {
+    public synchronized Response savePatient(Patient patient) {
         String id;
         boolean isNew = false;
 
@@ -101,7 +101,7 @@ public class DatabaseService {
         return ids;
     }
 
-    public Response saveMeal(Meal meal) {
+    public synchronized Response saveMeal(Meal meal) {
         String id;
         boolean isNew = false;
 
@@ -137,6 +137,7 @@ public class DatabaseService {
             }
 
             this.mealRepository.save(mealFounded);
+
         }
 
         return new Response(id, isNew);
@@ -174,7 +175,7 @@ public class DatabaseService {
         return this.mealRepository.findById(id).orElse(null);
     }
 
-    public Response saveMealOrder(MealOrder order) {
+    public synchronized Response saveMealOrder(MealOrder order) {
         String id;
         boolean isNew = false;
 
@@ -221,7 +222,7 @@ public class DatabaseService {
         return this.mealOrderRepository.findById(id).orElse(null);
     }
 
-    public Response saveFeedback(Feedback feedback) {
+    public synchronized Response saveFeedback(Feedback feedback) {
         String id;
         boolean isNew = false;
 
@@ -270,7 +271,7 @@ public class DatabaseService {
         return this.feedbackRepository.findById(id).orElse(null);
     }
 
-    public Response saveAnswer(Answer answer) {
+    public synchronized Response saveAnswer(Answer answer) {
         String id;
         boolean isNew = false;
 
@@ -319,7 +320,7 @@ public class DatabaseService {
         return this.answerRepository.findById(id).orElse(null);
     }
 
-    public Response saveQuestion(Question question) {
+    public synchronized Response saveQuestion(Question question) {
         String id;
         boolean isNew = false;
 
@@ -391,7 +392,7 @@ public class DatabaseService {
         return this.questionRepository.findById(id).orElse(null);
     }
 
-    public Response saveReminder(Reminder reminder) {
+    public synchronized Response saveReminder(Reminder reminder) {
         String id;
         boolean isNew = false;
 

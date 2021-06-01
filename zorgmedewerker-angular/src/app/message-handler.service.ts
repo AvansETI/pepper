@@ -142,7 +142,7 @@ export class MessageHandlerService {
       case Task.MEAL_ALLERGIES: {
         let allergies: Set<Allergy> = new Set();
 
-        const tempAllergies: string[] = message.data.substring(1, message.data.length - 1).split(', ');
+        const tempAllergies: string[] = message.data.substring(1, message.data.length - 1).replace(' ', '').split(',');
         tempAllergies.forEach((allergy) => {
           if (allergy !== '') {
             allergies.add(allergy as unknown as Allergy);
@@ -287,10 +287,15 @@ export class MessageHandlerService {
       }
     }
 
+    let temp: string[] = [];
+    meal.allergies.forEach((allergy) => {
+      temp.push(Allergy[allergy])
+    })
+
     if (this.mealId !== '-1') {
       this.send('1', Person.NONE, '-1', Task.MEAL_DESCRIPTION, this.mealId, meal.description);
       this.send('1', Person.NONE, '-1', Task.MEAL_CALORIES, this.mealId, meal.calories);
-      this.send('1', Person.NONE, '-1', Task.MEAL_ALLERGIES, this.mealId, '[]');
+      this.send('1', Person.NONE, '-1', Task.MEAL_ALLERGIES, this.mealId, `[${Array.from(temp).join(', ')}]`);
       this.send('1', Person.NONE, '-1', Task.MEAL_IMAGE, this.mealId, meal.image);
     }
   }
