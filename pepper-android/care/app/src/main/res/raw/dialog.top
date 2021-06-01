@@ -8,15 +8,15 @@ concept:(order) [bestel order een "Doe mij maar" "Ik wil graag" "Ik kies"]
 concept:(favorite) [favo favoriet "Wat is jouw favoriet"]
 concept:(myfav) ["Mijn favoriet is" "Ik heb eigenlijk geen favoriet maar als ik echt zou moeten kiezen was dat"]
 
-#### DISCLAIMER - make sure dynamics are ALL lowercase otherwise chatbot will crash ####
+#### LET OP - Bij het toevoegen van nieuwe dynamics zorg ervoor dat alles in lowercase staat ####
 
-#### Init through code ####
+#### Intialiseer d.m.v. code ####
 dynamic: name
 dynamic: meals
 dynamic: reminders
 dynamic: questions
 
-#### Init through topic ####
+#### Intialiseer d.m.v. topic ####
 dynamic: meal
 dynamic: answered
 dynamic: number
@@ -40,13 +40,13 @@ proposal: %PATIENT Wat fijn om je weer te zien {~name} ! ^execute(navigateChoice
 
 proposal: %ORDER Vandaag staan de volgende maaltijden op het menu {^enumerate(~meals)} ^enableThenGoto(ORDERASK)
 
-#### DISCLAIMER - Make sure to use AddToConcept first otherwise chatbot will crash ####
+#### LET OP - Voeg AddToConcept eerst toe anders crashed de chatbot ####
 proposal: %ORDERASK Wat wil je bestellen {~name} ?
     u1:(~options) ^enumerate(~meals) ^enableThenGoto(ORDERFALLBACK)
     u1:(~favorite) ~myfav ^rand[~meals] ^enableThenGoto(ORDERFALLBACK)
     u1:(~order _~meals) ^addToConcept(~meal, $1) ^execute(selectMealItem, sel, $1) ^enableThenGoto(ORDERCHECK)
 
-proposal: %ORDERFALLBACK ^empty #Fallback needed otherwise discussion will stop
+proposal: %ORDERFALLBACK ^empty #Fallback is nodig om de applicatie niet te laten crashen of vast te laten lopen
     u1:(~options) ^enumerate(~meals) ^enableThenGoto(ORDERFALLBACK)
     u1:(~favorite) ~myfav ^rand[~meals] ^enableThenGoto(ORDERFALLBACK)
     u1:(~order _~meals) ^addToConcept(~meal, $1) ^execute(selectMealItem, sel, $1) ^enableThenGoto(ORDERCHECK)

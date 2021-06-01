@@ -3,6 +3,7 @@ topic: ~main ^resetOnFocus()
 concept:(robot) [pepper robot]
 concept:(greeting) [hallo hi hey goedemorgen]
 concept:(goingGreat) ["Wat fijn om te horen!" "Fantastisch!"]
+concept:(goingBad) ["Wat jammer om te horen!" "Ohnee!"]
 concept:(time) [tijd hoelaat "Hoelaat is het nu?" "Wat is de tijd?" "Hoelaat is het?"]
 concept:(day) [dag "Welke dag is het?" "Wat is de dag vandaag?" "Welke dag?"]
 concept:(good) [goed prima "Het gaat goed" "Ik voel me prima"]
@@ -10,47 +11,64 @@ concept:(bad) [slecht moe "Het gaat slecht" "Ik voel me slecht"]
 concept:(yes) [ja jazeker]
 concept:(no) [nee niet]
 
+concept:(touch) [Auw "Kan je mij alsjeblieft niet aanraken!"]
 concept:(repeat) [herhaal "Kan je het herhalen?"]
 concept:(notUnderstood) ["Ik begrijp u niet helemaal" "Ik kan u niet goed verstaan"]
+
+#### Formatting ####
+def: sayTime($hour, $minutes) "^first["$hour==00 12" "$hour==13 1" "$hour==14 2" "$hour==14 2" "$hour==15 3" "$hour==16 4" "$hour==17 5" "$hour==18 6" "$hour==19 7" "$hour==20 8" "$hour==21 9" "$hour==22 10" "$hour==23 11"] uur $minutes"
+def: sayDate($year, $month, $day) "$day   ^first[
+                                                "$month==1 januari"
+                                                "$month==2 februari"
+                                                "$month==3 maart"
+                                                "$month==4 april"
+                                                "$month==5 mei"
+                                                "$month==6 juni"
+                                                "$month==7 juli"
+                                                "$month==8 augustus"
+                                                "$month==9 september"
+                                                "$month==10 oktober"
+                                                "$month==11 november"
+                                                "$month==12 december"
+                                                ] $year"
 
 #### Begroeting ####
 u:(~greeting ~robot) ~greeting ^enableThenGoto(convo)
 
 #### Interactie ####
-proposal: %convo Hoe gaat het?
+proposal: %convo Hoe gaat het met jouw?
   u1:(~good ^exact) ~goingGreat ^enableThenGoto(ending)
-  u1:(~bad ^exact) ^gotoRandom(badfeeling)
+  u1:(~bad ^exact) ~goingBad ^gotoRandom(badfeeling)
   u1:(~repeat) ^sameProposal
 
-proposal: %badfeeling Wil je een mop horen? $feelingEvent=mop
+proposal: %badfeeling Wil je een mop horen om je op te vrolijken?
   u1: (~no) ^enableThenGoto(ending)
   u1: (~yes) ~jokes ^enableThenGoto(feelingbetter)
   u1: (~repeat) ^sameProposal
 
-proposal: %badfeeling Wil je een quote horen? $feelingEvent=quote
+proposal: %badfeeling Wil je toevallig een quote horen?
   u1: (~no) ^enableThenGoto(ending)
   u1: (~yes) ~quotes ^enableThenGoto(feelingbetter)
   u1: (~repeat) ^sameProposal
 
-proposal: %badfeeling Wil je een raadsel horen? $feelingEvent=raadsel
+proposal: %badfeeling Wil je misschien een raadsel horen?
   u1: (~no) ^enableThenGoto(ending)
   u1: (~yes) ~riddles ^enableThenGoto(feelingbetter)
   u1: (~repeat) ^sameProposal
 
-proposal: %feelingbetter Wil je nog een $feelingEvent horen?
-  u1: (~no) ^enableThenGoto(ending)
-  u1: (~yes) ^first[
-                "$feelingEvent==mop ~jokes ^sameProposal"
-                "$feelingEvent==quote ~quotes ^sameProposal"
-                "$feelingEvent==raadsel ~riddles ^sameProposal"
-            ]
-  u1: (~repeat) ^sameProposal
+proposal: %feelingbetter Voel je je al wat beter?
+  u1:(~no ^exact) ~goingBad ^gotoRandom(badfeeling)
+  u1:(~yes ^exact) ~goingGreat ^enableThenGoto(ending)
+  u1:(~repeat) ^sameProposal
 
 proposal: %ending Nog een fijne dag toegewenst!
 
 #### Extra ####
 u:(~time) Het is nu ^currentTime
 u:(~day) Vandaag is het ^currentDate
+
+#### Events ####
+u:(e:FrontTactilTouched) ~touch
 
 #### Moppen ####
 concept:(jokes) [
