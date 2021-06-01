@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
@@ -19,12 +20,14 @@ import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayS
 import com.example.awesomedialog.*
 import com.pepper.care.common.AppResult
 import com.pepper.care.common.CommonConstants
+import com.pepper.care.common.CommonConstants.COMMON_SHARED_PREF_LIVE_THEME_KEY
 import com.pepper.care.common.DialogUtil
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
 import com.pepper.care.core.services.mqtt.MqttMessageCallbacks
 import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
 import org.koin.android.ext.android.inject
 import com.pepper.care.core.services.robot.*
+import com.pepper.care.core.services.time.InterfaceTime
 import com.pepper.care.dialog.DialogRoutes
 import com.pepper.care.dialog.common.usecases.GetAvailableScreensUseCaseUsingRepository
 import com.pepper.care.feedback.entities.FeedbackEntity
@@ -40,8 +43,10 @@ import java.util.*
 class MainActivity : RobotActivity(), MqttMessageCallbacks {
 
     private val getAvailableScreens: GetAvailableScreensUseCaseUsingRepository by inject()
-    private val sharedPreferences: SharedPreferences.Editor by inject()
     private val getPatientName: GetPatientNameUseCaseUsingRepository by inject()
+    private val sharedPreferencesEditor: SharedPreferences.Editor by inject()
+    private val sharedPreferences: SharedPreferences by inject()
+
     private val showingDialog: MutableLiveData<AlertDialog> = MutableLiveData()
     private val givenFeedbackNumber: MutableLiveData<Int> = MutableLiveData()
 
@@ -66,7 +71,8 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
     private fun startDeviceServices() {
         initUiElements()
         lifecycleScope.launch {
-            //PlatformMqttListenerService.start(this@MainActivity, this@MainActivity)
+            PlatformMqttListenerService.start(this@MainActivity, this@MainActivity)
+            //TimeBasedInterfaceService.start(this@MainActivity)
         }
     }
 
@@ -89,7 +95,7 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
     }
 
     override fun onMessageReceived(topic: String?, message: String?) {
-        Log.d(MainActivity::class.simpleName, message!!)
+        Log.d(MainActivity::class.simpleName, "Received to following message: '${message!!}' from ${topic!!}")
     }
 
     private val actionCallback: PepperActionCallback = object : PepperActionCallback {
@@ -162,7 +168,7 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                         val feedbackNumber = Integer.parseInt(string!!)
                         Log.d(MainActivity::class.simpleName, "Feedback number: $feedbackNumber")
                         this@MainActivity.givenFeedbackNumber.postValue(feedbackNumber)
-                        sharedPreferences.putInt(CommonConstants.COMMON_SHARED_PREF_UPDATE_FEEDBACK_SLIDER, feedbackNumber).commit()
+                        sharedPreferencesEditor.putInt(CommonConstants.COMMON_SHARED_PREF_UPDATE_FEEDBACK_SLIDER, feedbackNumber).commit()
                     }
                     PepperAction.INPUT_EXPLAIN_FEEDBACK -> {
                         val givenFeedback = string!!
@@ -288,7 +294,34 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
         }
     }
 
+    /*
+    NOTE:   The activity gets destroyed after changing the theme, because an theme can only be initialised at start.
+            This will result in a onDestroy call in the MainActivity and services will stop.
+     */
+
+    private val timeListener: SharedPreferences.OnSharedPreferenceChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+            when (key) {
+                COMMON_SHARED_PREF_LIVE_THEME_KEY -> {
+                    when (sharedPreferences.getString(
+                        COMMON_SHARED_PREF_LIVE_THEME_KEY,
+                        InterfaceTime.DAY.name
+                    )) {
+                        InterfaceTime.DAY.name -> {
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                            Log.d(MainActivity::class.simpleName, "Applied Day Theme")
+                        }
+                        InterfaceTime.NIGHT.name -> {
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                            Log.d(MainActivity::class.simpleName, "Applied Night Theme")
+                        }
+                    }
+                }
+            }
+        }
+
     override fun onDestroy() {
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(timeListener)
         QiSDK.unregister(this@MainActivity, RobotManager.robot)
         super.onDestroy()
     }

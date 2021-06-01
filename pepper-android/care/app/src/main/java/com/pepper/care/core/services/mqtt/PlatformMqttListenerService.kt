@@ -5,30 +5,30 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LifecycleService
+import com.pepper.care.common.CommonConstants.COMMON_SHARED_PREF_ERROR_STRING_VALUE
 import com.pepper.care.common.CommonConstants.COMMON_SHARED_PREF_PUBLISH_MSG_KEY
-import com.pepper.care.core.services.encryption.EncryptionService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.koin.android.ext.android.inject
-import java.lang.Exception
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 class PlatformMqttListenerService : LifecycleService() {
 
     private val sharedPreferences: SharedPreferences by inject()
-    private val encryptionService: EncryptionService by inject()
 
     companion object {
         lateinit var clientHelper: PlatformMqttClientHelper
+        lateinit var encryptionHelper: EncryptionHelper
         lateinit var callback: MqttMessageCallbacks
 
         fun start(context: Context, callback: MqttMessageCallbacks) {
             val intent = Intent(context, PlatformMqttListenerService::class.java)
             this.clientHelper = PlatformMqttClientHelper(context)
+            this.encryptionHelper = EncryptionHelper()
             this.callback = callback
             context.startService(intent)
         }
@@ -63,7 +63,13 @@ class PlatformMqttListenerService : LifecycleService() {
             }
 
             override fun messageArrived(topic: String?, message: MqttMessage?) {
-                callback.onMessageReceived(topic, message.toString())
+                callback.onMessageReceived(
+                    topic,
+                    encryptionHelper.decrypt(
+                        message.toString(),
+                        EncryptionHelper.ENCRYPTION_PASSWORD
+                    )
+                )
             }
 
             override fun deliveryComplete(token: IMqttDeliveryToken?) {
@@ -79,24 +85,18 @@ class PlatformMqttListenerService : LifecycleService() {
         SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
             when (key) {
                 COMMON_SHARED_PREF_PUBLISH_MSG_KEY -> {
-                    //                    val message = sharedPreferences!!.getString(key, "error")
-                    //
-                    //                    if (message.equals("error")) {
-                    //                        return
-                    //                    }
-                    //
-                    //                    var encrypted = ""
-                    //                    try {
-                    //                        encrypted = encryptionService.encrypt(message!!, "pepper")
-                    //                    } catch (e: Exception) {
-                    //                        e.printStackTrace()
-                    //                        return
-                    //                    }
+                    val message = sharedPreferences!!.getString(
+                        COMMON_SHARED_PREF_PUBLISH_MSG_KEY,
+                        COMMON_SHARED_PREF_ERROR_STRING_VALUE
+                    )
+
+                    if (message.equals(COMMON_SHARED_PREF_ERROR_STRING_VALUE)) return@OnSharedPreferenceChangeListener
 
                     clientHelper.publish(
-                        sharedPreferences!!.getString(
-                            COMMON_SHARED_PREF_PUBLISH_MSG_KEY, "error"
-                        )!!, 0
+                        encryptionHelper.encrypt(
+                            message!!,
+                            EncryptionHelper.ENCRYPTION_PASSWORD
+                        ), 0
                     )
                 }
             }

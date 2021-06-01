@@ -7,10 +7,8 @@ import android.util.Log
 import androidx.lifecycle.LifecycleService
 import com.pepper.care.common.CommonConstants
 import kotlinx.coroutines.*
-import org.joda.time.LocalDateTime
 import org.joda.time.LocalTime
 import org.koin.android.ext.android.inject
-import java.util.*
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -56,7 +54,6 @@ class TimeBasedInterfaceService : LifecycleService() {
     }
 
     private fun isDayOrNight(time: LocalTime): InterfaceTime {
-        return if (time.minuteOfHour % 2 == 1) InterfaceTime.DAY else InterfaceTime.NIGHT
-//        return if (time.hourOfDay in 22 downTo 6) InterfaceTime.DAY else InterfaceTime.NIGHT
+        return if (time.hourOfDay in 22 downTo 6) InterfaceTime.DAY else InterfaceTime.NIGHT
     }
 }

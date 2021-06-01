@@ -10,8 +10,6 @@ import com.pepper.care.common.api.PlatformApi
 import com.pepper.care.common.repo.*
 import com.pepper.care.common.usecases.GetPatientBirthdayUseCaseUsingRepository
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
-import com.pepper.care.core.services.encryption.EncryptionService
-import com.pepper.care.core.services.robot.PepperRobot
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidApplication
 import retrofit2.Retrofit
@@ -26,9 +24,6 @@ val commonModule = module {
     }
     single<Retrofit> {
         provideRetrofit(get())
-    }
-    single<EncryptionService> {
-        provideEncryptionService()
     }
     factory<OkHttpClient> {
         provideOkHttpClient()
@@ -76,10 +71,6 @@ fun providePlatformApi(retrofit: Retrofit): PlatformApi {
 
 fun providePatientRepository(): PatientRepository {
     return PatientRepositoryImpl()
-}
-
-fun provideEncryptionService(): EncryptionService {
-    return EncryptionService()
 }
 
 
