@@ -36,6 +36,17 @@
         <item name="android:singleLine">false</item>
     </style>
 
+    <style name="Pepper_Care_Title_Text_Order" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="fontFamily">@font/montserrat_bold</item>
+        <item name="android:fontFamily">@font/montserrat_bold</item>
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
     <style name="Pepper_Care_Body_Text" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
         <item name="fontFamily">@font/montserrat_regular</item>
         <item name="android:fontFamily">@font/montserrat_regular</item>
@@ -68,6 +79,11 @@
     <style name="Pepper_Care_Image_Filter" parent="">
         <item name="android:scaleType">centerCrop</item>
         <item name="android:src">@color/transparentImageFilter</item>
+    </style>
+
+    <style name="Pepper_Care_Favorite_Filter" parent="">
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:src">@color/favoriteFilter</item>
     </style>
 
     <style name="Pepper_Care_Button" parent="Widget.MaterialComponents.Button.OutlinedButton">

@@ -44,19 +44,12 @@ class OrderFragment : BaseFragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: SliderAdapter
     private lateinit var layoutManger: CardSliderLayoutManager
+    private var currentPosition = -1
 
+    private lateinit var titleSwitcher: TextSwitcher
     private lateinit var labelSwitcher: TextSwitcher
-    private lateinit var mealSwitcher: TextSwitcher
     private lateinit var descriptionSwitcher: TextSwitcher
     private lateinit var allergiesSwitcher: TextSwitcher
-    private lateinit var caloriesSwitcher: TextSwitcher
-
-    private lateinit var meal1TextView: TextView
-    private lateinit var meal2TextView: TextView
-    private var mealOffset1 = 0
-    private var mealOffset2 = 0
-    private var mealAnimDuration: Long = 0
-    private var currentPosition = -1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -83,7 +76,6 @@ class OrderFragment : BaseFragment() {
     private fun bindToEvents() {
         viewModel.onStart()
         initRecyclerView()
-        initMealText()
         initSwitchers()
 
         viewModel.recyclerList.observeInLifecycleScope {
@@ -109,6 +101,22 @@ class OrderFragment : BaseFragment() {
         CardSnapHelper().attachToRecyclerView(recyclerView)
     }
 
+    private fun initSwitchers() {
+        titleSwitcher = viewBinding.mealTitle
+        titleSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Title_Text_Order, false))
+
+        labelSwitcher = viewBinding.labelText
+        labelSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Label_text, true))
+
+        descriptionSwitcher = viewBinding.mealDescription
+        descriptionSwitcher.setInAnimation(this@OrderFragment.context, android.R.anim.fade_in)
+        descriptionSwitcher.setOutAnimation(this@OrderFragment.context, android.R.anim.fade_out)
+        descriptionSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Body_Text, false))
+
+        allergiesSwitcher = viewBinding.mealAllergies
+        allergiesSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Body_Text, false))
+    }
+
     private fun onCardChange() {
         val pos: Int = layoutManger.activeCardPosition
         if (pos == RecyclerView.NO_POSITION || pos == currentPosition) return
@@ -131,15 +139,13 @@ class OrderFragment : BaseFragment() {
         val list = viewModel.recyclerList.value!!
         val currentItem = (list[pos % list.size] as MealSliderItem)
 
-        setMealText(currentItem, left2right)
+        titleSwitcher.setInAnimation(this@OrderFragment.context, android.R.anim.fade_in)
+        titleSwitcher.setOutAnimation(this@OrderFragment.context, android.R.anim.fade_out)
+        titleSwitcher.setText(currentItem.name)
 
         labelSwitcher.setInAnimation(this@OrderFragment.context, android.R.anim.fade_in)
         labelSwitcher.setOutAnimation(this@OrderFragment.context, android.R.anim.fade_out)
-        labelSwitcher.setText("ID: ${currentItem.id}")
-
-        mealSwitcher.setInAnimation(this@OrderFragment.context, android.R.anim.fade_in)
-        mealSwitcher.setOutAnimation(this@OrderFragment.context, android.R.anim.fade_out)
-        mealSwitcher.setText(currentItem.name)
+        labelSwitcher.setText("${currentItem.calories} Kcal")
 
         descriptionSwitcher.setInAnimation(this@OrderFragment.context, android.R.anim.fade_in)
         descriptionSwitcher.setOutAnimation(this@OrderFragment.context, android.R.anim.fade_out)
@@ -149,75 +155,7 @@ class OrderFragment : BaseFragment() {
         allergiesSwitcher.setOutAnimation(this@OrderFragment.context, android.R.anim.fade_out)
         allergiesSwitcher.setText(currentItem.allergies)
 
-        caloriesSwitcher.setInAnimation(this@OrderFragment.context, android.R.anim.fade_in)
-        caloriesSwitcher.setOutAnimation(this@OrderFragment.context, android.R.anim.fade_out)
-        caloriesSwitcher.setText("${currentItem.calories} kilocalorieën")
-
         currentPosition = pos
-    }
-
-    private fun initMealText() {
-        mealAnimDuration = resources.getInteger(R.integer.labels_animation_duration).toLong()
-        mealOffset1 = resources.getDimensionPixelSize(R.dimen.left_offset)
-        mealOffset2 = resources.getDimensionPixelSize(R.dimen.card_width)
-        meal1TextView = viewBinding.mealTitle1
-        meal2TextView = viewBinding.mealTitle2
-
-        meal1TextView.x = mealOffset1.toFloat()
-        meal2TextView.x = mealOffset2.toFloat()
-        meal2TextView.alpha = 0f
-    }
-
-    private fun setMealText(currentItem: MealSliderItem, left2right: Boolean) {
-        val invisibleText: TextView
-        val visibleText: TextView
-        if (meal1TextView.alpha > meal2TextView.alpha) {
-            visibleText = meal1TextView
-            invisibleText = meal2TextView
-        } else {
-            visibleText = meal1TextView
-            invisibleText = meal2TextView
-        }
-
-        val vOffset: Int
-        if (left2right) {
-            invisibleText.x = 0f
-            vOffset = mealOffset2
-        } else {
-            invisibleText.x = mealOffset2.toFloat()
-            vOffset = 0
-        }
-
-        invisibleText.text = currentItem.name
-
-        val iAlpha = ObjectAnimator.ofFloat(invisibleText, "alpha", 1f)
-        val vAlpha = ObjectAnimator.ofFloat(visibleText, "alpha", 0f)
-        val iX = ObjectAnimator.ofFloat(invisibleText, "x", mealOffset1.toFloat())
-        val vX = ObjectAnimator.ofFloat(visibleText, "x", vOffset.toFloat())
-
-        val animSet = AnimatorSet()
-        animSet.playTogether(iAlpha, vAlpha, iX, vX)
-        animSet.duration = mealAnimDuration
-        animSet.start()
-    }
-
-    private fun initSwitchers() {
-        labelSwitcher = viewBinding.labelText
-        labelSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Label_text, true))
-
-        mealSwitcher = viewBinding.mealType
-        mealSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Title_Text, false))
-
-        descriptionSwitcher = viewBinding.mealDescription
-        descriptionSwitcher.setInAnimation(this@OrderFragment.context, android.R.anim.fade_in)
-        descriptionSwitcher.setOutAnimation(this@OrderFragment.context, android.R.anim.fade_out)
-        descriptionSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Body_Text, false))
-
-        allergiesSwitcher = viewBinding.mealAllergies
-        allergiesSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Title_Text, false))
-
-        caloriesSwitcher = viewBinding.mealCalories
-        caloriesSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Title_Text, false))
     }
 
     private val adapterClickedListener: ClickCallback<SliderAdapterItem> =

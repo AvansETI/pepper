@@ -14,8 +14,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:paddingVertical="8dp"
-        android:layout_width="399dp"
-        android:layout_height="210dp">
+        android:layout_width="@dimen/card_width"
+        android:layout_height="@dimen/card_height">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/clickable_card"
@@ -44,6 +44,28 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    style="@style/Pepper_Care_Favorite_Filter"
+                    android:id="@+id/meal_picture_filter"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:isVisible="@{meal.isFavorite}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    style="@style/Pepper_Care_Icon_Image"
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
+                    android:layout_marginTop="16dp"
+                    android:src="@drawable/ic_baseline_star_rate_24"
+                    android:layout_margin="@dimen/card_gap"
+                    app:isVisible="@{meal.isFavorite}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>

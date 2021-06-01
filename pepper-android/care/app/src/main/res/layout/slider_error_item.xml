@@ -4,17 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="com.pepper.care.order.common.view.MealSliderItem"/>
 
         <variable
-            name="inform"
-            type="com.pepper.care.common.entities.InformUserRecyclerItem" />
+            name="error"
+            type="com.pepper.care.order.common.view.ErrorSliderItem" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:paddingVertical="8dp"
-        android:layout_width="300dp"
-        android:layout_height="230dp">
+        android:layout_width="@dimen/card_width"
+        android:layout_height="@dimen/card_height">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/clickable_card"
@@ -64,26 +65,27 @@
                     app:layout_constraintTop_toBottomOf="@+id/placeholder_animation" />
 
                 <TextView
-                    style="@style/Pepper_Care_Body_Text"
                     android:id="@+id/meal_description"
+                    style="@style/Pepper_Care_Body_Text"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_marginTop="8dp"
                     android:paddingHorizontal="8dp"
+                    android:text="Dit is de reden waarom er een fout is opgetreden."
                     android:textAlignment="center"
                     android:textSize="10sp"
-                    android:text="Dit is de reden waarom er een fout is opgetreden."
-                    tools:text="@{inform.informType.text}"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/meal_title" />
+                    app:layout_constraintTop_toBottomOf="@+id/meal_title"
+                    tools:text="@{error.errorType.text}" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    app:layout_constraintGuide_begin="120dp" />
+                    app:layout_constraintGuide_begin="100dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>

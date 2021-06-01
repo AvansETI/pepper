@@ -37,13 +37,4 @@ data class PlatformMealsResponse(
     val allergies: String,
     val calories: Int,
     val source: String
-) : RecyclerAdapterItem() {
-
-    override fun getViewType() : ViewTypes {
-        return ViewTypes.MEAL
-    }
-
-    fun getCaloriesText() : String {
-        return "${this.calories} kilocalorieën"
-    }
-}
+)

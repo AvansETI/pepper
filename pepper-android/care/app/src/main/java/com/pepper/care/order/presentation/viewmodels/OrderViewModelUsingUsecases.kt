@@ -2,23 +2,15 @@ package com.pepper.care.order.presentation.viewmodels
 
 import android.util.Log
 import android.view.View
-import androidx.core.os.bundleOf
 import androidx.lifecycle.*
 import androidx.navigation.findNavController
 import com.aldebaran.qi.sdk.`object`.conversation.Phrase
-import com.pepper.care.R
 import com.pepper.care.common.AppResult
 import com.pepper.care.common.ClickCallback
-import com.pepper.care.common.DialogCallback
-import com.pepper.care.common.DialogUtil
-import com.pepper.care.common.entities.InformUserRecyclerItem
-import com.pepper.care.common.entities.PlatformMealsResponse
-import com.pepper.care.common.entities.RecyclerAdapterItem
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
 import com.pepper.care.core.services.robot.DynamicConcepts
 import com.pepper.care.core.services.robot.RobotManager
 import com.pepper.care.dialog.DialogConstants
-import com.pepper.care.dialog.DialogRoutes
 import com.pepper.care.dialog.common.usecases.GetAvailableScreensUseCaseUsingRepository
 import com.pepper.care.order.common.usecases.GetPatientAllergiesUseCaseUsingRepository
 import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
@@ -67,10 +59,13 @@ class OrderViewModelUsingUsecases(
                                     item.description,
                                     item.allergies,
                                     item.calories,
-                                    item.source
+                                    item.source,
+                                    false
                                 )
                             )
                         }
+
+                        (recyclerList.value!!.random() as MealSliderItem).isFavorite = true
 
                         addDynamicContents(recyclerList.value!!)
                     }

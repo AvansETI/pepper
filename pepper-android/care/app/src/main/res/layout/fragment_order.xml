@@ -26,7 +26,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="38dp"
-                android:layout_marginTop="30dp">
+                android:layout_marginTop="60dp">
 
                 <FrameLayout
                     android:id="@+id/meal"
@@ -36,21 +36,12 @@
                     android:layout_alignParentStart="true"
                     android:layout_toStartOf="@+id/frameLayout">
 
-                    <TextView
-                        android:id="@+id/meal_title_1"
+                    <TextSwitcher
+                        android:id="@+id/meal_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:textSize="28sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/meal_title_2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="28sp"
-                        android:textStyle="bold"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_marginStart="@dimen/left_offset"/>
 
                 </FrameLayout>
 
@@ -76,28 +67,28 @@
                 style="@style/Pepper_Care_Card_Slider"
                 android:id="@+id/meal_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="210dp"
-                android:layout_marginTop="18dp"
-                android:layout_marginStart="9dp"
+                android:layout_height="@dimen/card_height"
+                android:layout_marginTop="6dp"
+                android:layout_marginStart="19dp"
                 android:clipChildren="false"
                 android:overScrollMode="never"
                 app:layoutManager="com.ramotion.cardslider.CardSliderLayoutManager" />
 
             <FrameLayout
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/max_text_width"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp">
+                android:layout_marginTop="6dp">
 
                 <ImageView
-                    android:layout_width="13dp"
-                    android:layout_height="13dp"
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="30dp"
                     android:src="@drawable/ic_meal"
                     android:scaleType="fitCenter"/>
 
                 <TextSwitcher
-                    android:id="@+id/meal_type"
+                    android:id="@+id/meal_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -107,27 +98,19 @@
 
             <RelativeLayout
                 android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/max_text_width"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true">
-
-                <TextSwitcher
-                    android:id="@+id/meal_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/left_offset"
-                    android:layout_marginEnd="10dp"/>
 
                 <FrameLayout
                     android:id="@+id/meal_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_below="@id/meal_description">
+                    android:layout_marginTop="10dp">
 
                     <ImageView
-                        android:layout_width="13dp"
-                        android:layout_height="13dp"
+                        android:layout_width="@dimen/icon_size"
+                        android:layout_height="@dimen/icon_size"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="30dp"
                         android:src="@drawable/ic_peanut"
@@ -141,30 +124,40 @@
                         android:layout_marginStart="@dimen/left_offset"/>
 
                 </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_below="@id/meal_layout">
-
-                    <ImageView
-                        android:layout_width="13dp"
-                        android:layout_height="13dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="30dp"
-                        android:src="@drawable/ic_calories"
-                        android:scaleType="fitCenter"/>
-
-                    <TextSwitcher
-                        android:id="@+id/meal_calories"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="@dimen/left_offset"/>
-
-                </FrameLayout>
             </RelativeLayout>
         </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                style="@style/Pepper_Care_Image"
+                android:id="@+id/meal_logo"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/chef_logo_shadow"
+                android:translationY="-10dp"
+                android:translationX="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline9"
+                app:layout_constraintTop_toTopOf="@+id/guideline8" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_end="181dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="200dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 </layout>
