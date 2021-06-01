@@ -28,6 +28,7 @@ import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
 import org.koin.android.ext.android.inject
 import com.pepper.care.core.services.robot.*
 import com.pepper.care.core.services.time.InterfaceTime
+import com.pepper.care.core.services.time.TimeBasedInterfaceService
 import com.pepper.care.dialog.DialogRoutes
 import com.pepper.care.dialog.common.usecases.GetAvailableScreensUseCaseUsingRepository
 import com.pepper.care.feedback.entities.FeedbackEntity
@@ -72,7 +73,7 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
         initUiElements()
         lifecycleScope.launch {
             PlatformMqttListenerService.start(this@MainActivity, this@MainActivity)
-            //TimeBasedInterfaceService.start(this@MainActivity)
+            TimeBasedInterfaceService.start(this@MainActivity)
         }
     }
 
@@ -95,7 +96,10 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
     }
 
     override fun onMessageReceived(topic: String?, message: String?) {
-        Log.d(MainActivity::class.simpleName, "Received to following message: '${message!!}' from ${topic!!}")
+        Log.d(
+            MainActivity::class.simpleName,
+            "Received to following message: '${message!!}' from ${topic!!}"
+        )
     }
 
     private val actionCallback: PepperActionCallback = object : PepperActionCallback {
@@ -168,7 +172,10 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                         val feedbackNumber = Integer.parseInt(string!!)
                         Log.d(MainActivity::class.simpleName, "Feedback number: $feedbackNumber")
                         this@MainActivity.givenFeedbackNumber.postValue(feedbackNumber)
-                        sharedPreferencesEditor.putInt(CommonConstants.COMMON_SHARED_PREF_UPDATE_FEEDBACK_SLIDER, feedbackNumber).commit()
+                        sharedPreferencesEditor.putInt(
+                            CommonConstants.COMMON_SHARED_PREF_UPDATE_FEEDBACK_SLIDER,
+                            feedbackNumber
+                        ).commit()
                     }
                     PepperAction.INPUT_EXPLAIN_FEEDBACK -> {
                         val givenFeedback = string!!
@@ -303,15 +310,17 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
         SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
             when (key) {
                 COMMON_SHARED_PREF_LIVE_THEME_KEY -> {
-                    when (sharedPreferences.getString(
-                        COMMON_SHARED_PREF_LIVE_THEME_KEY,
-                        InterfaceTime.DAY.name
+                    when (InterfaceTime.valueOf(
+                        sharedPreferences.getString(
+                            COMMON_SHARED_PREF_LIVE_THEME_KEY,
+                            InterfaceTime.DAY.name
+                        )!!
                     )) {
-                        InterfaceTime.DAY.name -> {
+                        InterfaceTime.DAY -> {
                             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                             Log.d(MainActivity::class.simpleName, "Applied Day Theme")
                         }
-                        InterfaceTime.NIGHT.name -> {
+                        InterfaceTime.NIGHT -> {
                             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                             Log.d(MainActivity::class.simpleName, "Applied Night Theme")
                         }

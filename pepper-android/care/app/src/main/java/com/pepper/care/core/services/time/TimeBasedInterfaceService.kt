@@ -17,6 +17,7 @@ class TimeBasedInterfaceService : LifecycleService() {
     private val sharedPreferences: SharedPreferences.Editor by inject()
 
     companion object {
+        const val LOOP_TIMER_MS: Long = 900000 /* Every 15 min */
         var isFinished: Boolean = true
 
         fun start(context: Context) {
@@ -48,7 +49,7 @@ class TimeBasedInterfaceService : LifecycleService() {
                     TimeBasedInterfaceService::class.simpleName,
                     "${currentTime.toString("HH:mm")}, ${timeOfDay.name}"
                 )
-                delay(10000)
+                delay(LOOP_TIMER_MS)
             } while (isFinished)
         }
     }
