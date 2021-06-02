@@ -6,7 +6,6 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.aldebaran.qi.sdk.`object`.conversation.Phrase
 import com.pepper.care.R
-import com.pepper.care.common.AnimationUtil
 import com.pepper.care.common.AppResult
 import com.pepper.care.common.ClickCallback
 import com.pepper.care.common.UpdateNotifierCallback
@@ -14,6 +13,7 @@ import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
 import com.pepper.care.core.services.robot.DynamicConcepts
 import com.pepper.care.core.services.robot.RobotManager
 import com.pepper.care.dialog.DialogConstants
+import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_ERROR
 import com.pepper.care.dialog.common.usecases.GetAvailableScreensUseCaseUsingRepository
 import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
 import com.pepper.care.order.common.view.ErrorSliderItem
@@ -160,7 +160,7 @@ class OrderViewModelUsingUsecases(
         val firstItem: SliderAdapterItem = recyclerList.value!![0]
 
         if (firstItem is ErrorSliderItem) {
-            titleText.apply { Pair("Ohnee er is iets fout gegaan...", true) }
+            titleText.apply { value = Pair(DIALOG_MOCK_ERROR, true) }
             return
         }
 
@@ -229,7 +229,7 @@ class OrderViewModelUsingUsecases(
         val currentItem: SliderAdapterItem = list[pos % list.size]
 
         if (currentItem is ErrorSliderItem) {
-            titleText.postValue(Pair("Ohnee er is iets fout gegaan...", true))
+            titleText.apply { value = Pair(DialogConstants.DIALOG_MOCK_ERROR, true) }
             return
         }
 
