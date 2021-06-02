@@ -27,6 +27,7 @@
     <color name="toolBarColor">@color/whiteAlternative</color>
     <color name="toolBarIconsColor">@color/blackAlternative</color>
     <color name="titleTextColor">@color/colorPrimary</color>
+    <color name="titleOrderColor">@color/grey</color>
     <color name="bodyTextColor">@color/black</color>
     <color name="materialCardColor">@color/whiteAlternative</color>
     <color name="materialCardIconColor">@color/whiteAlternative</color>
