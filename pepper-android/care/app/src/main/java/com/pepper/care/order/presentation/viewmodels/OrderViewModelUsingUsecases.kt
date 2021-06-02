@@ -188,30 +188,24 @@ class OrderViewModelUsingUsecases(
                         this@OrderViewModelUsingUsecases.meal.apply {
                             value = item as MealSliderItem
                         }
-//                        val recyclerView =
-//                            view.rootView.findViewById<RecyclerView>(R.id.meal_recycler_view)
-//                        val layoutManager = recyclerView.layoutManager as CardSliderLayoutManager?
-//
-//                        if (layoutManager!!.isSmoothScrolling) {
-//                            return
-//                        }
-//
-//                        val activeCardPosition = layoutManager.activeCardPosition
-//                        if (activeCardPosition == RecyclerView.NO_POSITION) {
-//                            return
-//                        }
-//
-//                        val clickedPosition = recyclerView.getChildAdapterPosition(view)
-//                        if (clickedPosition == activeCardPosition) {
-//                            view.findNavController().navigate(
-//                                R.id.fullscreenImageFragment,
-//                                null,
-//                                AnimationUtil.getFullscreenImageAnimation()
-//                            )
-//                        } else if (clickedPosition > activeCardPosition) {
-//                            recyclerView.smoothScrollToPosition(clickedPosition)
-//                            onChange(clickedPosition)
-//                        }
+                        val recyclerView =
+                            view.rootView.findViewById<RecyclerView>(R.id.meal_recycler_view)
+                        val layoutManager = recyclerView.layoutManager as CardSliderLayoutManager?
+
+                        if (layoutManager!!.isSmoothScrolling) {
+                            return
+                        }
+
+                        val activeCardPosition = layoutManager.activeCardPosition
+                        if (activeCardPosition == RecyclerView.NO_POSITION) {
+                            return
+                        }
+
+                        val clickedPosition = recyclerView.getChildAdapterPosition(view)
+                        if (clickedPosition != activeCardPosition) {
+                            recyclerView.smoothScrollToPosition(clickedPosition)
+                            onChange(clickedPosition)
+                        }
                     }
                     else -> {
                     }
