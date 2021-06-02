@@ -123,6 +123,7 @@ class ClickableDiffCallback : DiffUtil.ItemCallback<SliderAdapterItem>() {
                     SliderAdapterItem.ViewTypes.MEAL -> {
                         (oldItem as MealSliderItem).id == (newItem as MealSliderItem).id
                     }
+                    else -> {}
                 }
             }
         }
@@ -143,6 +144,7 @@ class ClickableDiffCallback : DiffUtil.ItemCallback<SliderAdapterItem>() {
                                 && oldItem.calories == newItem.calories
                                 && oldItem.source == newItem.source
                     }
+                    else -> {}
                 }
             }
         }

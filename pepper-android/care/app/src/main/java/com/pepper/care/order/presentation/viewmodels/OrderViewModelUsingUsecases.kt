@@ -4,29 +4,30 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.*
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.aldebaran.qi.sdk.`object`.conversation.Phrase
+import com.pepper.care.R
 import com.pepper.care.common.AppResult
 import com.pepper.care.common.ClickCallback
+import com.pepper.care.common.UpdateNotifierCallback
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
 import com.pepper.care.core.services.robot.DynamicConcepts
 import com.pepper.care.core.services.robot.RobotManager
 import com.pepper.care.dialog.DialogConstants
 import com.pepper.care.dialog.common.usecases.GetAvailableScreensUseCaseUsingRepository
-import com.pepper.care.order.common.usecases.GetPatientAllergiesUseCaseUsingRepository
 import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
 import com.pepper.care.order.common.view.ErrorSliderItem
 import com.pepper.care.order.common.view.MealSliderItem
 import com.pepper.care.order.common.view.SliderAdapterItem
-import com.pepper.care.order.presentation.OrderFragment
+import com.ramotion.cardslider.CardSliderLayoutManager
+import com.ramotion.cardslider.CardSnapHelper
 import kotlinx.coroutines.launch
-import org.joda.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 
 class OrderViewModelUsingUsecases(
     private val getName: GetPatientNameUseCaseUsingRepository,
     private val getPlatformMealsUseCaseUsingRepository: GetPlatformMealsUseCaseUsingRepository,
-    private val getPatientAllergiesUseCaseUsingRepository: GetPatientAllergiesUseCaseUsingRepository,
     private val getAvailableScreens: GetAvailableScreensUseCaseUsingRepository
 ) : ViewModel(), OrderViewModel {
 
@@ -34,13 +35,30 @@ class OrderViewModelUsingUsecases(
     override val recyclerVisibility: MutableLiveData<Boolean> = MutableLiveData(false)
     override val isLoadedSuccessfully: MutableLiveData<Boolean> = MutableLiveData(false)
     override val progressVisibility: MutableLiveData<Boolean> = MutableLiveData(true)
-    override val recyclerSpanCount: MutableLiveData<Int> = MutableLiveData(3)
-    override val meal: MutableLiveData<MealSliderItem> = MutableLiveData()
+    override val isOpposite: MutableLiveData<Boolean> = MutableLiveData(false)
 
+    override val meal: MutableLiveData<MealSliderItem> = MutableLiveData()
     private val fetchedName: MutableLiveData<String> =
         MutableLiveData(DialogConstants.DIALOG_MOCK_NAME)
     private val fetchedAvailableScreens: MutableLiveData<IntArray> =
         MutableLiveData(intArrayOf(0, 0, 0))
+
+    override val currentPosition: MutableLiveData<Int> = MutableLiveData(-1)
+    override val cardSnapHelper: CardSnapHelper = CardSnapHelper()
+
+    override val titleText: MutableLiveData<Pair<String, Boolean>> =
+        MutableLiveData(Pair("", false))
+    override val labelText: MutableLiveData<Pair<String, Boolean>> =
+        MutableLiveData(Pair("", false))
+    override val descriptionText: MutableLiveData<Pair<String, Boolean>> =
+        MutableLiveData(Pair("", false))
+    override val allergiesText: MutableLiveData<Pair<String, Boolean>> =
+        MutableLiveData(Pair("", false))
+
+    override val switcherTitleResource: Int = R.style.Pepper_Care_Title_Text_Order
+    override val switcherLabelResource: Int = R.style.Pepper_Care_Label_text
+    override val switcherDescriptionResource: Int = R.style.Pepper_Care_Body_Text_Order
+    override val switcherAllergiesResource: Int = R.style.Pepper_Care_Body_Text_Order
 
     override fun onStart() {
         fetchPatientDetails()
@@ -71,13 +89,15 @@ class OrderViewModelUsingUsecases(
                         recyclerList.postValue(newList)
                         showElements(true)
                     } else {
-                        recyclerList.value = arrayListOf(ErrorSliderItem(ErrorSliderItem.ErrorText.NO_MEALS_RESULTS_FOUND))
+                        recyclerList.value =
+                            arrayListOf(ErrorSliderItem(ErrorSliderItem.ErrorText.NO_MEALS_RESULTS_FOUND))
                         showElements(false)
                     }
                     showProgressView(false)
                 }
                 is AppResult.Error -> {
-                    recyclerList.value = arrayListOf(ErrorSliderItem(ErrorSliderItem.ErrorText.NO_MEALS_RESULTS_FOUND))
+                    recyclerList.value =
+                        arrayListOf(ErrorSliderItem(ErrorSliderItem.ErrorText.NO_MEALS_RESULTS_FOUND))
                     result.exception.message
                     showProgressView(false)
                 }
@@ -91,39 +111,12 @@ class OrderViewModelUsingUsecases(
         }
     }
 
-    private fun addDynamicContents(list: List<SliderAdapterItem>) {
-        val mealPhrases: ArrayList<Phrase> = ArrayList()
-        list.forEach {
-            if (it.getViewType() == SliderAdapterItem.ViewTypes.MEAL) {
-                it as MealSliderItem
-                mealPhrases.add(Phrase(it.name))
-            }
-        }
-        RobotManager.addDynamicContents(DynamicConcepts.MEALS, mealPhrases)
-    }
-
-    override val adapterClickedListener: ClickCallback<SliderAdapterItem> =
-        object : ClickCallback<SliderAdapterItem> {
-
-            override fun onClicked(view: View, item: SliderAdapterItem) {
-                when (item.getViewType()) {
-                    SliderAdapterItem.ViewTypes.MEAL -> {
-                        Log.d(OrderViewModelUsingUsecases::class.simpleName, "Clicked on Item")
-
-                        this@OrderViewModelUsingUsecases.meal.apply {
-                            value = item as MealSliderItem
-                        }
-                    }
-                }
-            }
-        }
-
     private fun showProgressView(boolean: Boolean) {
         this@OrderViewModelUsingUsecases.progressVisibility.apply { value = boolean }
         this@OrderViewModelUsingUsecases.recyclerVisibility.apply { value = !boolean }
     }
 
-    private fun showElements(boolean: Boolean){
+    private fun showElements(boolean: Boolean) {
         this@OrderViewModelUsingUsecases.isLoadedSuccessfully.apply { value = boolean }
     }
 
@@ -144,5 +137,118 @@ class OrderViewModelUsingUsecases(
                 is AppResult.Error -> result.exception.message
             }
         }
+    }
+
+    private fun addDynamicContents(list: List<SliderAdapterItem>) {
+        val mealPhrases: ArrayList<Phrase> = ArrayList()
+        list.forEach {
+            if (it.getViewType() == SliderAdapterItem.ViewTypes.MEAL) {
+                it as MealSliderItem
+                mealPhrases.add(Phrase(it.name))
+            }
+        }
+        RobotManager.addDynamicContents(DynamicConcepts.MEALS, mealPhrases)
+    }
+
+    override val notifyCallback: UpdateNotifierCallback = object : UpdateNotifierCallback {
+        override fun onUpdate() {
+            if (!recyclerList.value.isNullOrEmpty()) updateTextSwitchers()
+        }
+    }
+
+    private fun updateTextSwitchers() {
+        val firstItem: SliderAdapterItem = recyclerList.value!![0]
+
+        if (firstItem is ErrorSliderItem) {
+            titleText.postValue(Pair("Ohnee er is iets fout gegaan...", true))
+            return
+        }
+
+        changeSwitchersText(firstItem as MealSliderItem, true)
+    }
+
+    override val recyclerScrollListener: RecyclerView.OnScrollListener =
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    val pos =
+                        (recyclerView.layoutManager as CardSliderLayoutManager).activeCardPosition
+                    if (pos == RecyclerView.NO_POSITION || pos == currentPosition.value) return
+                    onChange(pos)
+                }
+            }
+        }
+
+    override val adapterClickedListener: ClickCallback<SliderAdapterItem> =
+        object : ClickCallback<SliderAdapterItem> {
+
+            override fun onClicked(view: View, item: SliderAdapterItem) {
+                when (item.getViewType()) {
+                    SliderAdapterItem.ViewTypes.MEAL -> {
+                        Log.d(OrderViewModelUsingUsecases::class.simpleName, "Clicked on Item")
+
+                        this@OrderViewModelUsingUsecases.meal.apply {
+                            value = item as MealSliderItem
+                        }
+
+//                        val lm = recyclerView.layoutManager as CardSliderLayoutManager?
+//
+//                        if (lm!!.isSmoothScrolling) {
+//                            return
+//                        }
+//
+//                        val activeCardPosition = lm.activeCardPosition
+//                        if (activeCardPosition == RecyclerView.NO_POSITION) {
+//                            return
+//                        }
+//
+//                        val clickedPosition = recyclerView.getChildAdapterPosition(view)
+//                        if (clickedPosition == activeCardPosition) {
+//                            viewModel.meal.apply { value = item as MealSliderItem }
+//                            view.findNavController().navigate(
+//                                R.id.fullscreenImageFragment,
+//                                null,
+//                                AnimationUtil.getFullscreenImageAnimation()
+//                            )
+//                        } else if (clickedPosition > activeCardPosition) {
+//                            recyclerView.smoothScrollToPosition(clickedPosition)
+//                            onChange(clickedPosition)
+//                        }
+                    }
+                    else -> {}
+                }
+            }
+        }
+
+    private fun onChange(pos: Int) {
+        val animH = intArrayOf(R.anim.slide_in_right, R.anim.slide_out_left)
+        val animV = intArrayOf(R.anim.slide_in_top, R.anim.slide_out_bottom)
+
+        val left2right: Boolean = pos < currentPosition.value!!
+        if (left2right) {
+            animH[0] = R.anim.slide_in_left
+            animH[1] = R.anim.slide_out_right
+            animV[0] = R.anim.slide_in_bottom
+            animV[1] = R.anim.slide_out_top
+        }
+
+        val list = recyclerList.value!!
+        val currentItem: SliderAdapterItem = list[pos % list.size]
+
+        if (currentItem is ErrorSliderItem) {
+            titleText.postValue(Pair("Ohnee er is iets fout gegaan...", true))
+            return
+        }
+
+        isOpposite.apply { value = pos < currentPosition.value!! }
+        changeSwitchersText(currentItem as MealSliderItem, false)
+        currentPosition.apply { value = pos }
+    }
+
+    private fun changeSwitchersText(item: MealSliderItem, changeCurrent: Boolean) {
+        titleText.apply { value = Pair(item.name, changeCurrent) }
+        labelText.apply { value = Pair("${item.calories} Kcal", changeCurrent) }
+        descriptionText.apply { value = Pair(item.description, changeCurrent) }
+        allergiesText.apply { value = Pair(item.allergies, changeCurrent) }
     }
 }

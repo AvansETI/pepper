@@ -4,9 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="com.pepper.care.order.presentation.viewmodels.OrderViewModel" />
         <import type="android.view.View" />
+
+        <variable
+            name="adapter"
+            type="com.pepper.care.order.common.view.SliderAdapter" />
 
         <variable
             name="viewModel"
@@ -41,7 +44,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="@dimen/left_offset"/>
+                        android:layout_marginStart="@dimen/left_offset"
+                        app:isOpposite="@{viewModel.isOpposite}"
+                        app:switcherText="@{viewModel.titleText}"
+                        app:switcherResource="@{viewModel.switcherTitleResource}"/>
 
                 </FrameLayout>
 
@@ -58,7 +64,10 @@
                         android:id="@+id/label_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"/>
+                        android:layout_gravity="center"
+                        app:isOpposite="@{viewModel.isOpposite}"
+                        app:switcherText="@{viewModel.labelText}"
+                        app:switcherResource="@{viewModel.switcherLabelResource}"/>
 
                 </FrameLayout>
 
@@ -73,6 +82,12 @@
                 android:layout_marginStart="19dp"
                 android:clipChildren="false"
                 android:overScrollMode="never"
+                app:scrollListener="@{viewModel.recyclerScrollListener}"
+                app:isVisible="@{viewModel.recyclerVisibility}"
+                app:adapter="@{adapter}"
+                app:items="@{viewModel.recyclerList}"
+                app:cardHelper="@{viewModel.cardSnapHelper}"
+                app:notifier="@{viewModel.notifyCallback}"
                 app:layoutManager="com.ramotion.cardslider.CardSliderLayoutManager" />
 
             <FrameLayout
@@ -94,7 +109,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/left_offset"/>
+                    android:layout_marginStart="@dimen/left_offset"
+                    app:isOpposite="@{viewModel.isOpposite}"
+                    app:switcherText="@{viewModel.descriptionText}"
+                    app:switcherResource="@{viewModel.switcherDescriptionResource}"/>
 
             </FrameLayout>
 
@@ -124,7 +142,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="@dimen/left_offset"/>
+                        android:layout_marginStart="@dimen/left_offset"
+                        app:isOpposite="@{viewModel.isOpposite}"
+                        app:switcherText="@{viewModel.allergiesText}"
+                        app:switcherResource="@{viewModel.switcherAllergiesResource}"/>
 
                 </FrameLayout>
             </RelativeLayout>

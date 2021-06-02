@@ -6,7 +6,6 @@ import org.joda.time.DateTime
 interface PatientRepository {
     suspend fun fetchName() : AppResult<String>
     suspend fun fetchBirthDate() : AppResult<DateTime>
-    suspend fun fetchAllergies(): AppResult<String>
 }
 
 class PatientRepositoryImpl : PatientRepository {
@@ -17,9 +16,5 @@ class PatientRepositoryImpl : PatientRepository {
 
     override suspend fun fetchBirthDate(): AppResult<DateTime> {
         return AppResult.Success(DateTime.now())
-    }
-
-    override suspend fun fetchAllergies(): AppResult<String> {
-        return AppResult.Success("Melk")
     }
 }
