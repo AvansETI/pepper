@@ -1,12 +1,12 @@
 package com.pepper.care.order.presentation.viewmodels
 
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.*
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.aldebaran.qi.sdk.`object`.conversation.Phrase
 import com.pepper.care.R
+import com.pepper.care.common.AnimationUtil
 import com.pepper.care.common.AppResult
 import com.pepper.care.common.ClickCallback
 import com.pepper.care.common.UpdateNotifierCallback
@@ -160,7 +160,7 @@ class OrderViewModelUsingUsecases(
         val firstItem: SliderAdapterItem = recyclerList.value!![0]
 
         if (firstItem is ErrorSliderItem) {
-            titleText.postValue(Pair("Ohnee er is iets fout gegaan...", true))
+            titleText.apply { Pair("Ohnee er is iets fout gegaan...", true) }
             return
         }
 
@@ -185,26 +185,24 @@ class OrderViewModelUsingUsecases(
             override fun onClicked(view: View, item: SliderAdapterItem) {
                 when (item.getViewType()) {
                     SliderAdapterItem.ViewTypes.MEAL -> {
-                        Log.d(OrderViewModelUsingUsecases::class.simpleName, "Clicked on Item")
-
                         this@OrderViewModelUsingUsecases.meal.apply {
                             value = item as MealSliderItem
                         }
-
-//                        val lm = recyclerView.layoutManager as CardSliderLayoutManager?
+//                        val recyclerView =
+//                            view.rootView.findViewById<RecyclerView>(R.id.meal_recycler_view)
+//                        val layoutManager = recyclerView.layoutManager as CardSliderLayoutManager?
 //
-//                        if (lm!!.isSmoothScrolling) {
+//                        if (layoutManager!!.isSmoothScrolling) {
 //                            return
 //                        }
 //
-//                        val activeCardPosition = lm.activeCardPosition
+//                        val activeCardPosition = layoutManager.activeCardPosition
 //                        if (activeCardPosition == RecyclerView.NO_POSITION) {
 //                            return
 //                        }
 //
 //                        val clickedPosition = recyclerView.getChildAdapterPosition(view)
 //                        if (clickedPosition == activeCardPosition) {
-//                            viewModel.meal.apply { value = item as MealSliderItem }
 //                            view.findNavController().navigate(
 //                                R.id.fullscreenImageFragment,
 //                                null,
@@ -215,7 +213,8 @@ class OrderViewModelUsingUsecases(
 //                            onChange(clickedPosition)
 //                        }
                     }
-                    else -> {}
+                    else -> {
+                    }
                 }
             }
         }

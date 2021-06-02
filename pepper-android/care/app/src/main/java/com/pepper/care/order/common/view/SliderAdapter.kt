@@ -6,9 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.pepper.care.R
 import com.pepper.care.common.ClickCallback
 import com.pepper.care.databinding.SliderErrorItemBinding
 import com.pepper.care.databinding.SliderMealItemBinding
+import kotlinx.android.synthetic.main.fragment_order.view.*
 
 @Suppress("UNCHECKED_CAST")
 class SliderAdapter(

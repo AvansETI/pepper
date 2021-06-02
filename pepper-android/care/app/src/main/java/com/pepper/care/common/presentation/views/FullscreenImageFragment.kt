@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import com.github.chrisbanes.photoview.OnViewTapListener
 import com.pepper.care.R
 import com.pepper.care.databinding.FragmentFullscreenImageBinding
 import com.pepper.care.order.presentation.viewmodels.OrderViewModel
@@ -45,6 +46,17 @@ class FullscreenImageFragment : BaseFragment() {
         viewBinding = FragmentFullscreenImageBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = this@FullscreenImageFragment.viewLifecycleOwner
             viewModel = this@FullscreenImageFragment.viewModel
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bindToEvents()
+    }
+
+    private fun bindToEvents() {
+        viewBinding.photoView.setOnPhotoTapListener { view, _, _ ->
+            viewModel.onBackPress(view)
         }
     }
 }
