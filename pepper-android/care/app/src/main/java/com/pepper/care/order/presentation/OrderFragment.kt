@@ -1,24 +1,18 @@
 package com.pepper.care.order.presentation
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.graphics.Typeface
 import android.os.Bundle
-import android.util.Half.toFloat
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextSwitcher
-import android.widget.TextView
-import android.widget.ViewSwitcher
-import androidx.annotation.StyleRes
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.pepper.care.R
 import com.pepper.care.common.ClickCallback
 import com.pepper.care.common.presentation.views.BaseFragment
+import com.pepper.care.common.presentation.views.TextViewFactory
+import com.pepper.care.common.AnimationUtil
 import com.pepper.care.databinding.FragmentOrderBinding
 import com.pepper.care.order.common.view.ErrorSliderItem
 import com.pepper.care.order.common.view.MealSliderItem
@@ -80,7 +74,12 @@ class OrderFragment : BaseFragment() {
         initSwitchers()
 
         viewModel.recyclerList.observeInLifecycleScope {
-            adapter.submitList(it)
+            Log.d(OrderFragment::class.simpleName, "List received")
+
+            if (it.isNotEmpty()){
+                adapter.submitList(it)
+                onCardChange()
+            }
         }
     }
 
@@ -104,18 +103,18 @@ class OrderFragment : BaseFragment() {
 
     private fun initSwitchers() {
         titleSwitcher = viewBinding.mealTitle
-        titleSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Title_Text_Order, false))
+        titleSwitcher.setFactory(TextViewFactory(this@OrderFragment.requireContext(), R.style.Pepper_Care_Title_Text_Order, false))
 
         labelSwitcher = viewBinding.labelText
-        labelSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Label_text, true))
+        labelSwitcher.setFactory(TextViewFactory(this@OrderFragment.requireContext(), R.style.Pepper_Care_Label_text, true))
 
         descriptionSwitcher = viewBinding.mealDescription
-        descriptionSwitcher.setInAnimation(this@OrderFragment.context, android.R.anim.fade_in)
-        descriptionSwitcher.setOutAnimation(this@OrderFragment.context, android.R.anim.fade_out)
-        descriptionSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Body_Text_Order, false))
+        descriptionSwitcher.setInAnimation(this@OrderFragment.requireContext(), android.R.anim.fade_in)
+        descriptionSwitcher.setOutAnimation(this@OrderFragment.requireContext(), android.R.anim.fade_out)
+        descriptionSwitcher.setFactory(TextViewFactory(this@OrderFragment.requireContext(), R.style.Pepper_Care_Body_Text_Order, false))
 
         allergiesSwitcher = viewBinding.mealAllergies
-        allergiesSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Body_Text_Order, false))
+        allergiesSwitcher.setFactory(TextViewFactory(this@OrderFragment.requireContext(), R.style.Pepper_Care_Body_Text_Order, false))
     }
 
     private fun onCardChange() {
@@ -148,7 +147,7 @@ class OrderFragment : BaseFragment() {
 
         titleSwitcher.setInAnimation(this@OrderFragment.context, android.R.anim.fade_in)
         titleSwitcher.setOutAnimation(this@OrderFragment.context, android.R.anim.fade_out)
-        titleSwitcher.setText(currentItem.name)
+        titleSwitcher.setCurrentText(currentItem.name)
 
         labelSwitcher.setInAnimation(this@OrderFragment.context, android.R.anim.fade_in)
         labelSwitcher.setOutAnimation(this@OrderFragment.context, android.R.anim.fade_out)
@@ -188,7 +187,9 @@ class OrderFragment : BaseFragment() {
                         if (clickedPosition == activeCardPosition) {
                             viewModel.meal.apply { value = item as MealSliderItem }
                             view.findNavController().navigate(
-                                R.id.fullscreenImageFragment
+                                R.id.fullscreenImageFragment,
+                                null,
+                                AnimationUtil.getFullscreenImageAnimation()
                             )
                         } else if (clickedPosition > activeCardPosition) {
                             recyclerView.smoothScrollToPosition(clickedPosition)
@@ -198,19 +199,4 @@ class OrderFragment : BaseFragment() {
                 }
             }
         }
-
-    inner class TextViewFactory constructor(
-        @StyleRes val styleId: Int,
-        val center: Boolean
-    ) :
-        ViewSwitcher.ViewFactory {
-        override fun makeView(): View {
-            val textView = TextView(this@OrderFragment.context)
-            if (center) {
-                textView.gravity = Gravity.CENTER
-            }
-            textView.setTextAppearance(styleId)
-            return textView
-        }
-    }
 }

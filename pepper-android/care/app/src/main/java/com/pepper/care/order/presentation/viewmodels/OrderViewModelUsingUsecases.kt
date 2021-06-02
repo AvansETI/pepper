@@ -17,6 +17,7 @@ import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingReposit
 import com.pepper.care.order.common.view.ErrorSliderItem
 import com.pepper.care.order.common.view.MealSliderItem
 import com.pepper.care.order.common.view.SliderAdapterItem
+import com.pepper.care.order.presentation.OrderFragment
 import kotlinx.coroutines.launch
 import org.joda.time.LocalDateTime
 import java.util.*
@@ -50,9 +51,10 @@ class OrderViewModelUsingUsecases(
                 is AppResult.Success -> {
                     if (result.successData.isNotEmpty()) {
                         val responseList = result.successData
+                        val newList: ArrayList<SliderAdapterItem> = ArrayList()
 
                         responseList.forEach { item ->
-                            recyclerList.value!!.add(
+                            newList.add(
                                 MealSliderItem(
                                     item.id,
                                     item.name,
@@ -64,8 +66,9 @@ class OrderViewModelUsingUsecases(
                                 )
                             )
                         }
-                        (recyclerList.value!!.random() as MealSliderItem).isFavorite = true
-                        addDynamicContents(recyclerList.value!!)
+                        (newList.random() as MealSliderItem).isFavorite = true
+                        addDynamicContents(newList)
+                        recyclerList.postValue(newList)
                         showElements(true)
                     } else {
                         recyclerList.value = arrayListOf(ErrorSliderItem(ErrorSliderItem.ErrorText.NO_MEALS_RESULTS_FOUND))

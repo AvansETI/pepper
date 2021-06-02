@@ -18,6 +18,7 @@ import com.aldebaran.qi.sdk.design.activity.RobotActivity
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayPosition
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy
 import com.example.awesomedialog.*
+import com.pepper.care.common.AnimationUtil
 import com.pepper.care.common.AppResult
 import com.pepper.care.common.CommonConstants
 import com.pepper.care.common.CommonConstants.COMMON_SHARED_PREF_LIVE_THEME_KEY
@@ -85,7 +86,7 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                     this.findNavController(R.id.child_nav_host_fragment)
                         .popBackStack(R.id.orderFragment, true)
                     this.findNavController(R.id.child_nav_host_fragment)
-                        .navigate(R.id.orderFragment)
+                        .navigate(R.id.orderFragment, null, AnimationUtil.getFullscreenImageAnimation())
                 }
             }
         }
@@ -208,54 +209,57 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
     private fun screenNavigationHandler(route: DialogRoutes) {
         when (route) {
             DialogRoutes.STANDBY -> {
-                this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.homeFragment)
+                this.findNavController(R.id.child_nav_host_fragment)
+                    .navigate(R.id.homeFragment, null, AnimationUtil.getDefaultAnimation())
             }
             DialogRoutes.INTRO -> {
                 this.findNavController(R.id.child_nav_host_fragment).navigate(
                     R.id.dialogFragment, bundleOf(
                         Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.INTRO)
-                    )
+                    ), AnimationUtil.getDefaultAnimation()
                 )
             }
             DialogRoutes.ID -> {
                 this.findNavController(R.id.child_nav_host_fragment).navigate(
                     R.id.dialogFragment, bundleOf(
                         Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.ID)
-                    )
+                    ), AnimationUtil.getDefaultAnimation()
                 )
             }
             DialogRoutes.PATIENT -> {
                 this.findNavController(R.id.child_nav_host_fragment).navigate(
                     R.id.dialogFragment, bundleOf(
                         Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.PATIENT)
-                    )
+                    ), AnimationUtil.getDefaultAnimation()
                 )
             }
             DialogRoutes.ORDER -> {
-                this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.orderFragment)
+                this.findNavController(R.id.child_nav_host_fragment)
+                    .navigate(R.id.orderFragment, null, AnimationUtil.getDefaultAnimation())
             }
             DialogRoutes.REMINDER -> {
                 this.findNavController(R.id.child_nav_host_fragment).navigate(
                     R.id.dialogFragment, bundleOf(
                         Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.REMINDER)
-                    )
+                    ), AnimationUtil.getDefaultAnimation()
                 )
             }
             DialogRoutes.QUESTION -> {
                 this.findNavController(R.id.child_nav_host_fragment).navigate(
                     R.id.dialogFragment, bundleOf(
                         Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.QUESTION)
-                    )
+                    ), AnimationUtil.getDefaultAnimation()
                 )
             }
             DialogRoutes.FEEDBACK -> {
-                this.findNavController(R.id.child_nav_host_fragment).navigate(R.id.feedbackFragment)
+                this.findNavController(R.id.child_nav_host_fragment)
+                    .navigate(R.id.feedbackFragment, null, AnimationUtil.getDefaultAnimation())
             }
             DialogRoutes.GOODBYE -> {
                 this.findNavController(R.id.child_nav_host_fragment).navigate(
                     R.id.dialogFragment, bundleOf(
                         Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.GOODBYE)
-                    )
+                    ), AnimationUtil.getDefaultAnimation()
                 )
             }
         }

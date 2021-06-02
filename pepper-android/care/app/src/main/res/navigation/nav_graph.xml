@@ -50,6 +50,6 @@
         android:label="FullscreenImageFragment" >
         <action
             android:id="@+id/action_fullscreenImageFragment_to_orderFragment"
-            app:destination="@id/orderFragment" />
+            app:destination="@id/orderFragment"/>
     </fragment>
 </navigation>
