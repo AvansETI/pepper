@@ -9,8 +9,6 @@ class HomeViewModelUsingUsecases : ViewModel(), HomeViewModel {
     override val standbyText: String = "Pepper staat momenteel op standby..."
 
     override fun onStart(view: View) {
-        view.findNavController().navigate(
-            R.id.orderFragment
-        )
+
     }
 }

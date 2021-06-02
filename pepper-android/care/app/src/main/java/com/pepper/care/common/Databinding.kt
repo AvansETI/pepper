@@ -49,7 +49,6 @@ fun setCardSnapHelperSource(recyclerView: RecyclerView?, helper: CardSnapHelper)
 fun setTextSwitcherFactory(textSwitcher: TextSwitcher, @StyleRes styleId: Int) {
     textSwitcher.setOutAnimation(textSwitcher.context, R.anim.leave_text)
     textSwitcher.setFactory(TextViewFactory(textSwitcher.context, styleId))
-    textSwitcher.setCurrentText("...")
 }
 
 @BindingAdapter("switcherText", "isOpposite")

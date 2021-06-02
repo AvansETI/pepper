@@ -93,7 +93,6 @@ class OrderViewModelUsingUsecases(
                             arrayListOf(ErrorSliderItem(ErrorSliderItem.ErrorText.NO_MEALS_RESULTS_FOUND))
                         showElements(false)
                     }
-                    showProgressView(false)
                 }
                 is AppResult.Error -> {
                     recyclerList.value =
@@ -152,6 +151,7 @@ class OrderViewModelUsingUsecases(
 
     override val notifyCallback: UpdateNotifierCallback = object : UpdateNotifierCallback {
         override fun onUpdate() {
+            showProgressView(false)
             if (!recyclerList.value.isNullOrEmpty()) updateTextSwitchers()
         }
     }

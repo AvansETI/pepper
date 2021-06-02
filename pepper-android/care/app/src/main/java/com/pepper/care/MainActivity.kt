@@ -79,17 +79,6 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
     }
 
     private fun initUiElements() {
-        this.findViewById<ImageView>(R.id.back_toolbar_button).setOnClickListener {
-            Log.d(MainActivity::class.simpleName, "Clicked on back button!")
-            when (this.findNavController(R.id.child_nav_host_fragment).currentDestination?.id) {
-                R.id.fullscreenImageFragment -> {
-                    this.findNavController(R.id.child_nav_host_fragment)
-                        .popBackStack(R.id.orderFragment, true)
-                    this.findNavController(R.id.child_nav_host_fragment)
-                        .navigate(R.id.orderFragment, null, AnimationUtil.getFullscreenImageAnimation())
-                }
-            }
-        }
         this.findViewById<ImageView>(R.id.info_toolbar_button).setOnClickListener {
             Log.d(MainActivity::class.simpleName, "Clicked on info button!")
             startActivity(Intent(this, InfoSliderActivity::class.java))
@@ -332,6 +321,10 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
                 }
             }
         }
+
+    override fun onBackPressed() {
+        Log.d(MainActivity::class.simpleName, "User tried pressing back button")
+    }
 
     override fun onDestroy() {
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(timeListener)
