@@ -172,5 +172,6 @@
         <item name="activeCardLeftOffset">16dp</item>
         <item name="cardWidth">@dimen/card_width</item>
         <item name="cardsGap">@dimen/card_gap</item>
+        <item name="viewUpdater">com.pepper.care.order.common.view.CardUpdater</item>
     </style>
 </resources>
