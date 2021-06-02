@@ -13,6 +13,7 @@ concept:(myfav) ["Mijn favoriet is" "Ik heb eigenlijk geen favoriet maar als ik 
 #### Intialiseer d.m.v. code ####
 dynamic: name
 dynamic: meals
+dynamic: fav
 dynamic: reminders
 dynamic: questions
 
@@ -43,12 +44,12 @@ proposal: %ORDER Vandaag staan de volgende maaltijden op het menu {^enumerate(~m
 #### LET OP - Voeg AddToConcept eerst toe anders crashed de chatbot ####
 proposal: %ORDERASK Wat wil je bestellen {~name} ?
     u1:(~options) ^enumerate(~meals) ^enableThenGoto(ORDERFALLBACK)
-    u1:(~favorite) ~myfav ^rand[~meals] ^enableThenGoto(ORDERFALLBACK)
+    u1:(~favorite) ~myfav ~fav ^enableThenGoto(ORDERFALLBACK)
     u1:(~order _~meals) ^addToConcept(~meal, $1) ^execute(selectMealItem, sel, $1) ^enableThenGoto(ORDERCHECK)
 
 proposal: %ORDERFALLBACK ^empty #Fallback is nodig om de applicatie niet te laten crashen of vast te laten lopen
     u1:(~options) ^enumerate(~meals) ^enableThenGoto(ORDERFALLBACK)
-    u1:(~favorite) ~myfav ^rand[~meals] ^enableThenGoto(ORDERFALLBACK)
+    u1:(~favorite) ~myfav ~fav ^enableThenGoto(ORDERFALLBACK)
     u1:(~order _~meals) ^addToConcept(~meal, $1) ^execute(selectMealItem, sel, $1) ^enableThenGoto(ORDERCHECK)
 
 proposal: %ORDERCHECK Klopt het dat je hebt gekozen voor ~meal ?

@@ -84,7 +84,11 @@ class OrderViewModelUsingUsecases(
                                 )
                             )
                         }
-                        (newList.random() as MealSliderItem).isFavorite = true
+
+                        val randomItem = newList.random() as MealSliderItem
+                        randomItem.isFavorite = true
+                        RobotManager.addDynamicContents(DynamicConcepts.FAV, Collections.singletonList(Phrase(randomItem.name)))
+
                         addDynamicContents(newList)
                         recyclerList.postValue(newList)
                         showElements(true)
