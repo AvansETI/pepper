@@ -16,27 +16,11 @@
         android:name="com.pepper.care.order.presentation.OrderFragment"
         android:label="OrderFragment" >
         <action
-            android:id="@+id/action_orderFragment_to_orderViewMealFragment"
-            app:destination="@id/orderViewMealFragment"
-            app:enterAnim="@anim/slide_up"
-            app:exitAnim="@anim/slide_up"
-            app:popEnterAnim="@anim/fade_out"
-            app:popExitAnim="@anim/fade_out" />
-        <action
             android:id="@+id/action_orderFragment_to_dialogFragment"
             app:destination="@id/dialogFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/orderViewMealFragment"
-        android:name="com.pepper.care.order.events.viewmeal.presentation.OrderViewMealFragment"
-        android:label="OrderViewMealFragment" >
         <action
-            android:id="@+id/action_orderViewMealFragment_to_orderFragment"
-            app:destination="@id/orderFragment"
-            app:enterAnim="@anim/slide_left_full"
-            app:exitAnim="@anim/slide_left_bit"
-            app:popEnterAnim="@anim/slide_right_bit"
-            app:popExitAnim="@anim/slide_right_full" />
+            android:id="@+id/action_orderFragment_to_fullscreenImageFragment"
+            app:destination="@id/fullscreenImageFragment" />
     </fragment>
     <fragment
         android:id="@+id/feedbackFragment"
@@ -59,5 +43,13 @@
         <action
             android:id="@+id/action_dialogFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fullscreenImageFragment"
+        android:name="com.pepper.care.common.presentation.views.FullscreenImageFragment"
+        android:label="FullscreenImageFragment" >
+        <action
+            android:id="@+id/action_fullscreenImageFragment_to_orderFragment"
+            app:destination="@id/orderFragment" />
     </fragment>
 </navigation>

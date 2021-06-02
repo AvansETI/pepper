@@ -31,8 +31,7 @@ data class ErrorSliderItem(
 ) : SliderAdapterItem() {
 
     enum class ErrorText(val text: String) {
-        INTERNET_ERROR("Kon geen verbinding maken met het Pepper Care platform."),
-        NO_MEALS_RESULTS_FOUND("Er zijn geen maaltijden gevonden.")
+        NO_MEALS_RESULTS_FOUND("Geen maaltijden gevonden.")
     }
 
     override fun getViewType() : ViewTypes {

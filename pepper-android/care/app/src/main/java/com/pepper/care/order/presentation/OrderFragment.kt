@@ -14,12 +14,13 @@ import android.widget.TextSwitcher
 import android.widget.TextView
 import android.widget.ViewSwitcher
 import androidx.annotation.StyleRes
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.kv.popupimageview.PopupImageView
 import com.pepper.care.R
 import com.pepper.care.common.ClickCallback
 import com.pepper.care.common.presentation.views.BaseFragment
 import com.pepper.care.databinding.FragmentOrderBinding
+import com.pepper.care.order.common.view.ErrorSliderItem
 import com.pepper.care.order.common.view.MealSliderItem
 import com.pepper.care.order.common.view.SliderAdapter
 import com.pepper.care.order.common.view.SliderAdapterItem
@@ -111,10 +112,10 @@ class OrderFragment : BaseFragment() {
         descriptionSwitcher = viewBinding.mealDescription
         descriptionSwitcher.setInAnimation(this@OrderFragment.context, android.R.anim.fade_in)
         descriptionSwitcher.setOutAnimation(this@OrderFragment.context, android.R.anim.fade_out)
-        descriptionSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Body_Text, false))
+        descriptionSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Body_Text_Order, false))
 
         allergiesSwitcher = viewBinding.mealAllergies
-        allergiesSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Body_Text, false))
+        allergiesSwitcher.setFactory(TextViewFactory(R.style.Pepper_Care_Body_Text_Order, false))
     }
 
     private fun onCardChange() {
@@ -137,7 +138,13 @@ class OrderFragment : BaseFragment() {
         }
 
         val list = viewModel.recyclerList.value!!
-        val currentItem = (list[pos % list.size] as MealSliderItem)
+        val currentItem: SliderAdapterItem = list[pos % list.size]
+
+        if (currentItem is ErrorSliderItem){
+            titleSwitcher.setText("Ohnee er is iets fout gegaan...")
+            return
+        }
+        currentItem as MealSliderItem
 
         titleSwitcher.setInAnimation(this@OrderFragment.context, android.R.anim.fade_in)
         titleSwitcher.setOutAnimation(this@OrderFragment.context, android.R.anim.fade_out)
@@ -179,9 +186,10 @@ class OrderFragment : BaseFragment() {
 
                         val clickedPosition = recyclerView.getChildAdapterPosition(view)
                         if (clickedPosition == activeCardPosition) {
-                            val list = viewModel.recyclerList.value!!
-                            val currentItem = (list[clickedPosition] as MealSliderItem)
-                            PopupImageView(this@OrderFragment.context, view, currentItem.source)
+                            viewModel.meal.apply { value = item as MealSliderItem }
+                            view.findNavController().navigate(
+                                R.id.fullscreenImageFragment
+                            )
                         } else if (clickedPosition > activeCardPosition) {
                             recyclerView.smoothScrollToPosition(clickedPosition)
                             onChange(clickedPosition)

@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.pepper.care.common.ClickCallback
+import com.pepper.care.databinding.SliderErrorItemBinding
 import com.pepper.care.databinding.SliderMealItemBinding
 
+@Suppress("UNCHECKED_CAST")
 class SliderAdapter(
     private val clickCallback: ClickCallback<SliderAdapterItem>
 ) :
@@ -17,17 +19,18 @@ class SliderAdapter(
     ) {
 
     private val ADAPT_ITEM_MEAL: Int = 0
+    private val ADAPT_ITEM_ERROR: Int = 1
 
     override fun getItemViewType(position: Int): Int = when (getItem(position)) {
         is MealSliderItem -> ADAPT_ITEM_MEAL
+        is ErrorSliderItem -> ADAPT_ITEM_ERROR
         else -> throw IllegalStateException("Not supported")
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
         return when (viewType) {
-            ADAPT_ITEM_MEAL -> {
-                ViewHolder.MealSliderCard.from(parent)
-            }
+            ADAPT_ITEM_MEAL -> ViewHolder.MealSliderCard.from(parent)
+            ADAPT_ITEM_ERROR ->ViewHolder.ErrorSliderCard.from(parent)
             else -> throw IllegalArgumentException()
         }
     }
@@ -37,6 +40,10 @@ class SliderAdapter(
             is ViewHolder.MealSliderCard -> holder.bind(
                 getItem(position) as MealSliderItem,
                 clickCallback as ClickCallback<MealSliderItem>
+            )
+            is ViewHolder.ErrorSliderCard -> holder.bind(
+                getItem(position) as ErrorSliderItem,
+                clickCallback as ClickCallback<ErrorSliderItem>
             )
             else -> throw IllegalStateException("Not supported")
         }
@@ -68,6 +75,31 @@ class SliderAdapter(
                         SliderMealItemBinding.inflate(layoutInflater, parent, false)
 
                     return MealSliderCard(binding)
+                }
+            }
+        }
+
+        class ErrorSliderCard private constructor(
+            private val binding: SliderErrorItemBinding
+        ) : BaseViewHolder<ErrorSliderItem>(binding.root) {
+
+            override fun bind(
+                item: ErrorSliderItem,
+                clickCallback: ClickCallback<ErrorSliderItem>
+            ) {
+                binding.apply {
+                    this.error = item
+                    this.executePendingBindings()
+                }
+            }
+
+            companion object {
+                fun from(parent: ViewGroup): ErrorSliderCard {
+                    val layoutInflater = LayoutInflater.from(parent.context)
+                    val binding =
+                        SliderErrorItemBinding.inflate(layoutInflater, parent, false)
+
+                    return ErrorSliderCard(binding)
                 }
             }
         }

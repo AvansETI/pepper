@@ -81,7 +81,7 @@ class MainActivity : RobotActivity(), MqttMessageCallbacks {
         this.findViewById<ImageView>(R.id.back_toolbar_button).setOnClickListener {
             Log.d(MainActivity::class.simpleName, "Clicked on back button!")
             when (this.findNavController(R.id.child_nav_host_fragment).currentDestination?.id) {
-                R.id.orderViewMealFragment -> {
+                R.id.fullscreenImageFragment -> {
                     this.findNavController(R.id.child_nav_host_fragment)
                         .popBackStack(R.id.orderFragment, true)
                     this.findNavController(R.id.child_nav_host_fragment)

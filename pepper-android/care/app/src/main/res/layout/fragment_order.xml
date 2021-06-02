@@ -46,12 +46,13 @@
                 </FrameLayout>
 
                 <FrameLayout
+                    android:id="@+id/frameLayout"
                     android:layout_width="85dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:background="@drawable/side_label"
                     android:layout_centerVertical="true"
-                    android:id="@+id/frameLayout">
+                    app:isVisible="@{viewModel.isLoadedSuccessfully}">
 
                     <TextSwitcher
                         android:id="@+id/label_text"
@@ -77,7 +78,8 @@
             <FrameLayout
                 android:layout_width="@dimen/max_text_width"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp">
+                android:layout_marginTop="6dp"
+                app:isVisible="@{viewModel.isLoadedSuccessfully}">
 
                 <ImageView
                     android:layout_width="@dimen/icon_size"
@@ -100,7 +102,8 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="@dimen/max_text_width"
                 android:layout_height="wrap_content"
-                android:animateLayoutChanges="true">
+                android:animateLayoutChanges="true"
+                app:isVisible="@{viewModel.isLoadedSuccessfully}">
 
                 <FrameLayout
                     android:id="@+id/meal_layout"

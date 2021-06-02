@@ -12,9 +12,9 @@ interface OrderViewModel {
 
     val recyclerVisibility: MutableLiveData<Boolean>
     val progressVisibility: MutableLiveData<Boolean>
+    val isLoadedSuccessfully: MutableLiveData<Boolean>
     val recyclerSpanCount: MutableLiveData<Int>
 
-    val orderText: String
     val adapterClickedListener: ClickCallback<SliderAdapterItem>
     val recyclerList: MutableLiveData<ArrayList<SliderAdapterItem>>
 

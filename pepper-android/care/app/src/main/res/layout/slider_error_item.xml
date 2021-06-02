@@ -30,64 +30,34 @@
             app:cardBackgroundColor="@color/materialCardColor"
             app:shapeAppearanceOverlay="@style/Pepper_Care_Material_Card">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="16dp">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/placeholder_animation"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:scaleType="fitCenter"
-                    app:layout_constraintBottom_toTopOf="@+id/guideline6"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_weight="1"
                     app:lottie_autoPlay="true"
                     app:lottie_loop="true"
                     app:lottie_rawRes="@raw/error_doggo_animation" />
 
                 <TextView
-                    style="@style/Pepper_Care_Title_Text"
-                    android:id="@+id/meal_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
+                    style="@style/Pepper_Care_Body_Text"
+                    android:id="@+id/error_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:paddingHorizontal="8dp"
-                    android:paddingTop="8dp"
-                    android:text="Er is een fout opgetreden"
+                    android:text="@{error.errorType.text}"
                     android:textAlignment="center"
                     android:textSize="12sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/placeholder_animation" />
+                    android:layout_weight="3"
+                    tools:text="Dit is de reden waarom er een fout is opgetreden." />
 
-                <TextView
-                    android:id="@+id/meal_description"
-                    style="@style/Pepper_Care_Body_Text"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="8dp"
-                    android:paddingHorizontal="8dp"
-                    android:text="Dit is de reden waarom er een fout is opgetreden."
-                    android:textAlignment="center"
-                    android:textSize="10sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/meal_title"
-                    tools:text="@{error.errorType.text}" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_begin="100dp" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -14,6 +14,7 @@ import com.pepper.care.dialog.DialogConstants
 import com.pepper.care.dialog.common.usecases.GetAvailableScreensUseCaseUsingRepository
 import com.pepper.care.order.common.usecases.GetPatientAllergiesUseCaseUsingRepository
 import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
+import com.pepper.care.order.common.view.ErrorSliderItem
 import com.pepper.care.order.common.view.MealSliderItem
 import com.pepper.care.order.common.view.SliderAdapterItem
 import kotlinx.coroutines.launch
@@ -30,12 +31,10 @@ class OrderViewModelUsingUsecases(
 
     override val recyclerList = MutableLiveData<ArrayList<SliderAdapterItem>>(arrayListOf())
     override val recyclerVisibility: MutableLiveData<Boolean> = MutableLiveData(false)
+    override val isLoadedSuccessfully: MutableLiveData<Boolean> = MutableLiveData(false)
     override val progressVisibility: MutableLiveData<Boolean> = MutableLiveData(true)
     override val recyclerSpanCount: MutableLiveData<Int> = MutableLiveData(3)
-
     override val meal: MutableLiveData<MealSliderItem> = MutableLiveData()
-    override val orderText: String =
-        "Het maaltijd menu, ${LocalDateTime().toString("EEEE d MMMM", Locale("nl"))}"
 
     private val fetchedName: MutableLiveData<String> =
         MutableLiveData(DialogConstants.DIALOG_MOCK_NAME)
@@ -45,6 +44,7 @@ class OrderViewModelUsingUsecases(
     override fun onStart() {
         fetchPatientDetails()
         showProgressView(true)
+        showElements(false)
         viewModelScope.launch {
             when (val result = getPlatformMealsUseCaseUsingRepository.invoke()) {
                 is AppResult.Success -> {
@@ -64,14 +64,17 @@ class OrderViewModelUsingUsecases(
                                 )
                             )
                         }
-
                         (recyclerList.value!!.random() as MealSliderItem).isFavorite = true
-
                         addDynamicContents(recyclerList.value!!)
+                        showElements(true)
+                    } else {
+                        recyclerList.value = arrayListOf(ErrorSliderItem(ErrorSliderItem.ErrorText.NO_MEALS_RESULTS_FOUND))
+                        showElements(false)
                     }
                     showProgressView(false)
                 }
                 is AppResult.Error -> {
+                    recyclerList.value = arrayListOf(ErrorSliderItem(ErrorSliderItem.ErrorText.NO_MEALS_RESULTS_FOUND))
                     result.exception.message
                     showProgressView(false)
                 }
@@ -115,6 +118,10 @@ class OrderViewModelUsingUsecases(
     private fun showProgressView(boolean: Boolean) {
         this@OrderViewModelUsingUsecases.progressVisibility.apply { value = boolean }
         this@OrderViewModelUsingUsecases.recyclerVisibility.apply { value = !boolean }
+    }
+
+    private fun showElements(boolean: Boolean){
+        this@OrderViewModelUsingUsecases.isLoadedSuccessfully.apply { value = boolean }
     }
 
     override fun onBackPress(view: View) {

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.github.chrisbanes.photoview.PhotoView
 import com.pepper.care.R
 import com.pepper.care.feedback.FeedbackCallback
 import com.pepper.care.feedback.entities.FeedbackEntity
@@ -35,6 +36,14 @@ fun setImageUrlSource(imageView: ImageView, url: String?) {
     Glide.with(imageView.context)
         .load(url)
         .into(imageView)
+}
+
+@BindingAdapter("photoSource")
+fun setPhotoUrlSource(photoView: PhotoView, url: String?) {
+    if (url == null) return
+    Glide.with(photoView.context)
+        .load(url)
+        .into(photoView)
 }
 
 @BindingAdapter("isVisible")
