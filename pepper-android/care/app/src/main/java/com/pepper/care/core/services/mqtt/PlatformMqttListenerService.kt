@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.asLiveData
 import com.pepper.care.common.repo.AppPreferencesRepository
+import com.pepper.care.feedback.presentation.viewmodels.FeedbackViewModelUsingUsecases
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
@@ -40,6 +42,14 @@ class PlatformMqttListenerService : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
         setMqttCallBack()
+        appPreferences.publishMessageFlow.asLiveData().observeForever {
+            clientHelper.publish(
+                encryptionHelper.encrypt(
+                    it!!,
+                    EncryptionHelper.ENCRYPTION_PASSWORD
+                ), 0
+            )
+        }
     }
 
     private fun setMqttCallBack() {
@@ -77,26 +87,4 @@ class PlatformMqttListenerService : LifecycleService() {
             }
         })
     }
-
-//    private val sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener =
-//        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-//            when (key) {
-//                COMMON_SHARED_PREF_PUBLISH_MSG_KEY -> {
-//                    val message = sharedPreferences!!.getString(
-//                        COMMON_SHARED_PREF_PUBLISH_MSG_KEY,
-//                        COMMON_SHARED_PREF_ERROR_STRING_VALUE
-//                    )
-//
-//                    if (message.equals(COMMON_SHARED_PREF_ERROR_STRING_VALUE)) return@OnSharedPreferenceChangeListener
-//
-//                    clientHelper.publish(
-//                        encryptionHelper.encrypt(
-//                            message!!,
-//                            EncryptionHelper.ENCRYPTION_PASSWORD
-//                        ), 0
-//                    )
-//                }
-//            }
-//        }
-
 }

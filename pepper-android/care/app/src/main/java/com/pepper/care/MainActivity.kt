@@ -206,6 +206,9 @@ class MainActivity : RobotActivity() {
                         Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.INTRO)
                     ), AnimationUtil.getDefaultAnimation()
                 )
+                lifecycleScope.launch {
+                    appPreferences.updatePublishMessage("Hello World!")
+                }
             }
             DialogRoutes.ID -> {
                 this.findNavController(R.id.child_nav_host_fragment).navigate(

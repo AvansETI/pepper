@@ -45,7 +45,7 @@ class FeedbackViewModelUsingUsecases(
 
     override fun onStart() {
         fetchPatientDetails()
-        appPreferences.feedbackSliderFlow.asLiveData().observeForever(Observer {
+        appPreferences.feedbackSliderFlow.asLiveData().observeForever {
             val newValue: Float = (it / 10.0).toFloat()
             Log.d(
                 FeedbackViewModelUsingUsecases::class.simpleName,
@@ -53,7 +53,7 @@ class FeedbackViewModelUsingUsecases(
             )
             fluidSlider.value!!.position = newValue
             headerText.postValue("Waarom heb je voor dit cijfer gekozen?")
-        })
+        }
     }
 
     override val imageListener: FeedbackCallback =
