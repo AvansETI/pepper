@@ -5,5 +5,5 @@
     <dimen name="card_height">200dp</dimen>
     <dimen name="card_gap">8dp</dimen>
     <dimen name="icon_size">24dp</dimen>
-    <dimen name="max_text_width">700sp</dimen>
+    <dimen name="max_text_width">600sp</dimen>
 </resources>

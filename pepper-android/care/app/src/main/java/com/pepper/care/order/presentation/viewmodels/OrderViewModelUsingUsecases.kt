@@ -35,6 +35,7 @@ class OrderViewModelUsingUsecases(
     override val recyclerVisibility: MutableLiveData<Boolean> = MutableLiveData(false)
     override val isLoadedSuccessfully: MutableLiveData<Boolean> = MutableLiveData(false)
     override val progressVisibility: MutableLiveData<Boolean> = MutableLiveData(true)
+    override val hintVisibility: MutableLiveData<Boolean> = MutableLiveData(true)
     override val isOpposite: MutableLiveData<Boolean> = MutableLiveData(false)
 
     override val meal: MutableLiveData<MealSliderItem> = MutableLiveData()

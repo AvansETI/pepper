@@ -157,12 +157,26 @@
 
             <ImageView
                 style="@style/Pepper_Care_Image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleX="0.55"
+                android:scaleY="0.55"
+                android:translationY="75sp"
+                android:translationX="-55sp"
+                android:src="@drawable/order_tip_cloud"
+                app:isVisible="@{viewModel.hintVisibility}"
+                app:layout_constraintBottom_toTopOf="@+id/guideline8"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline9" />
+
+            <ImageView
+                style="@style/Pepper_Care_Image"
                 android:id="@+id/meal_logo"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:src="@drawable/chef_logo_shadow"
-                android:translationY="-10dp"
-                android:translationX="15dp"
+                android:translationY="-10sp"
+                android:translationX="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline9"
