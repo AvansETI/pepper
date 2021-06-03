@@ -13,6 +13,23 @@ class AppPreferencesRepository(val context: Context) {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = APP_PREFERENCES_NAME)
 
+    suspend fun updatePatientBirthday(value: String) {
+        context.dataStore.edit { preferences ->
+            preferences[PATIENT_BIRTHDAY] = value
+        }
+    }
+
+    val patientBirthdayFlow: Flow<String> = context.dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }.map {
+            it[PATIENT_BIRTHDAY] ?: "NONE"
+        }
+
     suspend fun updatePublishMessage(value: String) {
         context.dataStore.edit { preferences ->
             preferences[PUBLISH_MESSAGE] = value
@@ -48,6 +65,7 @@ class AppPreferencesRepository(val context: Context) {
         }
 
     companion object {
+        private val PATIENT_BIRTHDAY = stringPreferencesKey("patient_birthday")
         private val PUBLISH_MESSAGE = stringPreferencesKey("publish_message")
         private val FEEDBACK_SLIDER = intPreferencesKey("feedback_slider")
         private const val APP_PREFERENCES_NAME = "app_preferences"

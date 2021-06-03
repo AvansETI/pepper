@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.aldebaran.qi.sdk.QiSDK
@@ -49,7 +50,6 @@ class MainActivity : RobotActivity() {
     private val appPreferences: AppPreferencesRepository by inject()
 
     private val showingDialog: MutableLiveData<AlertDialog> = MutableLiveData()
-    private val givenFeedbackNumber: MutableLiveData<Int> = MutableLiveData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,12 +104,23 @@ class MainActivity : RobotActivity() {
                         Log.d(MainActivity::class.simpleName, "Navigate choice to: ${string!!}")
                         navigateToCorrectCustomScreen(DialogRoutes.valueOf(string))
                     }
-                    PepperAction.SELECT_PATIENT_ID -> {
-                        val patientId = string!!
-                        Log.d(MainActivity::class.simpleName, "Patient id: $patientId")
+                    PepperAction.SELECT_PATIENT_BIRTHDAY -> {
+                        val patientBday = string!!
+                        Log.d(MainActivity::class.simpleName, "Patient birthday: $patientBday")
+                        lifecycleScope.launch {
+                            appPreferences.updatePatientBirthday(patientBday)
+                        }
+                    }
+                    PepperAction.SELECT_PATIENT_NAME -> {
+                        val patientLastName = string!!
+                        Log.d(MainActivity::class.simpleName, "Patient name: $patientLastName")
 
-                        val fetchedName: MutableLiveData<String> =
-                            MutableLiveData()
+                        var patientBirthday = ""
+                        appPreferences.patientBirthdayFlow.asLiveData().observeForever {
+                            patientBirthday = it
+                        }
+
+                        val fetchedName: MutableLiveData<String> = MutableLiveData()
 
                         this@MainActivity.lifecycleScope.launch {
                             when (val result = getPatientName.invoke()) {
@@ -124,8 +135,8 @@ class MainActivity : RobotActivity() {
                             this@MainActivity.showingDialog.postValue(
                                 DialogUtil.buildDialog(
                                     this@MainActivity,
-                                    it,
-                                    DialogRoutes.ID,
+                                    "$patientBirthday, $it",
+                                    DialogRoutes.IDNAME,
                                     null
                                 )
                             )
@@ -161,7 +172,6 @@ class MainActivity : RobotActivity() {
                     PepperAction.SELECT_FEEDBACK_NUMBER -> {
                         val feedbackNumber = Integer.parseInt(string!!)
                         Log.d(MainActivity::class.simpleName, "Feedback number: $feedbackNumber")
-                        this@MainActivity.givenFeedbackNumber.postValue(feedbackNumber)
                         lifecycleScope.launch {
                             appPreferences.updateFeedbackSlider(feedbackNumber)
                         }
@@ -169,13 +179,19 @@ class MainActivity : RobotActivity() {
                     PepperAction.INPUT_EXPLAIN_FEEDBACK -> {
                         val givenFeedback = string!!
                         Log.d(MainActivity::class.simpleName, "Given feedback: $givenFeedback")
+
+                        var feedbackNumber = 1
+                        appPreferences.feedbackSliderFlow.asLiveData().observeForever {
+                            feedbackNumber = it
+                        }
+
                         this@MainActivity.showingDialog.postValue(
                             DialogUtil.buildDialog(
                                 this@MainActivity,
                                 "${
                                     when {
-                                        givenFeedbackNumber.value!! >= 7 -> FeedbackEntity.FeedbackMessage.GOOD.text
-                                        givenFeedbackNumber.value!! < 5 -> FeedbackEntity.FeedbackMessage.BAD.text
+                                        feedbackNumber >= 7 -> FeedbackEntity.FeedbackMessage.GOOD.text
+                                        feedbackNumber < 5 -> FeedbackEntity.FeedbackMessage.BAD.text
                                         else -> FeedbackEntity.FeedbackMessage.OKAY.text
                                     }
                                 }, $givenFeedback",
@@ -214,10 +230,17 @@ class MainActivity : RobotActivity() {
                     ), AnimationUtil.getDefaultAnimation()
                 )
             }
-            DialogRoutes.ID -> {
+            DialogRoutes.IDBDAY -> {
                 this.findNavController(R.id.child_nav_host_fragment).navigate(
                     R.id.dialogFragment, bundleOf(
-                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.ID)
+                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.IDBDAY)
+                    ), AnimationUtil.getDefaultAnimation()
+                )
+            }
+            DialogRoutes.IDNAME -> {
+                this.findNavController(R.id.child_nav_host_fragment).navigate(
+                    R.id.dialogFragment, bundleOf(
+                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.IDNAME)
                     ), AnimationUtil.getDefaultAnimation()
                 )
             }

@@ -28,7 +28,7 @@ object DialogUtil {
 
     private fun getDialogTitle(screen: DialogRoutes): String {
         return when (screen) {
-            DialogRoutes.ID -> "Bent u dit?"
+            DialogRoutes.IDNAME -> "Bent u dit?"
             DialogRoutes.ORDER -> "Gekozen maaltijd:"
             else -> "U gaf als antwoord:"
         }
@@ -36,7 +36,7 @@ object DialogUtil {
 
     private fun getDialogBody(body: String, screen: DialogRoutes): String {
         return when (screen) {
-            DialogRoutes.ID -> body
+            DialogRoutes.IDNAME -> body
             DialogRoutes.ORDER -> body
             DialogRoutes.QUESTION -> body
             DialogRoutes.FEEDBACK -> body

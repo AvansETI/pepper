@@ -15,7 +15,7 @@ val dialogModule = module {
         provideAvailableScreenRepository()
     }
     viewModel {
-        DialogViewModelUsingUsecases(get(), get())
+        DialogViewModelUsingUsecases(get(), get(), get())
     }
 }
 

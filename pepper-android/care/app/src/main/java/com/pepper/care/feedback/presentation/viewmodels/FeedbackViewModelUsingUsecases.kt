@@ -47,12 +47,12 @@ class FeedbackViewModelUsingUsecases(
         fetchPatientDetails()
         appPreferences.feedbackSliderFlow.asLiveData().observeForever {
             val newValue: Float = (it / 10.0).toFloat()
-            Log.d(
-                FeedbackViewModelUsingUsecases::class.simpleName,
-                "New slider value: $newValue"
-            )
-            fluidSlider.value!!.position = newValue
-            headerText.postValue("Waarom heb je voor dit cijfer gekozen?")
+                Log.d(
+                    FeedbackViewModelUsingUsecases::class.simpleName,
+                    "New slider value: $newValue"
+                )
+                fluidSlider.value!!.position = newValue
+                headerText.postValue("Waarom heb je voor dit cijfer gekozen?")
         }
     }
 

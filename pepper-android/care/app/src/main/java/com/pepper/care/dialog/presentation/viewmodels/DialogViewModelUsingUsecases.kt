@@ -2,9 +2,11 @@ package com.pepper.care.dialog.presentation.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.aldebaran.qi.sdk.`object`.conversation.Phrase
 import com.pepper.care.common.AppResult
+import com.pepper.care.common.repo.AppPreferencesRepository
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
 import com.pepper.care.core.services.robot.DynamicConcepts
 import com.pepper.care.core.services.robot.RobotManager
@@ -17,7 +19,8 @@ import kotlinx.coroutines.launch
 
 class DialogViewModelUsingUsecases(
     private val getName: GetPatientNameUseCaseUsingRepository,
-    private val getAvailableScreens: GetAvailableScreensUseCaseUsingRepository
+    private val getAvailableScreens: GetAvailableScreensUseCaseUsingRepository,
+    private val appPreferences: AppPreferencesRepository
 ) : ViewModel(), DialogViewModel {
 
     override val bottomText: MutableLiveData<String> = MutableLiveData("")
@@ -49,9 +52,14 @@ class DialogViewModelUsingUsecases(
                         "Bij het gebruik van pepper wordt er informatie met de verpleegkundige gedeeld, ga je hiermee akkoord?"
                 }
             }
-            DialogRoutes.ID -> {
+            DialogRoutes.IDBDAY -> {
                 bottomText.apply {
-                    value = "Om verder te gaan met het proces, heb ik uw ID nodig."
+                    value = "Om verder te gaan heb ik je geboortedatum nodig. Wijze: 'dag' 'maand' 'jaar'"
+                }
+            }
+            DialogRoutes.IDNAME -> {
+                bottomText.apply {
+                    value = "En wat is je naam?"
                 }
             }
             DialogRoutes.PATIENT -> {
