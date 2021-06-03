@@ -43,6 +43,12 @@ class DialogViewModelUsingUsecases(
                         "Welkom, mijn naam is Pepper! Vandaag, zal ik het werk van mijn collega overnemen."
                 }
             }
+            DialogRoutes.ACCESS -> {
+                bottomText.apply {
+                    value =
+                        "Bij het gebruik van pepper wordt er informatie met de verpleegkundige gedeeld, ga je hiermee akkoord?"
+                }
+            }
             DialogRoutes.ID -> {
                 bottomText.apply {
                     value = "Om verder te gaan met het proces, heb ik uw ID nodig."
@@ -71,11 +77,17 @@ class DialogViewModelUsingUsecases(
                     value = "${DIALOG_MOCK_QUESTION}?"
                 }
             }
+            DialogRoutes.DENIED -> {
+                bottomText.apply {
+                    value =
+                        "Helaas kan ik je niet verder helpen. Tot ziens!"
+                }
+            }
             DialogRoutes.GOODBYE -> {
                 fetchPatientDetails()
                 bottomText.apply {
                     value =
-                        "Tot ziens, ${fetchedName.value}. Ik wens u nog een fijne dag tegemoet!"
+                        "Tot ziens, ${fetchedName.value}!"
                 }
             }
             else -> throw NotImplementedError("Not implemented")

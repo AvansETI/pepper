@@ -206,9 +206,13 @@ class MainActivity : RobotActivity() {
                         Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.INTRO)
                     ), AnimationUtil.getDefaultAnimation()
                 )
-                lifecycleScope.launch {
-                    appPreferences.updatePublishMessage("Hello World!")
-                }
+            }
+            DialogRoutes.ACCESS -> {
+                this.findNavController(R.id.child_nav_host_fragment).navigate(
+                    R.id.dialogFragment, bundleOf(
+                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.ACCESS)
+                    ), AnimationUtil.getDefaultAnimation()
+                )
             }
             DialogRoutes.ID -> {
                 this.findNavController(R.id.child_nav_host_fragment).navigate(
@@ -245,6 +249,13 @@ class MainActivity : RobotActivity() {
             DialogRoutes.FEEDBACK -> {
                 this.findNavController(R.id.child_nav_host_fragment)
                     .navigate(R.id.feedbackFragment, null, AnimationUtil.getDefaultAnimation())
+            }
+            DialogRoutes.DENIED -> {
+                this.findNavController(R.id.child_nav_host_fragment).navigate(
+                    R.id.dialogFragment, bundleOf(
+                        Pair<String, DialogRoutes>("ROUTE_TYPE", DialogRoutes.DENIED)
+                    ), AnimationUtil.getDefaultAnimation()
+                )
             }
             DialogRoutes.GOODBYE -> {
                 this.findNavController(R.id.child_nav_host_fragment).navigate(

@@ -8,8 +8,8 @@ concept:(time) [tijd hoelaat "Hoelaat is het nu?" "Wat is de tijd?" "Hoelaat is 
 concept:(day) [dag "Welke dag is het?" "Wat is de dag vandaag?" "Welke dag?"]
 concept:(good) [goed prima "Het gaat goed" "Ik voel me prima"]
 concept:(bad) [slecht moe "Het gaat slecht" "Ik voel me slecht"]
-concept:(yes) [ja jazeker]
-concept:(no) [nee niet]
+concept:(yes) [ja jazeker "ik ga hiermee akkoord"]
+concept:(no) [nee niet "ik ga hier niet mee akkoord"]
 
 concept:(touch) [Auw "Kan je mij alsjeblieft niet aanraken!"]
 concept:(repeat) [herhaal "Kan je het herhalen?"]
