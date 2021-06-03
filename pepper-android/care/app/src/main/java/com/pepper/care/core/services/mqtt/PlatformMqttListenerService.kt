@@ -2,11 +2,9 @@ package com.pepper.care.core.services.mqtt
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LifecycleService
-import com.pepper.care.common.CommonConstants.COMMON_SHARED_PREF_ERROR_STRING_VALUE
-import com.pepper.care.common.CommonConstants.COMMON_SHARED_PREF_PUBLISH_MSG_KEY
+import com.pepper.care.common.repo.AppPreferencesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
@@ -18,7 +16,7 @@ import org.koin.android.ext.android.inject
 @ExperimentalCoroutinesApi
 class PlatformMqttListenerService : LifecycleService() {
 
-    private val sharedPreferences: SharedPreferences by inject()
+    private val appPreferences: AppPreferencesRepository by inject()
 
     companion object {
         lateinit var clientHelper: PlatformMqttClientHelper
@@ -41,7 +39,6 @@ class PlatformMqttListenerService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
-        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
         setMqttCallBack()
     }
 
@@ -81,25 +78,25 @@ class PlatformMqttListenerService : LifecycleService() {
         })
     }
 
-    private val sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-            when (key) {
-                COMMON_SHARED_PREF_PUBLISH_MSG_KEY -> {
-                    val message = sharedPreferences!!.getString(
-                        COMMON_SHARED_PREF_PUBLISH_MSG_KEY,
-                        COMMON_SHARED_PREF_ERROR_STRING_VALUE
-                    )
-
-                    if (message.equals(COMMON_SHARED_PREF_ERROR_STRING_VALUE)) return@OnSharedPreferenceChangeListener
-
-                    clientHelper.publish(
-                        encryptionHelper.encrypt(
-                            message!!,
-                            EncryptionHelper.ENCRYPTION_PASSWORD
-                        ), 0
-                    )
-                }
-            }
-        }
+//    private val sharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener =
+//        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+//            when (key) {
+//                COMMON_SHARED_PREF_PUBLISH_MSG_KEY -> {
+//                    val message = sharedPreferences!!.getString(
+//                        COMMON_SHARED_PREF_PUBLISH_MSG_KEY,
+//                        COMMON_SHARED_PREF_ERROR_STRING_VALUE
+//                    )
+//
+//                    if (message.equals(COMMON_SHARED_PREF_ERROR_STRING_VALUE)) return@OnSharedPreferenceChangeListener
+//
+//                    clientHelper.publish(
+//                        encryptionHelper.encrypt(
+//                            message!!,
+//                            EncryptionHelper.ENCRYPTION_PASSWORD
+//                        ), 0
+//                    )
+//                }
+//            }
+//        }
 
 }

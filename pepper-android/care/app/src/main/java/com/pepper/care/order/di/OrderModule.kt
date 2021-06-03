@@ -2,6 +2,7 @@ package com.pepper.care.order.di
 
 import android.content.SharedPreferences
 import com.pepper.care.common.api.PlatformApi
+import com.pepper.care.common.repo.AppPreferencesRepository
 import com.pepper.care.order.common.usecases.AddPatientFoodChoiceUseCaseUsingRepository
 import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
 import com.pepper.care.order.presentation.viewmodels.OrderViewModelUsingUsecases
@@ -15,7 +16,7 @@ val orderModule = module {
         GetPlatformMealsUseCaseUsingRepository(get())
     }
     single {
-        provideOrderRepository(get(), get())
+        provideOrderRepository(get())
     }
     single {
         AddPatientFoodChoiceUseCaseUsingRepository(get())
@@ -25,6 +26,6 @@ val orderModule = module {
     }
 }
 
-fun provideOrderRepository(api: PlatformApi, editor: SharedPreferences.Editor): OrderRepository {
-    return OrderRepositoryImpl(api, editor)
+fun provideOrderRepository(api: PlatformApi): OrderRepository {
+    return OrderRepositoryImpl(api)
 }

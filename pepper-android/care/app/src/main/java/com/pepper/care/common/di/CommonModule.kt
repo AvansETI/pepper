@@ -1,10 +1,7 @@
 package com.pepper.care.common.di
 
 import android.app.Application
-import android.content.Context
-import android.content.SharedPreferences
 import org.koin.dsl.module
-import com.pepper.care.common.CommonConstants
 import com.pepper.care.common.DynamicApiConverterFactory
 import com.pepper.care.common.api.PlatformApi
 import com.pepper.care.common.repo.*
@@ -16,11 +13,8 @@ import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 
 val commonModule = module {
-    single{
-        getSharedPrefs(androidApplication())
-    }
-    single<SharedPreferences.Editor> {
-        getSharedPrefs(androidApplication()).edit()
+    single {
+        getDataStore(androidApplication())
     }
     single<Retrofit> {
         provideRetrofit(get())
@@ -42,9 +36,9 @@ val commonModule = module {
     }
 }
 
-/* Shared Prefences */
-fun getSharedPrefs(androidApplication: Application): SharedPreferences {
-    return androidApplication.getSharedPreferences(CommonConstants.COMMON_PREFENCES, Context.MODE_PRIVATE)
+/* Data Store Prefences */
+fun getDataStore(androidApplication: Application): AppPreferencesRepository {
+    return AppPreferencesRepository(androidApplication)
 }
 
 /* API Calling */

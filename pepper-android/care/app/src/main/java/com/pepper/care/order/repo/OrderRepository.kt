@@ -1,12 +1,11 @@
 package com.pepper.care.order.repo
 
-import android.content.SharedPreferences
 import com.pepper.care.common.AppResult
-import com.pepper.care.common.CommonConstants.COMMON_SHARED_PREF_PUBLISH_MSG_KEY
 import com.pepper.care.common.api.PlatformApi
 import com.pepper.care.common.entities.PlatformMealsResponse
 import com.pepper.care.common.handleApiError
 import com.pepper.care.common.handleSuccess
+import com.pepper.care.common.repo.AppPreferencesRepository
 
 interface OrderRepository {
     suspend fun fetchMeals() : AppResult<List<PlatformMealsResponse>>
@@ -14,8 +13,7 @@ interface OrderRepository {
 }
 
 class OrderRepositoryImpl(
-    private val api: PlatformApi,
-    private val sharedPreferencesEditor: SharedPreferences.Editor
+    private val api: PlatformApi
 ) : OrderRepository {
 
     override suspend fun fetchMeals(): AppResult<List<PlatformMealsResponse>> {
@@ -35,6 +33,6 @@ class OrderRepositoryImpl(
     }
 
     override suspend fun addOrder(meal: String) {
-        sharedPreferencesEditor.putString(COMMON_SHARED_PREF_PUBLISH_MSG_KEY, meal).commit()
+        val formatted = "BOT:3:PATIENT:3:MEAL_CHOSEN#{${meal}}"
     }
 }

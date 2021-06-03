@@ -3,10 +3,10 @@ package com.pepper.care
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
@@ -21,12 +21,11 @@ import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayS
 import com.example.awesomedialog.*
 import com.pepper.care.common.AnimationUtil
 import com.pepper.care.common.AppResult
-import com.pepper.care.common.CommonConstants
 import com.pepper.care.common.DialogUtil
+import com.pepper.care.common.repo.AppPreferencesRepository
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
 import com.pepper.care.core.services.mqtt.MqttMessageCallbacks
 import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
-import org.koin.android.ext.android.inject
 import com.pepper.care.core.services.robot.*
 import com.pepper.care.dialog.DialogRoutes
 import com.pepper.care.dialog.common.usecases.GetAvailableScreensUseCaseUsingRepository
@@ -34,8 +33,11 @@ import com.pepper.care.feedback.entities.FeedbackEntity
 import com.pepper.care.info.presentation.InfoSliderActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import java.util.*
+
 
 @ExperimentalStdlibApi
 @FlowPreview
@@ -44,7 +46,7 @@ class MainActivity : RobotActivity() {
 
     private val getAvailableScreens: GetAvailableScreensUseCaseUsingRepository by inject()
     private val getPatientName: GetPatientNameUseCaseUsingRepository by inject()
-    private val sharedPreferencesEditor: SharedPreferences.Editor by inject()
+    private val appPreferences: AppPreferencesRepository by inject()
 
     private val showingDialog: MutableLiveData<AlertDialog> = MutableLiveData()
     private val givenFeedbackNumber: MutableLiveData<Int> = MutableLiveData()
@@ -160,10 +162,9 @@ class MainActivity : RobotActivity() {
                         val feedbackNumber = Integer.parseInt(string!!)
                         Log.d(MainActivity::class.simpleName, "Feedback number: $feedbackNumber")
                         this@MainActivity.givenFeedbackNumber.postValue(feedbackNumber)
-                        sharedPreferencesEditor.putInt(
-                            CommonConstants.COMMON_SHARED_PREF_UPDATE_FEEDBACK_SLIDER,
-                            feedbackNumber
-                        ).commit()
+                        lifecycleScope.launch {
+                            appPreferences.updateFeedbackSlider(feedbackNumber)
+                        }
                     }
                     PepperAction.INPUT_EXPLAIN_FEEDBACK -> {
                         val givenFeedback = string!!
