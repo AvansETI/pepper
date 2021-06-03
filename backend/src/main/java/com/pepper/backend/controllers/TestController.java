@@ -14,6 +14,8 @@ import java.time.LocalDate;
 @RequestMapping("api")
 public class TestController {
 
+    // TODO: Delete this test class
+
     private final BotMessageHandlerService botMessageHandler;
     private final StaffMessageHandlerService staffMessageHandler;
     private final DatabaseService databaseService;
@@ -28,7 +30,7 @@ public class TestController {
     public void test(@PathVariable String test) {
 //        this.botMessageHandler.send("3", Person.GENERAL, "", Task.FEEDBACK_STATUS, "6", "data frf4654");
 //        this.staffMessageHandler.send("3", Person.PATIENT, "", Task.PATIENT_NAME, "6", "data frf4654");
-        System.out.println(this.databaseService.findMeal(test));
+//        System.out.println(this.databaseService.findPatientId());
     }
 
 }

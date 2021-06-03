@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -245,7 +244,9 @@ public class BotMessageHandlerService {
                 String[] data = message.getData().split("%");
 
                 String id = this.databaseService.findPatientId(LocalDate.ofEpochDay(Long.parseLong(data[0])), data[1]);
-                this.sendId(Person.PATIENT, "-1", Task.PATIENT_ID, message.getTaskId(), id);
+                id = id == null ? "-1" : id;
+
+                this.sendId(Person.PATIENT, id, Task.PATIENT_ID, message.getTaskId(), id);
             }
             case REMINDER -> {
                 LOG.info("New reminder request");
