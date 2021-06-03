@@ -8,4 +8,12 @@ object RobotManager {
     fun addDynamicContents(concept: DynamicConcepts, list: List<Phrase>) {
         robot.addContents(concept, list)
     }
+
+    fun saveCurrentLocation(string: String) {
+        robot.saveLocation(string)
+    }
+
+    fun moveToLocation(string: String) {
+        robot.goToLocation(string)
+    }
 }

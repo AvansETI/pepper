@@ -72,10 +72,11 @@ class PlatformMqttListenerService : LifecycleService() {
             override fun messageArrived(topic: String?, message: MqttMessage?) {
                 callback.onMessageReceived(
                     topic,
-                    encryptionHelper.decrypt(
-                        message.toString(),
-                        EncryptionHelper.ENCRYPTION_PASSWORD
-                    )
+                    message.toString()
+//                    encryptionHelper.decrypt(
+//                        message.toString(),
+//                        EncryptionHelper.ENCRYPTION_PASSWORD
+//                    )
                 )
             }
 

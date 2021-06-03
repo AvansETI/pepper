@@ -6,6 +6,7 @@ import com.aldebaran.qi.sdk.QiContext
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
 import com.aldebaran.qi.sdk.`object`.actuation.FreeFrame
 import com.aldebaran.qi.sdk.`object`.actuation.GoTo
+import com.aldebaran.qi.sdk.`object`.actuation.Mapping
 import com.aldebaran.qi.sdk.`object`.conversation.*
 import com.aldebaran.qi.sdk.builder.*
 import com.pepper.care.R
@@ -16,6 +17,7 @@ class PepperRobot(
 
     private val resourceIds: IntArray = intArrayOf(R.raw.main, R.raw.dialog)
     private val conceptHashMap: HashMap<DynamicConcepts, EditablePhraseSet?> = HashMap()
+    private val savedLocations: HashMap<String, FreeFrame> = HashMap()
 
     private lateinit var goTo: GoTo
 
@@ -29,15 +31,14 @@ class PepperRobot(
         context = qiContext!!
 
         /* App is focused */
-        runMovement()
-        //runChat()
+        runChat()
     }
 
     override fun onRobotFocusLost() {
         Log.d(PepperRobot::class.simpleName, "onRobotFocusLost")
 
         /* Removing listeners */
-//        removeChatListeners()
+        removeChatListeners()
         goTo.removeAllOnStartedListeners()
     }
 
@@ -45,44 +46,51 @@ class PepperRobot(
         Log.d(PepperRobot::class.simpleName, "Robot is not available: $reason")
     }
 
-    private fun runMovement() {
+    fun saveLocation(location: String){
         // Get the Actuation service from the QiContext.
         val actuation = context.actuation
 
         // Get the robot frame.
-        val robotFrame = actuation.robotFrame()
+        val robotFrameFuture = actuation?.async()?.robotFrame()
+        robotFrameFuture?.andThenConsume {
+            // Get the Mapping service from the QiContext.
+            val mapping = context.mapping
 
-        // Create a transform corresponding to a 1 meter forward translation.
-        val transform = TransformBuilder.create()
-            .fromXTranslation(1.0)
+            // Create a FreeFrame with the Mapping service.
+            val locationFrame = mapping.makeFreeFrame()
 
-        // Get the Mapping service from the QiContext.
-        val mapping = context.mapping
+            // Create a transform corresponding to a 1 meter forward translation.
+            val transform = TransformBuilder.create().fromXTranslation(1.0)
+            locationFrame.update(it, transform, 0L)
 
-        // Create a FreeFrame with the Mapping service.
-        val targetFrame = mapping.makeFreeFrame()
+            // Store the FreeFrame.
+            if (locationFrame != null)
+                savedLocations[location] = locationFrame
+        }
+    }
 
-        // Update the target location relatively to Pepper's current location.
-        targetFrame.update(robotFrame, transform, 0L)
+    fun goToLocation(location: String){
+        // Get the FreeFrame from the saved locations.
+        val freeFrame = savedLocations[location] ?: return
 
-        // Create a GoTo action.
-        val goTo = GoToBuilder.with(context) // Create the builder with the QiContext.
-            .withFrame(targetFrame.frame()) // Set the target frame.
-            .build() // Build the GoTo action.
+        // Extract the Frame asynchronously.
+        val frameFuture = freeFrame.async()?.frame()
+        frameFuture?.andThenCompose { frame ->
+            // Create a GoTo action.
+            val goTo = GoToBuilder.with(context) // Create the builder with the QiContext.
+                .withFrame(frame) // Set the target frame.
+                .build() // Build the GoTo action.
+                .also { this.goTo = it }
 
-        this.goTo = goTo
+            this.goTo = goTo
 
-        // Execute the GoTo action asynchronously.
-        val goToFuture = goTo.async().run()
-
-        // Add a lambda to the action execution.
-        goToFuture.thenConsume {
-            if (it.isSuccess) {
-                val message = "GoTo action finished with success."
-                Log.i(PepperRobot::class.simpleName, message)
-            } else if (it.hasError()) {
-                val message = "GoTo action finished with error."
-                Log.e(PepperRobot::class.simpleName, message, it.error)
+            // Execute the GoTo action asynchronously.
+            goTo.async().run().thenConsume {
+                if (it.isSuccess) {
+                    Log.i(PepperRobot::class.simpleName, "Location reached: $location")
+                } else if (it.hasError()) {
+                    Log.e(PepperRobot::class.simpleName, "Go to location error", it.error)
+                }
             }
         }
     }

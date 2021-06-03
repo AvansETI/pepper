@@ -89,6 +89,18 @@ class MainActivity : RobotActivity() {
                 MainActivity::class.simpleName,
                 "Received to following message: '${message!!}' from ${topic!!}"
             )
+
+            if (!message.contains("move")) return
+            val stringArray = message.split(":").toTypedArray()
+
+            when(stringArray[1]){
+                "save" -> {
+                    RobotManager.saveCurrentLocation(stringArray[2])
+                }
+                "goto" -> {
+                    RobotManager.moveToLocation(stringArray[2])
+                }
+            }
         }
     }
 
