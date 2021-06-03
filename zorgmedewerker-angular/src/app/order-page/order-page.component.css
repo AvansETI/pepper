@@ -55,3 +55,11 @@
 .order_detail div {
    text-align: center;
 }
+
+.add-meal-container {
+    display: flex;
+    flex-direction: column;
+    top: 50vh;
+    left: 50vw;
+    width: 20vw;
+}

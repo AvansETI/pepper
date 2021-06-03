@@ -24,15 +24,38 @@
             <mat-list>
                 <mat-list-item>
                     <mat-card>
-                        {{("0" + selectedPatient.birthdate.getDate()).slice(-2) + "-" + ("0"+(selectedPatient.birthdate.getMonth()+1)).slice(-2) + "-" + selectedPatient.birthdate.getFullYear()}}
-                    </mat-card>
-                </mat-list-item>
-                <mat-list-item>
-                    <mat-card>
-                        {{formatAllergies(selectedPatient.allergies)}}
+                        <div>{{selectedPatient.name}}</div>
+                        <div>{{formatDate(selectedPatient.birthdate)}}</div>
+                        <div>{{formatAllergies(selectedPatient.allergies)}}</div>
                     </mat-card>
                 </mat-list-item>
             </mat-list>
+
+            <button mat-button (click)="onTest(selectedPatient.id)">Test</button>
+            <mat-card>
+                <div>Questions</div>
+                <div *ngFor="let question of questions">
+                    <div>{{question.id}} {{question.text}} {{formatTimestamp(question.timestamp)}}</div>
+                </div>
+            </mat-card>
+            <mat-card>
+                <div>Answers</div>
+                <div *ngFor="let answer of answers">
+                    <div>{{answer.questionId}} {{answer.text}} {{formatTimestamp(answer.timestamp)}}</div>
+                </div>
+            </mat-card>
+            <mat-card>
+                <div>Reminders</div>
+                <div *ngFor="let reminder of reminders">
+                    <div>{{reminder.thing}} {{formatTimestamp(reminder.timestamp)}}</div>
+                </div>
+            </mat-card>
+            <mat-card>
+                <div>Feedback</div>
+                <div *ngFor="let feedback of feedbacks">
+                    <div>{{feedback.status}} {{feedback.explanation}} {{formatTimestamp(feedback.timestamp)}}</div>
+                </div>
+            </mat-card>
 
             <mat-form-field>
                 <input matInput placeholder="Vraag aan de patient" [(ngModel)]="question">
