@@ -15,8 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.GeneralSecurityException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -110,6 +112,50 @@ public class StaffMessageHandlerService {
 
                     Set<String> ids = this.databaseService.findPatientIds();
                     this.sendIds(Person.PATIENT, "-1", Task.PATIENT_ID, message.getTaskId(), ids);
+                }
+            }
+            case PATIENT_NAME -> {
+                LOG.info("New patient name: " + message.getData());
+                Response response = this.databaseService.savePatient(Patient.builder()
+                        .id(message.getPersonId())
+                        .name(message.getData())
+                        .build());
+
+                if (response.isNew()) {
+                    this.sendId(Person.PATIENT, response.getId(), Task.PATIENT_ID, message.getTaskId(), response.getId());
+                }
+            }
+            case PATIENT_BIRTHDATE -> {
+                LOG.info("New patient birthdate: " + message.getData());
+                Response response = this.databaseService.savePatient(Patient.builder()
+                        .id(message.getPersonId())
+                        .birthdate(LocalDate.ofEpochDay(Long.parseLong(message.getData())))
+                        .build());
+
+                if (response.isNew()) {
+                    this.sendId(Person.PATIENT, response.getId(), Task.PATIENT_ID, message.getTaskId(), response.getId());
+                }
+            }
+            case PATIENT_ALLERGIES -> {
+                LOG.info("New patient allergies: " + message.getData());
+
+                String[] allergiesString = message.getData().substring(1, message.getData().length() - 1).replace(" ", "").split(",");
+                Set<Allergy> allergies = new HashSet<>();
+
+                for (String allergyString : allergiesString) {
+                    if (allergyString.equals("")) {
+                        continue;
+                    }
+                    allergies.add(Allergy.valueOf(allergyString));
+                }
+
+                Response response = this.databaseService.savePatient(Patient.builder()
+                        .id(message.getPersonId())
+                        .allergies(allergies)
+                        .build());
+
+                if (response.isNew()) {
+                    this.sendId(Person.PATIENT, response.getId(), Task.PATIENT_ID, message.getTaskId(), response.getId());
                 }
             }
             case FEEDBACK -> {

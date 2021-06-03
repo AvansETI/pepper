@@ -79,16 +79,22 @@ public class DatabaseService {
         return this.patientRepository.findById(id).orElse(null);
     }
 
-    public Set<String> findPatientIds(LocalDate birthdate) {
+    public String findPatientId(LocalDate birthdate, String name) {
         Set<String> ids = new HashSet<>();
 
         for (Patient patient : this.patientRepository.findAll()) {
-            if (patient.getBirthdate().equals(birthdate)) {
+            if (patient.getBirthdate().equals(birthdate) && patient.getName().equals(name)) {
                 ids.add(patient.getId());
             }
         }
 
-        return ids;
+        String firstId = null;
+        for (String id : ids) {
+            firstId = id;
+            break;
+        }
+
+        return firstId;
     }
 
     public Set<String> findPatientIds() {
