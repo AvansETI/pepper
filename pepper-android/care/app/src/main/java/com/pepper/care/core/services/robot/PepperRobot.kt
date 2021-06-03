@@ -4,10 +4,10 @@ import android.util.Log
 import com.aldebaran.qi.Future
 import com.aldebaran.qi.sdk.QiContext
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
+import com.aldebaran.qi.sdk.`object`.actuation.FreeFrame
+import com.aldebaran.qi.sdk.`object`.actuation.GoTo
 import com.aldebaran.qi.sdk.`object`.conversation.*
-import com.aldebaran.qi.sdk.builder.ChatBuilder
-import com.aldebaran.qi.sdk.builder.QiChatbotBuilder
-import com.aldebaran.qi.sdk.builder.TopicBuilder
+import com.aldebaran.qi.sdk.builder.*
 import com.pepper.care.R
 
 class PepperRobot(
@@ -16,6 +16,8 @@ class PepperRobot(
 
     private val resourceIds: IntArray = intArrayOf(R.raw.main, R.raw.dialog)
     private val conceptHashMap: HashMap<DynamicConcepts, EditablePhraseSet?> = HashMap()
+
+    private lateinit var goTo: GoTo
 
     private lateinit var future: Future<Void>
     private lateinit var context: QiContext
@@ -27,18 +29,62 @@ class PepperRobot(
         context = qiContext!!
 
         /* App is focused */
-        runChat()
+        runMovement()
+        //runChat()
     }
 
     override fun onRobotFocusLost() {
         Log.d(PepperRobot::class.simpleName, "onRobotFocusLost")
 
         /* Removing listeners */
-        removeChatListeners()
+//        removeChatListeners()
+        goTo.removeAllOnStartedListeners()
     }
 
     override fun onRobotFocusRefused(reason: String?) {
         Log.d(PepperRobot::class.simpleName, "Robot is not available: $reason")
+    }
+
+    private fun runMovement() {
+        // Get the Actuation service from the QiContext.
+        val actuation = context.actuation
+
+        // Get the robot frame.
+        val robotFrame = actuation.robotFrame()
+
+        // Create a transform corresponding to a 1 meter forward translation.
+        val transform = TransformBuilder.create()
+            .fromXTranslation(1.0)
+
+        // Get the Mapping service from the QiContext.
+        val mapping = context.mapping
+
+        // Create a FreeFrame with the Mapping service.
+        val targetFrame = mapping.makeFreeFrame()
+
+        // Update the target location relatively to Pepper's current location.
+        targetFrame.update(robotFrame, transform, 0L)
+
+        // Create a GoTo action.
+        val goTo = GoToBuilder.with(context) // Create the builder with the QiContext.
+            .withFrame(targetFrame.frame()) // Set the target frame.
+            .build() // Build the GoTo action.
+
+        this.goTo = goTo
+
+        // Execute the GoTo action asynchronously.
+        val goToFuture = goTo.async().run()
+
+        // Add a lambda to the action execution.
+        goToFuture.thenConsume {
+            if (it.isSuccess) {
+                val message = "GoTo action finished with success."
+                Log.i(PepperRobot::class.simpleName, message)
+            } else if (it.hasError()) {
+                val message = "GoTo action finished with error."
+                Log.e(PepperRobot::class.simpleName, message, it.error)
+            }
+        }
     }
 
     private fun runChat() {

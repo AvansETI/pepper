@@ -138,6 +138,6 @@ fun setSliderRange(
         )
     }
     fluidSlider.position = 0.75f
-    fluidSlider.startText = "${minMaxPair.first}"
+    fluidSlider.startText = "${minMaxPair.first + 1}"
     fluidSlider.endText = "${minMaxPair.second}"
 }
