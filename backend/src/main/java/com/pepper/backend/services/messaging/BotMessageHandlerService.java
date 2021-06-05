@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -242,41 +241,12 @@ public class BotMessageHandlerService {
                     break;
                 }
 
-                Set<String> ids = this.databaseService.findPatientIds(LocalDate.ofEpochDay(Long.parseLong(message.getData())));
-                this.sendIds(Person.PATIENT, "-1", Task.PATIENT_ID, message.getTaskId(), ids);
-            }
-            case PATIENT_NAME -> {
-                LOG.info("New patient name: " + message.getData());
-                Response response = this.databaseService.savePatient(Patient.builder()
-                        .id(message.getPersonId())
-                        .name(message.getData())
-                        .build());
+                String[] data = message.getData().split("%");
 
-                if (response.isNew()) {
-                    this.sendId(Person.PATIENT, response.getId(), Task.PATIENT_ID, message.getTaskId(), response.getId());
-                }
-            }
-            case PATIENT_BIRTHDATE -> {
-                LOG.info("New patient birthdate: " + message.getData());
-                Response response = this.databaseService.savePatient(Patient.builder()
-                        .id(message.getPersonId())
-                        .birthdate(LocalDate.ofEpochDay(Long.parseLong(message.getData())))
-                        .build());
+                String id = this.databaseService.findPatientId(LocalDate.ofEpochDay(Long.parseLong(data[0])), data[1]);
+                id = id == null ? "-1" : id;
 
-                if (response.isNew()) {
-                    this.sendId(Person.PATIENT, response.getId(), Task.PATIENT_ID, message.getTaskId(), response.getId());
-                }
-            }
-            case PATIENT_ALLERGIES -> {
-                LOG.info("New patient allergies: " + message.getData());
-                Response response = this.databaseService.savePatient(Patient.builder()
-                        .id(message.getPersonId())
-                        .allergies(new HashSet<>(Arrays.asList(Allergy.valueOf(message.getData()))))
-                        .build());
-
-                if (response.isNew()) {
-                    this.sendId(Person.PATIENT, response.getId(), Task.PATIENT_ID, message.getTaskId(), response.getId());
-                }
+                this.sendId(Person.PATIENT, id, Task.PATIENT_ID, message.getTaskId(), id);
             }
             case REMINDER -> {
                 LOG.info("New reminder request");

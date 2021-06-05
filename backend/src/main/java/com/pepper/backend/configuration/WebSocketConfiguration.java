@@ -12,7 +12,9 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/pepper").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/pepper")
+                .setAllowedOriginPatterns("*")
+                .withSockJS();
     }
 
     @Override

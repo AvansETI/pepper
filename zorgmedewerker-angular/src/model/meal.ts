@@ -1,4 +1,4 @@
-import { Allergy } from './patient'
+import { Allergy } from './allergy'
 
 export interface Meal {
     id: string,

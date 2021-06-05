@@ -12,14 +12,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.GeneralSecurityException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
+@Transactional
 public class StaffMessageHandlerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(StaffMessageHandlerService.class);
@@ -107,7 +110,51 @@ public class StaffMessageHandlerService {
                     LOG.info("Get patient ids request");
 
                     Set<String> ids = this.databaseService.findPatientIds();
-                    this.sendIds(Person.NONE, "-1", Task.PATIENT_ID, message.getTaskId(), ids);
+                    this.sendIds(Person.PATIENT, "-1", Task.PATIENT_ID, message.getTaskId(), ids);
+                }
+            }
+            case PATIENT_NAME -> {
+                LOG.info("New patient name: " + message.getData());
+                Response response = this.databaseService.savePatient(Patient.builder()
+                        .id(message.getPersonId())
+                        .name(message.getData())
+                        .build());
+
+                if (response.isNew()) {
+                    this.sendId(Person.PATIENT, response.getId(), Task.PATIENT_ID, message.getTaskId(), response.getId());
+                }
+            }
+            case PATIENT_BIRTHDATE -> {
+                LOG.info("New patient birthdate: " + message.getData());
+                Response response = this.databaseService.savePatient(Patient.builder()
+                        .id(message.getPersonId())
+                        .birthdate(LocalDate.ofEpochDay(Long.parseLong(message.getData())))
+                        .build());
+
+                if (response.isNew()) {
+                    this.sendId(Person.PATIENT, response.getId(), Task.PATIENT_ID, message.getTaskId(), response.getId());
+                }
+            }
+            case PATIENT_ALLERGIES -> {
+                LOG.info("New patient allergies: " + message.getData());
+
+                String[] allergiesString = message.getData().substring(1, message.getData().length() - 1).replace(" ", "").split(",");
+                Set<Allergy> allergies = new HashSet<>();
+
+                for (String allergyString : allergiesString) {
+                    if (allergyString.equals("")) {
+                        continue;
+                    }
+                    allergies.add(Allergy.valueOf(allergyString));
+                }
+
+                Response response = this.databaseService.savePatient(Patient.builder()
+                        .id(message.getPersonId())
+                        .allergies(allergies)
+                        .build());
+
+                if (response.isNew()) {
+                    this.sendId(Person.PATIENT, response.getId(), Task.PATIENT_ID, message.getTaskId(), response.getId());
                 }
             }
             case FEEDBACK -> {
@@ -141,6 +188,7 @@ public class StaffMessageHandlerService {
             case MEAL_ORDER_ID -> {
                 LOG.info("New meal order id request");
 
+                // TODO: patient id?
                 Set<String> ids = this.databaseService.findMealOrderTodayIds();
                 this.sendIds(Person.NONE, "-1", Task.MEAL_ORDER_ID, message.getTaskId(), ids);
             }
@@ -157,7 +205,7 @@ public class StaffMessageHandlerService {
                 LOG.info("New meal id request");
 
                 Set<String> ids = this.databaseService.findMealIds();
-                this.sendIds(Person.PATIENT, message.getPersonId(), Task.MEAL_ID, message.getTaskId(), ids);
+                this.sendIds(Person.NONE, "-1", Task.MEAL_ID, message.getTaskId(), ids);
             }
             case MEAL_NAME -> {
                 LOG.info("New meal name");
@@ -168,11 +216,11 @@ public class StaffMessageHandlerService {
                         .build());
 
                 if (response.isNew()) {
-                    this.sendId(Person.PATIENT, message.getPersonId(), Task.MEAL_ID, response.getId(), response.getId());
+                    this.sendId(Person.NONE, "-1", Task.MEAL_ID, response.getId(), response.getId());
                 }
             }
             case MEAL_DESCRIPTION -> {
-                LOG.info("New meal description");
+                LOG.info("New meal description: " + message.getData());
 
                 Response response = this.databaseService.saveMeal(Meal.builder()
                         .id(message.getTaskId())
@@ -180,11 +228,11 @@ public class StaffMessageHandlerService {
                         .build());
 
                 if (response.isNew()) {
-                    this.sendId(Person.PATIENT, message.getPersonId(), Task.MEAL_ID, response.getId(), response.getId());
+                    this.sendId(Person.NONE, "-1", Task.MEAL_ID, response.getId(), response.getId());
                 }
             }
             case MEAL_CALORIES -> {
-                LOG.info("New meal calories");
+                LOG.info("New meal calories: " + message.getData());
 
                 Response response = this.databaseService.saveMeal(Meal.builder()
                         .id(message.getTaskId())
@@ -192,13 +240,13 @@ public class StaffMessageHandlerService {
                         .build());
 
                 if (response.isNew()) {
-                    this.sendId(Person.PATIENT, message.getPersonId(), Task.MEAL_ID, response.getId(), response.getId());
+                    this.sendId(Person.NONE, "-1", Task.MEAL_ID, response.getId(), response.getId());
                 }
             }
             case MEAL_ALLERGIES -> {
-                LOG.info("New meal allergies");
+                LOG.info("New meal allergies: " + message.getData());
 
-                String[] allergiesString = message.getData().replace(" ", "").substring(1, message.getData().length() - 1).split(",");
+                String[] allergiesString = message.getData().substring(1, message.getData().length() - 1).replace(" ", "").split(",");
                 Set<Allergy> allergies = new HashSet<>();
 
                 for (String allergyString : allergiesString) {
@@ -214,11 +262,11 @@ public class StaffMessageHandlerService {
                         .build());
 
                 if (response.isNew()) {
-                    this.sendId(Person.PATIENT, message.getPersonId(), Task.MEAL_ID, response.getId(), response.getId());
+                    this.sendId(Person.NONE, "-1", Task.MEAL_ID, response.getId(), response.getId());
                 }
             }
             case MEAL_IMAGE -> {
-                LOG.info("New meal image");
+                LOG.info("New meal image: " + message.getData());
 
                 Response response = this.databaseService.saveMeal(Meal.builder()
                         .id(message.getTaskId())
@@ -226,7 +274,7 @@ public class StaffMessageHandlerService {
                         .build());
 
                 if (response.isNew()) {
-                    this.sendId(Person.PATIENT, message.getPersonId(), Task.MEAL_ID, response.getId(), response.getId());
+                    this.sendId(Person.NONE, "-1", Task.MEAL_ID, response.getId(), response.getId());
                 }
             }
             case ANSWER -> {
@@ -297,6 +345,25 @@ public class StaffMessageHandlerService {
                     }
                 }
             }
+            case REMINDER -> {
+                LOG.info("New reminder request");
+
+                if (message.getTaskId().equals("-1")) {
+                    break;
+                }
+
+                this.sendReminder(this.databaseService.findReminder(message.getTaskId()));
+            }
+            case REMINDER_ID -> {
+                LOG.info("New reminder id request");
+
+                if (message.getPersonId().equals("-1")) {
+                    break;
+                }
+
+                Set<String> ids = this.databaseService.findReminderTodayIds(message.getPersonId());
+                this.sendIds(Person.PATIENT, message.getPersonId(), Task.REMINDER_ID, message.getTaskId(), ids);
+            }
             case REMINDER_THING -> {
                 LOG.info("New reminder thing");
 
@@ -327,6 +394,15 @@ public class StaffMessageHandlerService {
                 LOG.error("Unknown command: " + message.getTask());
             }
         }
+    }
+
+    public void sendReminder(Reminder reminder) {
+        if (reminder == null) {
+            return;
+        }
+
+        this.send(Person.PATIENT, reminder.getPatientId(), Task.REMINDER_THING, reminder.getId(), reminder.getThing());
+        this.send(Person.PATIENT, reminder.getPatientId(), Task.REMINDER_TIMESTAMP, reminder.getId(), String.valueOf(reminder.getTimestamp().toEpochSecond(ZoneOffset.UTC)));
     }
 
     public void sendMeal(Meal meal) {
