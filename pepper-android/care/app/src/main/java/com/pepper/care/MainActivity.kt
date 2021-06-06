@@ -119,9 +119,6 @@ class MainActivity : RobotActivity() {
                     PepperAction.SELECT_PATIENT_BIRTHDAY -> {
                         val patientBday = string!!
                         Log.d(MainActivity::class.simpleName, "Patient birthday: $patientBday")
-                        lifecycleScope.launch {
-                            appPreferences.updatePatientBirthday(patientBday)
-                        }
                     }
                     PepperAction.SELECT_PATIENT_NAME -> {
                         val patientName = string!!

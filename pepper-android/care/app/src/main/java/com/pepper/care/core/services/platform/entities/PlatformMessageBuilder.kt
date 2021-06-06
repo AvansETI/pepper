@@ -14,11 +14,11 @@ class PlatformMessageBuilder private constructor(
 
     enum class MessageType {
         UNDEFINED,
-        FETCH_USERNAME,
+        FETCH_NAME,
         FETCH_MEALS,
         PUSH_MEAL,
         FETCH_REMINDERS,
-        FETCH_QUESTION,
+        FETCH_QUESTIONS,
         PUSH_QUESTION_EXPLANATION,
         PUSH_FEEDBACK_STATE,
         PUSH_FEEDBACK_EXPLANATION,

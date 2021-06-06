@@ -30,13 +30,13 @@ class AppPreferencesRepository(val context: Context) {
             it[PATIENT_NAME] ?: "NONE"
         }
 
-    suspend fun updatePatientBirthday(value: String) {
+    suspend fun updateMeals(value: String) {
         context.dataStore.edit { preferences ->
-            preferences[PATIENT_BIRTHDAY] = value
+            preferences[MEALS] = value
         }
     }
 
-    val patientBirthdayFlow: Flow<String> = context.dataStore.data
+    val mealsFlow: Flow<String> = context.dataStore.data
         .catch { exception ->
             if (exception is IOException) {
                 emit(emptyPreferences())
@@ -44,7 +44,41 @@ class AppPreferencesRepository(val context: Context) {
                 throw exception
             }
         }.map {
-            it[PATIENT_BIRTHDAY] ?: "NONE"
+            it[MEALS] ?: "NONE"
+        }
+
+    suspend fun updateReminders(value: String) {
+        context.dataStore.edit { preferences ->
+            preferences[REMINDERS] = value
+        }
+    }
+
+    val remindersFlow: Flow<String> = context.dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }.map {
+            it[REMINDERS] ?: "NONE"
+        }
+
+    suspend fun updateQuestions(value: String) {
+        context.dataStore.edit { preferences ->
+            preferences[QUESTIONS] = value
+        }
+    }
+
+    val questionsFlow: Flow<String> = context.dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }.map {
+            it[QUESTIONS] ?: "NONE"
         }
 
     suspend fun updatePublishMessage(value: String) {
@@ -83,7 +117,9 @@ class AppPreferencesRepository(val context: Context) {
 
     companion object {
         private val PATIENT_NAME = stringPreferencesKey("patient_name")
-        private val PATIENT_BIRTHDAY = stringPreferencesKey("patient_birthday")
+        private val MEALS = stringPreferencesKey("meals")
+        private val REMINDERS = stringPreferencesKey("reminders")
+        private val QUESTIONS = stringPreferencesKey("questions")
         private val PUBLISH_MESSAGE = stringPreferencesKey("publish_message")
         private val FEEDBACK_SLIDER = intPreferencesKey("feedback_slider")
         private const val APP_PREFERENCES_NAME = "app_preferences"

@@ -1,8 +1,6 @@
 package com.pepper.care.common.repo
 
 import com.pepper.care.core.services.platform.entities.PlatformMessageBuilder
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -22,7 +20,7 @@ class PatientRepositoryImpl(
             .bot("1")
             .person(PlatformMessageBuilder.PersonType.PATIENT)
             .identification("1")
-            .message(PlatformMessageBuilder.MessageType.FETCH_USERNAME)
+            .message(PlatformMessageBuilder.MessageType.FETCH_NAME)
             .data("$tempBday^$tempName")
             .build()
             .format()

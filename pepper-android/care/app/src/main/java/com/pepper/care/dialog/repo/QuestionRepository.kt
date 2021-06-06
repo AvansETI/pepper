@@ -3,7 +3,6 @@ package com.pepper.care.dialog.repo
 import com.pepper.care.common.repo.AppPreferencesRepository
 import com.pepper.care.core.services.platform.entities.PlatformMessageBuilder
 import com.pepper.care.core.services.platform.entities.PlatformQuestion
-import com.pepper.care.core.services.platform.entities.PlatformReminder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.joda.time.LocalDate
@@ -20,7 +19,7 @@ class QuestionRepositoryImpl(
     override suspend fun fetchQuestions(): Flow<List<PlatformQuestion>> {
         appPreferences.updatePublishMessage(
             PlatformMessageBuilder.Builder()
-                .message(PlatformMessageBuilder.MessageType.FETCH_QUESTION)
+                .message(PlatformMessageBuilder.MessageType.FETCH_QUESTIONS)
                 .build()
                 .format()
         )
