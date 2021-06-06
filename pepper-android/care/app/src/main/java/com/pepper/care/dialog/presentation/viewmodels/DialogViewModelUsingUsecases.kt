@@ -97,7 +97,7 @@ class DialogViewModelUsingUsecases(
                 bottomText.apply { value = reminder }
                 RobotManager.addDynamicContents(
                     DynamicConcepts.REMINDERS,
-                    listOf(Phrase(bottomText.value))
+                    listOf(Phrase(reminder))
                 )
             }
         }
@@ -110,7 +110,7 @@ class DialogViewModelUsingUsecases(
                 bottomText.apply { value = question }
                 RobotManager.addDynamicContents(
                     DynamicConcepts.QUESTIONS,
-                    listOf(Phrase(bottomText.value))
+                    listOf(Phrase(question))
                 )
             }
         }
