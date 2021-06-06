@@ -10,10 +10,6 @@ import com.pepper.care.dialog.DialogRoutes
 
 object DialogUtil {
 
-    fun buildDialog(view: View, body: String, screen: DialogRoutes, callback: DialogCallback?) : AlertDialog{
-        return buildDialog(view.context as Activity, body, screen, callback)
-    }
-
     fun buildDialog(activity: Activity, body: String, screen: DialogRoutes, callback: DialogCallback?) : AlertDialog{
         return AwesomeDialog.build(activity)
             .title(getDialogTitle(screen), Typeface.DEFAULT_BOLD, R.color.black)
@@ -28,9 +24,9 @@ object DialogUtil {
 
     private fun getDialogTitle(screen: DialogRoutes): String {
         return when (screen) {
-            DialogRoutes.IDNAME -> "Bent u dit?"
+            DialogRoutes.IDNAME -> "Ben jij deze persoon?"
             DialogRoutes.ORDER -> "Gekozen maaltijd:"
-            else -> "U gaf als antwoord:"
+            else -> "Je gaf als antwoord:"
         }
     }
 

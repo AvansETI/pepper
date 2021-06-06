@@ -122,13 +122,13 @@ fun setSliderRange(
         feedbackCallback.onUpdate(
             fluidSlider,
             when {
-                pos > 0.7 -> FeedbackEntity.FeedbackMessage.GOOD
+                pos > 0.6 -> FeedbackEntity.FeedbackMessage.GOOD
                 pos < 0.5 -> FeedbackEntity.FeedbackMessage.BAD
                 else -> FeedbackEntity.FeedbackMessage.OKAY
             }
         )
     }
-    fluidSlider.position = 1f
+    fluidSlider.position = 0.8f
     fluidSlider.startText = "${minMaxPair.first}"
     fluidSlider.endText = "${minMaxPair.second}"
 }

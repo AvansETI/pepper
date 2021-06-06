@@ -57,6 +57,7 @@ proposal: %ORDERASK Wat wil je bestellen {~name} ?
     u1:(~options) ^enumerate(~meals) ^enableThenGoto(ORDERFALLBACK)
     u1:(~favorite) ~myfav ~fav ^enableThenGoto(ORDERFALLBACK)
     u1:(~order _~meals) ^addToConcept(~meal, $1) ^execute(selectMealItem, sel, $1) ^enableThenGoto(ORDERCHECK)
+    u1:(~repeat) ^enableThenGoto(ORDER)
 
 proposal: %ORDERFALLBACK ^empty #Fallback is nodig om de applicatie niet te laten crashen of vast te laten lopen
     u1:(~options) ^enumerate(~meals) ^enableThenGoto(ORDERFALLBACK)
