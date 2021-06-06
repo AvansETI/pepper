@@ -1,6 +1,5 @@
 package com.pepper.care.feedback.presentation.viewmodels
 
-import android.content.Context
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.MutableLiveData
@@ -23,8 +22,6 @@ import kotlinx.coroutines.launch
 
 class FeedbackViewModelUsingUsecases(
     private val getName: GetPatientNameUseCaseUsingRepository,
-    private val feedbackType: AddPatientHealthFeedbackUseCaseUsingRepository,
-    private val feedbackExplain: AddPatientGivenHealthFeedbackUseCaseUsingRepository,
     private val appPreferences: AppPreferencesRepository
 ) : ViewModel(), FeedbackViewModel {
 

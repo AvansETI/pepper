@@ -9,6 +9,7 @@ import com.pepper.care.R
 import com.pepper.care.common.ClickCallback
 import com.pepper.care.common.UpdateNotifierCallback
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
+import com.pepper.care.core.services.platform.entities.Allergy
 import com.pepper.care.core.services.robot.DynamicConcepts
 import com.pepper.care.core.services.robot.RobotManager
 import com.pepper.care.dialog.DialogConstants
@@ -224,6 +225,14 @@ class OrderViewModelUsingUsecases(
         titleText.apply { value = Pair(item.name, changeCurrent) }
         labelText.apply { value = Pair("${item.calories} Kcal", changeCurrent) }
         descriptionText.apply { value = Pair(item.description, changeCurrent) }
-        allergiesText.apply { value = Pair(item.allergies.toString(), changeCurrent) }
+        allergiesText.apply { value = Pair(formatAllergies(item.allergies), changeCurrent) }
+    }
+
+    private fun formatAllergies(allergies: Set<Allergy>): String {
+        var text = ""
+        allergies.forEach { allergy ->
+            text += "${allergy.text} "
+        }
+        return text
     }
 }

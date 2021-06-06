@@ -4,13 +4,15 @@ import android.app.Activity
 import android.graphics.Typeface
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import com.example.awesomedialog.*
 import com.pepper.care.R
 import com.pepper.care.dialog.DialogRoutes
+import kotlinx.coroutines.launch
 
 object DialogUtil {
 
-    fun buildDialog(activity: Activity, body: String, screen: DialogRoutes, callback: DialogCallback?) : AlertDialog{
+    fun buildDialog(activity: Activity, body: String, screen: DialogRoutes, callback: DialogCallback?) : AlertDialog {
         return AwesomeDialog.build(activity)
             .title(getDialogTitle(screen), Typeface.DEFAULT_BOLD, R.color.black)
             .body(getDialogBody(body, screen), null, R.color.black)

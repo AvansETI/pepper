@@ -78,7 +78,7 @@ class AppPreferencesRepository(val context: Context) {
                 throw exception
             }
         }.map {
-            it[FEEDBACK_SLIDER] ?: 0
+            it[FEEDBACK_SLIDER] ?: 8
         }
 
     companion object {

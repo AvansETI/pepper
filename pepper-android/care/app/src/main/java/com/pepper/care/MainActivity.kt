@@ -3,6 +3,7 @@ package com.pepper.care
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
@@ -21,13 +22,18 @@ import com.example.awesomedialog.*
 import com.pepper.care.common.utility.AnimationUtil
 import com.pepper.care.common.repo.AppPreferencesRepository
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
+import com.pepper.care.common.utility.DialogCallback
 import com.pepper.care.common.utility.DialogUtil
 import com.pepper.care.core.services.mqtt.MqttMessageCallbacks
 import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
 import com.pepper.care.core.services.robot.*
 import com.pepper.care.dialog.DialogRoutes
+import com.pepper.care.dialog.common.usecases.AddPatientQuestionExplanationUseCaseUsingRepository
+import com.pepper.care.feedback.common.usecases.AddPatientGivenHealthFeedbackUseCaseUsingRepository
+import com.pepper.care.feedback.common.usecases.AddPatientHealthFeedbackUseCaseUsingRepository
 import com.pepper.care.feedback.entities.FeedbackEntity
 import com.pepper.care.info.presentation.InfoSliderActivity
+import com.pepper.care.order.common.usecases.AddPatientFoodChoiceUseCaseUsingRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
@@ -40,6 +46,10 @@ import java.util.*
 @ExperimentalCoroutinesApi
 class MainActivity : RobotActivity() {
 
+    private val sendMealChoice: AddPatientFoodChoiceUseCaseUsingRepository by inject()
+    private val sendFeedbackState: AddPatientHealthFeedbackUseCaseUsingRepository by inject()
+    private val sendFeedbackAnswer: AddPatientGivenHealthFeedbackUseCaseUsingRepository by inject()
+    private val sendQuestionAnswer: AddPatientQuestionExplanationUseCaseUsingRepository by inject()
     private val getPatientName: GetPatientNameUseCaseUsingRepository by inject()
     private val appPreferences: AppPreferencesRepository by inject()
 
@@ -133,14 +143,21 @@ class MainActivity : RobotActivity() {
                     PepperAction.SELECT_MEAL_ITEM -> {
                         val selectedMeal = string!!
                         Log.d(MainActivity::class.simpleName, "Meal selected: $selectedMeal")
-                        this@MainActivity.showingDialog.postValue(
-                            DialogUtil.buildDialog(
-                                this@MainActivity,
-                                selectedMeal,
-                                DialogRoutes.ORDER,
-                                null
-                            )
+
+                        val dialog = DialogUtil.buildDialog(
+                            this@MainActivity,
+                            selectedMeal,
+                            DialogRoutes.ORDER,
+                            null
                         )
+
+                        dialog.setOnCancelListener {
+                            lifecycleScope.launch {
+                                sendMealChoice.invoke(selectedMeal)
+                            }
+                        }
+
+                        this@MainActivity.showingDialog.postValue(dialog)
                     }
                     PepperAction.INPUT_EXPLAIN_QUESTION -> {
                         val questionExplanation = string!!
@@ -148,14 +165,21 @@ class MainActivity : RobotActivity() {
                             MainActivity::class.simpleName,
                             "Question explained: $questionExplanation"
                         )
-                        this@MainActivity.showingDialog.postValue(
-                            DialogUtil.buildDialog(
-                                this@MainActivity,
-                                questionExplanation,
-                                DialogRoutes.FEEDBACK,
-                                null
-                            )
+
+                        val dialog = DialogUtil.buildDialog(
+                            this@MainActivity,
+                            questionExplanation,
+                            DialogRoutes.FEEDBACK,
+                            null
                         )
+
+                        dialog.setOnCancelListener {
+                            lifecycleScope.launch {
+                                sendQuestionAnswer.invoke(questionExplanation)
+                            }
+                        }
+
+                        this@MainActivity.showingDialog.postValue(dialog)
                     }
                     PepperAction.SELECT_FEEDBACK_NUMBER -> {
                         val feedbackNumber = Integer.parseInt(string!!)
@@ -168,25 +192,32 @@ class MainActivity : RobotActivity() {
                         val givenFeedback = string!!
                         Log.d(MainActivity::class.simpleName, "Given feedback: $givenFeedback")
 
-                        var feedbackNumber = 1
+                        var feedbackNumber = 8
                         appPreferences.feedbackSliderFlow.asLiveData().observeForever {
                             feedbackNumber = it
                         }
 
-                        this@MainActivity.showingDialog.postValue(
-                            DialogUtil.buildDialog(
-                                this@MainActivity,
-                                "${
-                                    when {
-                                        feedbackNumber >= 7 -> FeedbackEntity.FeedbackMessage.GOOD.text
-                                        feedbackNumber < 5 -> FeedbackEntity.FeedbackMessage.BAD.text
-                                        else -> FeedbackEntity.FeedbackMessage.OKAY.text
-                                    }
-                                }, $givenFeedback",
-                                DialogRoutes.FEEDBACK,
-                                null
-                            )
+                        val message = when {
+                            feedbackNumber >= 7 -> FeedbackEntity.FeedbackMessage.GOOD
+                            feedbackNumber < 5 -> FeedbackEntity.FeedbackMessage.BAD
+                            else -> FeedbackEntity.FeedbackMessage.OKAY
+                        }
+
+                        val dialog = DialogUtil.buildDialog(
+                            this@MainActivity,
+                            "${message.text}, $givenFeedback",
+                            DialogRoutes.FEEDBACK,
+                            null
                         )
+
+                        dialog.setOnCancelListener {
+                            lifecycleScope.launch {
+                                sendFeedbackState.invoke(message)
+                                sendFeedbackAnswer.invoke(givenFeedback)
+                            }
+                        }
+
+                        this@MainActivity.showingDialog.postValue(dialog)
                     }
                     PepperAction.CONFIRM_DIALOG_SELECT -> {
                         val selected = string!!
