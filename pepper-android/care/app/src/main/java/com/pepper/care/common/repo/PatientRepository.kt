@@ -1,20 +1,35 @@
 package com.pepper.care.common.repo
 
-import com.pepper.care.common.AppResult
-import org.joda.time.DateTime
+import com.pepper.care.core.services.platform.entities.PlatformMessageBuilder
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 interface PatientRepository {
-    suspend fun fetchName() : AppResult<String>
-    suspend fun fetchBirthDate() : AppResult<DateTime>
+    suspend fun fetchName() : Flow<String>
 }
 
-class PatientRepositoryImpl : PatientRepository {
+class PatientRepositoryImpl(
+    private val appPreferences: AppPreferencesRepository
+) : PatientRepository {
 
-    override suspend fun fetchName(): AppResult<String> {
-        return AppResult.Success("Peter")
-    }
+    override suspend fun fetchName(): Flow<String> {
+        val tempBday = "10-12-2000"
+        val tempName = "Miquel"
 
-    override suspend fun fetchBirthDate(): AppResult<DateTime> {
-        return AppResult.Success(DateTime.now())
+        appPreferences.updatePublishMessage(PlatformMessageBuilder.Builder()
+            .bot("1")
+            .person(PlatformMessageBuilder.PersonType.PATIENT)
+            .identification("1")
+            .message(PlatformMessageBuilder.MessageType.FETCH_USERNAME)
+            .data("$tempBday^$tempName")
+            .build()
+            .format()
+        )
+
+        return flow {
+            emit(tempName)
+        }
     }
 }

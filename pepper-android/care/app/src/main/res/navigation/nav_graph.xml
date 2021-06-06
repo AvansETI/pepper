@@ -18,9 +18,6 @@
         <action
             android:id="@+id/action_orderFragment_to_dialogFragment"
             app:destination="@id/dialogFragment" />
-        <action
-            android:id="@+id/action_orderFragment_to_fullscreenImageFragment"
-            app:destination="@id/fullscreenImageFragment" />
     </fragment>
     <fragment
         android:id="@+id/feedbackFragment"
@@ -43,13 +40,5 @@
         <action
             android:id="@+id/action_dialogFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/fullscreenImageFragment"
-        android:name="com.pepper.care.common.presentation.views.FullscreenImageFragment"
-        android:label="FullscreenImageFragment" >
-        <action
-            android:id="@+id/action_fullscreenImageFragment_to_orderFragment"
-            app:destination="@id/orderFragment"/>
     </fragment>
 </navigation>

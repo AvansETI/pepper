@@ -11,6 +11,6 @@ class AddPatientGivenHealthFeedbackUseCaseUsingRepository(
 ) : AddPatientGivenHealthFeedbackUseCase {
 
     override suspend fun invoke(message: String) {
-        repository.addFeedbackDescription(message)
+        repository.addExplanation(message)
     }
 }

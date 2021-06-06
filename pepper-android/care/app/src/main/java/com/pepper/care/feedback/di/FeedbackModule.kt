@@ -1,5 +1,6 @@
 package com.pepper.care.feedback.di
 
+import com.pepper.care.common.repo.AppPreferencesRepository
 import com.pepper.care.feedback.common.usecases.AddPatientHealthFeedbackUseCaseUsingRepository
 import com.pepper.care.feedback.common.usecases.AddPatientGivenHealthFeedbackUseCaseUsingRepository
 import com.pepper.care.feedback.presentation.viewmodels.FeedbackViewModelUsingUsecases
@@ -10,7 +11,7 @@ import org.koin.dsl.module
 
 val feedbackModule = module {
     single {
-        provideFeedbackRepository()
+        provideFeedbackRepository(get())
     }
     single {
         AddPatientHealthFeedbackUseCaseUsingRepository(get())
@@ -23,6 +24,6 @@ val feedbackModule = module {
     }
 }
 
-fun provideFeedbackRepository(): FeedbackRepository {
-    return FeedbackRepositoryImpl()
+fun provideFeedbackRepository(appPreferencesRepository: AppPreferencesRepository): FeedbackRepository {
+    return FeedbackRepositoryImpl(appPreferencesRepository)
 }

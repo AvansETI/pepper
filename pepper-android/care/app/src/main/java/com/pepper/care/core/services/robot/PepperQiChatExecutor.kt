@@ -10,7 +10,6 @@ import com.pepper.care.core.services.robot.ExecuteConstants.EXE_IP_BDAY
 import com.pepper.care.core.services.robot.ExecuteConstants.EXE_IP_NAME
 import com.pepper.care.core.services.robot.ExecuteConstants.EXE_IQ_EXP
 import com.pepper.care.core.services.robot.ExecuteConstants.EXE_NAV
-import com.pepper.care.core.services.robot.ExecuteConstants.EXE_NAV_CH
 import com.pepper.care.core.services.robot.ExecuteConstants.EXE_SEL_MEAL
 
 class PepperQiChatExecutor (context: QiContext, val callback: PepperActionCallback) : BaseQiChatExecutor(context) {
@@ -26,7 +25,6 @@ class PepperQiChatExecutor (context: QiContext, val callback: PepperActionCallba
             EXE_IF_EXP -> callback.onRobotAction(PepperAction.INPUT_EXPLAIN_FEEDBACK, params[1])
             EXE_CF_DLG -> callback.onRobotAction(PepperAction.CONFIRM_DIALOG_SELECT, params[1])
             EXE_SEL_MEAL -> callback.onRobotAction(PepperAction.SELECT_MEAL_ITEM, params[1])
-            EXE_NAV_CH -> callback.onRobotAction(PepperAction.NAVIGATE_TO_CHOICE, params[1])
             EXE_IQ_EXP -> callback.onRobotAction(PepperAction.INPUT_EXPLAIN_QUESTION, params[1])
         }
     }
@@ -38,7 +36,6 @@ class PepperQiChatExecutor (context: QiContext, val callback: PepperActionCallba
 
 object ExecuteConstants {
     const val EXE_NAV = "nav"
-    const val EXE_NAV_CH = "navch"
     const val EXE_IP_BDAY = "pbday"
     const val EXE_IP_NAME = "pname"
     const val EXE_IF_NUM = "fnum"

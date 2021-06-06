@@ -44,10 +44,11 @@ class PlatformMqttListenerService : LifecycleService() {
         setMqttCallBack()
         appPreferences.publishMessageFlow.asLiveData().observeForever {
             clientHelper.publish(
-                encryptionHelper.encrypt(
-                    it!!,
-                    EncryptionHelper.ENCRYPTION_PASSWORD
-                ), 0
+                it, 0
+//                encryptionHelper.encrypt(
+//                    it!!,
+//                    EncryptionHelper.ENCRYPTION_PASSWORD
+//                ), 0
             )
         }
     }

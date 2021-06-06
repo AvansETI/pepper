@@ -1,5 +1,7 @@
 package com.pepper.care.order.common.view
 
+import com.pepper.care.core.services.platform.entities.Allergy
+
 abstract class SliderAdapterItem {
 
     enum class ViewTypes {
@@ -12,11 +14,11 @@ abstract class SliderAdapterItem {
 }
 
 data class MealSliderItem(
-    val id: Int,
+    val id: String,
     val name: String,
     val description: String,
-    val allergies: String,
-    val calories: Int,
+    val allergies: Set<Allergy>,
+    val calories: String,
     val source: String,
     var isFavorite: Boolean
 ) : SliderAdapterItem() {

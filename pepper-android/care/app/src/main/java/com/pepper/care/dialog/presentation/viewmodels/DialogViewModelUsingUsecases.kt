@@ -5,36 +5,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.aldebaran.qi.sdk.`object`.conversation.Phrase
-import com.pepper.care.common.AppResult
-import com.pepper.care.common.repo.AppPreferencesRepository
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
 import com.pepper.care.core.services.robot.DynamicConcepts
 import com.pepper.care.core.services.robot.RobotManager
-import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_NAME
-import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_QUESTION
-import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_TIME
+import com.pepper.care.dialog.DialogConstants.DIALOG_NO_QUESTIONS
+import com.pepper.care.dialog.DialogConstants.DIALOG_NO_REMINDERS
 import com.pepper.care.dialog.DialogRoutes
-import com.pepper.care.dialog.common.usecases.GetAvailableScreensUseCaseUsingRepository
+import com.pepper.care.dialog.common.usecases.GetDailyQuestionsUseCaseUsingRepository
+import com.pepper.care.dialog.common.usecases.GetDailyRemindersUseCaseUsingRepository
 import kotlinx.coroutines.launch
 
 class DialogViewModelUsingUsecases(
     private val getName: GetPatientNameUseCaseUsingRepository,
-    private val getAvailableScreens: GetAvailableScreensUseCaseUsingRepository,
-    private val appPreferences: AppPreferencesRepository
+    private val getReminders: GetDailyRemindersUseCaseUsingRepository,
+    private val getQuestions: GetDailyQuestionsUseCaseUsingRepository
 ) : ViewModel(), DialogViewModel {
 
     override val bottomText: MutableLiveData<String> = MutableLiveData("")
-    override val inputText: MutableLiveData<String> = MutableLiveData("")
-
     private val currentScreen: MutableLiveData<DialogRoutes> = MutableLiveData(DialogRoutes.INTRO)
-    private val fetchedName: MutableLiveData<String> = MutableLiveData(DIALOG_MOCK_NAME)
-    private val fetchedAvailableScreens: MutableLiveData<IntArray> =
-        MutableLiveData(intArrayOf(0, 0, 0))
 
     override fun updateDataBasedOnRoute(type: DialogRoutes) {
-        currentScreen.apply {
-            value = type
-        }
+        currentScreen.apply { value = type }
         handleRouteEvents()
     }
 
@@ -54,95 +45,74 @@ class DialogViewModelUsingUsecases(
             }
             DialogRoutes.IDBDAY -> {
                 bottomText.apply {
-                    value = "Om verder te gaan heb ik je geboortedatum nodig. Wijze: 'dag' 'maand' 'jaar'"
+                    value =
+                        "Om verder te gaan heb ik je geboortedatum nodig. Wijze: 'dag' 'maand' 'jaar'"
                 }
             }
             DialogRoutes.IDNAME -> {
-                bottomText.apply {
-                    value = "En wat is je naam?"
-                }
+                bottomText.apply { value = "En wat is je naam?" }
             }
             DialogRoutes.PATIENT -> {
-                fetchPatientDetails()
-                fetchUpcomingScreens()
-                bottomText.apply {
-                    value = "Wat fijn om u weer te zien, ${fetchedName.value}!"
-                }
+                fetchPatientName("Wat fijn om u weer te zien")
             }
             DialogRoutes.REMINDER -> {
-                fetchPatientDetails()
+                fetchPatientName(null)
                 fetchReminders()
-                fetchUpcomingScreens()
-                bottomText.apply {
-                    value =
-                        "Om ${DIALOG_MOCK_TIME}u moet u medicatie innemen."
-                }
             }
             DialogRoutes.QUESTION -> {
-                fetchPatientDetails()
+                fetchPatientName(null)
                 fetchQuestions()
-                bottomText.apply {
-                    value = "${DIALOG_MOCK_QUESTION}?"
-                }
             }
             DialogRoutes.DENIED -> {
-                bottomText.apply {
-                    value =
-                        "Helaas kan ik je niet verder helpen. Tot ziens!"
-                }
+                bottomText.apply { value = "Helaas kan ik je niet verder helpen. Tot ziens!" }
             }
             DialogRoutes.GOODBYE -> {
-                fetchPatientDetails()
-                bottomText.apply {
-                    value =
-                        "Tot ziens, ${fetchedName.value}!"
-                }
+                fetchPatientName("Tot ziens")
             }
             else -> throw NotImplementedError("Not implemented")
         }
     }
 
-    private fun fetchUpcomingScreens() {
+    private fun fetchPatientName(text: String?) {
         viewModelScope.launch {
-            when (val result = getAvailableScreens.invoke()) {
-                is AppResult.Success -> {
-                    fetchedAvailableScreens.postValue(result.successData)
-                }
-                is AppResult.Error -> result.exception.message
-            }
-        }
-    }
+            getName.invoke().asLiveData().observeForever {
+                RobotManager.addDynamicContents(
+                    DynamicConcepts.NAME,
+                    listOf(Phrase(it))
+                )
 
-    private fun fetchPatientDetails() {
-        viewModelScope.launch {
-            when (val result = getName.invoke()) {
-                is AppResult.Success -> {
-                    fetchedName.apply { value = result.successData }
-                    RobotManager.addDynamicContents(
-                        DynamicConcepts.NAME,
-                        listOf(Phrase(result.successData))
-                    )
+                if (text != null) {
+                    bottomText.apply {
+                        value = "$text, $it!"
+                    }
                 }
-                is AppResult.Error -> result.exception.message
             }
         }
     }
 
     private fun fetchReminders() {
         viewModelScope.launch {
-            RobotManager.addDynamicContents(
-                DynamicConcepts.REMINDERS,
-                listOf(Phrase(bottomText.value))
-            )
+            getReminders.invoke().asLiveData().observeForever {
+                val reminder = if (it.isNullOrEmpty()) DIALOG_NO_REMINDERS else it[0].thing
+                bottomText.apply { value = reminder }
+                RobotManager.addDynamicContents(
+                    DynamicConcepts.REMINDERS,
+                    listOf(Phrase(bottomText.value))
+                )
+            }
         }
     }
 
     private fun fetchQuestions() {
         viewModelScope.launch {
-            RobotManager.addDynamicContents(
-                DynamicConcepts.QUESTIONS,
-                listOf(Phrase(bottomText.value))
-            )
+            getQuestions.invoke().asLiveData().observeForever {
+                val question = if (it.isNullOrEmpty()) DIALOG_NO_QUESTIONS else it[0].text
+                bottomText.apply { value = question }
+                RobotManager.addDynamicContents(
+                    DynamicConcepts.QUESTIONS,
+                    listOf(Phrase(bottomText.value))
+                )
+            }
         }
     }
 }

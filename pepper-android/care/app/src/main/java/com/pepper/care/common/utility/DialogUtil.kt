@@ -1,4 +1,4 @@
-package com.pepper.care.common
+package com.pepper.care.common.utility
 
 import android.app.Activity
 import android.graphics.Typeface

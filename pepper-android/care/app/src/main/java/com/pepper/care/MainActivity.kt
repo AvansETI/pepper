@@ -1,9 +1,7 @@
 package com.pepper.care
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
@@ -20,21 +18,18 @@ import com.aldebaran.qi.sdk.design.activity.RobotActivity
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayPosition
 import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayStrategy
 import com.example.awesomedialog.*
-import com.pepper.care.common.AnimationUtil
-import com.pepper.care.common.AppResult
-import com.pepper.care.common.DialogUtil
+import com.pepper.care.common.utility.AnimationUtil
 import com.pepper.care.common.repo.AppPreferencesRepository
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
+import com.pepper.care.common.utility.DialogUtil
 import com.pepper.care.core.services.mqtt.MqttMessageCallbacks
 import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
 import com.pepper.care.core.services.robot.*
 import com.pepper.care.dialog.DialogRoutes
-import com.pepper.care.dialog.common.usecases.GetAvailableScreensUseCaseUsingRepository
 import com.pepper.care.feedback.entities.FeedbackEntity
 import com.pepper.care.info.presentation.InfoSliderActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.util.*
@@ -45,7 +40,6 @@ import java.util.*
 @ExperimentalCoroutinesApi
 class MainActivity : RobotActivity() {
 
-    private val getAvailableScreens: GetAvailableScreensUseCaseUsingRepository by inject()
     private val getPatientName: GetPatientNameUseCaseUsingRepository by inject()
     private val appPreferences: AppPreferencesRepository by inject()
 
@@ -93,7 +87,7 @@ class MainActivity : RobotActivity() {
             if (!message.contains("move")) return
             val stringArray = message.split(":").toTypedArray()
 
-            when(stringArray[1]){
+            when (stringArray[1]) {
                 "save" -> {
                     RobotManager.saveCurrentLocation(stringArray[2])
                 }
@@ -112,10 +106,6 @@ class MainActivity : RobotActivity() {
                         Log.d(MainActivity::class.simpleName, "Navigate to: ${string!!}")
                         screenNavigationHandler(DialogRoutes.valueOf(string))
                     }
-                    PepperAction.NAVIGATE_TO_CHOICE -> {
-                        Log.d(MainActivity::class.simpleName, "Navigate choice to: ${string!!}")
-                        navigateToCorrectCustomScreen(DialogRoutes.valueOf(string))
-                    }
                     PepperAction.SELECT_PATIENT_BIRTHDAY -> {
                         val patientBday = string!!
                         Log.d(MainActivity::class.simpleName, "Patient birthday: $patientBday")
@@ -124,34 +114,20 @@ class MainActivity : RobotActivity() {
                         }
                     }
                     PepperAction.SELECT_PATIENT_NAME -> {
-                        val patientLastName = string!!
-                        Log.d(MainActivity::class.simpleName, "Patient name: $patientLastName")
-
-                        var patientBirthday = ""
-                        appPreferences.patientBirthdayFlow.asLiveData().observeForever {
-                            patientBirthday = it
-                        }
-
-                        val fetchedName: MutableLiveData<String> = MutableLiveData()
+                        val patientName = string!!
+                        Log.d(MainActivity::class.simpleName, "Patient name: $patientName")
 
                         this@MainActivity.lifecycleScope.launch {
-                            when (val result = getPatientName.invoke()) {
-                                is AppResult.Success -> {
-                                    fetchedName.postValue(result.successData)
-                                }
-                                is AppResult.Error -> result.exception.message
-                            }
-                        }
-
-                        fetchedName.observeForever {
-                            this@MainActivity.showingDialog.postValue(
-                                DialogUtil.buildDialog(
-                                    this@MainActivity,
-                                    "$patientBirthday, $it",
-                                    DialogRoutes.IDNAME,
-                                    null
+                            getPatientName.invoke().asLiveData().observeForever {
+                                this@MainActivity.showingDialog.postValue(
+                                    DialogUtil.buildDialog(
+                                        this@MainActivity,
+                                        it,
+                                        DialogRoutes.IDNAME,
+                                        null
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                     PepperAction.SELECT_MEAL_ITEM -> {
@@ -302,46 +278,6 @@ class MainActivity : RobotActivity() {
         }
         this.findViewById<ImageView>(R.id.info_toolbar_button).isVisible =
             route == DialogRoutes.STANDBY
-    }
-
-    private fun navigateToCorrectCustomScreen(currentScreen: DialogRoutes) {
-        val fetchedAvailableScreens: MutableLiveData<IntArray> =
-            MutableLiveData(intArrayOf(0, 0, 0))
-
-        this@MainActivity.lifecycleScope.launch {
-            when (val result = getAvailableScreens.invoke()) {
-                is AppResult.Success -> {
-                    fetchedAvailableScreens.postValue(result.successData)
-                }
-                is AppResult.Error -> result.exception.message
-            }
-        }
-
-        fetchedAvailableScreens.observeForever {
-            when (currentScreen) {
-                DialogRoutes.ORDER -> {
-                    when {
-                        it[1] == 1 -> screenNavigationHandler(DialogRoutes.REMINDER)
-                        it[2] == 1 -> screenNavigationHandler(DialogRoutes.QUESTION)
-                        else -> screenNavigationHandler(DialogRoutes.FEEDBACK)
-                    }
-                }
-                DialogRoutes.REMINDER -> {
-                    when {
-                        it[2] == 1 -> screenNavigationHandler(DialogRoutes.QUESTION)
-                        else -> screenNavigationHandler(DialogRoutes.FEEDBACK)
-                    }
-                }
-                else -> {
-                    when {
-                        it[0] == 1 -> screenNavigationHandler(DialogRoutes.ORDER)
-                        it[1] == 1 -> screenNavigationHandler(DialogRoutes.REMINDER)
-                        it[2] == 1 -> screenNavigationHandler(DialogRoutes.QUESTION)
-                        else -> screenNavigationHandler(DialogRoutes.FEEDBACK)
-                    }
-                }
-            }
-        }
     }
 
     override fun onBackPressed() {

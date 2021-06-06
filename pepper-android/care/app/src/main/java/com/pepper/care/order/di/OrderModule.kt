@@ -1,7 +1,5 @@
 package com.pepper.care.order.di
 
-import android.content.SharedPreferences
-import com.pepper.care.common.api.PlatformApi
 import com.pepper.care.common.repo.AppPreferencesRepository
 import com.pepper.care.order.common.usecases.AddPatientFoodChoiceUseCaseUsingRepository
 import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
@@ -13,19 +11,19 @@ import org.koin.dsl.module
 
 val orderModule = module {
     single {
-        GetPlatformMealsUseCaseUsingRepository(get())
+        provideOrderRepository(get())
     }
     single {
-        provideOrderRepository(get())
+        GetPlatformMealsUseCaseUsingRepository(get())
     }
     single {
         AddPatientFoodChoiceUseCaseUsingRepository(get())
     }
     viewModel {
-        OrderViewModelUsingUsecases(get(), get(), get())
+        OrderViewModelUsingUsecases(get(), get())
     }
 }
 
-fun provideOrderRepository(api: PlatformApi): OrderRepository {
-    return OrderRepositoryImpl(api)
+fun provideOrderRepository(appPreferencesRepository: AppPreferencesRepository): OrderRepository {
+    return OrderRepositoryImpl(appPreferencesRepository)
 }

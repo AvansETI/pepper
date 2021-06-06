@@ -6,7 +6,6 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.aldebaran.qi.sdk.`object`.conversation.Phrase
 import com.pepper.care.R
-import com.pepper.care.common.AppResult
 import com.pepper.care.common.ClickCallback
 import com.pepper.care.common.UpdateNotifierCallback
 import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
@@ -14,7 +13,6 @@ import com.pepper.care.core.services.robot.DynamicConcepts
 import com.pepper.care.core.services.robot.RobotManager
 import com.pepper.care.dialog.DialogConstants
 import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_ERROR
-import com.pepper.care.dialog.common.usecases.GetAvailableScreensUseCaseUsingRepository
 import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
 import com.pepper.care.order.common.view.ErrorSliderItem
 import com.pepper.care.order.common.view.MealSliderItem
@@ -27,8 +25,7 @@ import kotlin.collections.ArrayList
 
 class OrderViewModelUsingUsecases(
     private val getName: GetPatientNameUseCaseUsingRepository,
-    private val getPlatformMealsUseCaseUsingRepository: GetPlatformMealsUseCaseUsingRepository,
-    private val getAvailableScreens: GetAvailableScreensUseCaseUsingRepository
+    private val getPlatformMealsUseCaseUsingRepository: GetPlatformMealsUseCaseUsingRepository
 ) : ViewModel(), OrderViewModel {
 
     override val recyclerList = MutableLiveData<ArrayList<SliderAdapterItem>>(arrayListOf())
@@ -39,10 +36,7 @@ class OrderViewModelUsingUsecases(
     override val isOpposite: MutableLiveData<Boolean> = MutableLiveData(false)
 
     override val meal: MutableLiveData<MealSliderItem> = MutableLiveData()
-    private val fetchedName: MutableLiveData<String> =
-        MutableLiveData(DialogConstants.DIALOG_MOCK_NAME)
-    private val fetchedAvailableScreens: MutableLiveData<IntArray> =
-        MutableLiveData(intArrayOf(0, 0, 0))
+    private val fetchedName: MutableLiveData<String> = MutableLiveData("")
 
     override val currentPosition: MutableLiveData<Int> = MutableLiveData(-1)
     override val cardSnapHelper: CardSnapHelper = CardSnapHelper()
@@ -66,51 +60,37 @@ class OrderViewModelUsingUsecases(
         showProgressView(true)
         showElements(false)
         viewModelScope.launch {
-            when (val result = getPlatformMealsUseCaseUsingRepository.invoke()) {
-                is AppResult.Success -> {
-                    if (result.successData.isNotEmpty()) {
-                        val responseList = result.successData
-                        val newList: ArrayList<SliderAdapterItem> = ArrayList()
+            getPlatformMealsUseCaseUsingRepository.invoke().asLiveData().observeForever{
+                if (it.isNotEmpty()) {
+                    val newList: ArrayList<SliderAdapterItem> = ArrayList()
 
-                        responseList.forEach { item ->
-                            newList.add(
-                                MealSliderItem(
-                                    item.id,
-                                    item.name,
-                                    item.description,
-                                    item.allergies,
-                                    item.calories,
-                                    item.source,
-                                    false
-                                )
+                    it.forEach { item ->
+                        newList.add(
+                            MealSliderItem(
+                                item.id!!,
+                                item.name!!,
+                                item.description!!,
+                                item.allergies!!,
+                                item.calories!!,
+                                item.image!!,
+                                false
                             )
-                        }
-
-                        val randomItem = newList.random() as MealSliderItem
-                        randomItem.isFavorite = true
-                        RobotManager.addDynamicContents(DynamicConcepts.FAV, Collections.singletonList(Phrase(randomItem.name)))
-
-                        addDynamicContents(newList)
-                        recyclerList.postValue(newList)
-                        showElements(true)
-                    } else {
-                        recyclerList.value =
-                            arrayListOf(ErrorSliderItem(ErrorSliderItem.ErrorText.NO_MEALS_RESULTS_FOUND))
-                        showElements(false)
+                        )
                     }
-                }
-                is AppResult.Error -> {
+
+                    val randomItem = newList.random() as MealSliderItem
+                    randomItem.isFavorite = true
+                    RobotManager.addDynamicContents(DynamicConcepts.FAV, Collections.singletonList(Phrase(randomItem.name)))
+
+                    addDynamicContents(newList)
+                    recyclerList.postValue(newList)
+                    showElements(true)
+                } else {
                     recyclerList.value =
                         arrayListOf(ErrorSliderItem(ErrorSliderItem.ErrorText.NO_MEALS_RESULTS_FOUND))
-                    result.exception.message
-                    showProgressView(false)
+                    showElements(false)
                 }
-            }
-            when (val result = getAvailableScreens.invoke()) {
-                is AppResult.Success -> {
-                    fetchedAvailableScreens.postValue(result.successData)
-                }
-                is AppResult.Error -> result.exception.message
+                showProgressView(false)
             }
         }
     }
@@ -130,15 +110,12 @@ class OrderViewModelUsingUsecases(
 
     private fun fetchPatientDetails() {
         viewModelScope.launch {
-            when (val result = getName.invoke()) {
-                is AppResult.Success -> {
-                    fetchedName.apply { value = result.successData }
-                    RobotManager.addDynamicContents(
-                        DynamicConcepts.NAME,
-                        listOf(Phrase(result.successData))
-                    )
-                }
-                is AppResult.Error -> result.exception.message
+            getName.invoke().asLiveData().observeForever {
+                fetchedName.apply { value = it }
+                RobotManager.addDynamicContents(
+                    DynamicConcepts.NAME,
+                    listOf(Phrase(it))
+                )
             }
         }
     }
@@ -234,7 +211,7 @@ class OrderViewModelUsingUsecases(
         val currentItem: SliderAdapterItem = list[pos % list.size]
 
         if (currentItem is ErrorSliderItem) {
-            titleText.apply { value = Pair(DialogConstants.DIALOG_MOCK_ERROR, true) }
+            titleText.apply { value = Pair(DIALOG_MOCK_ERROR, true) }
             return
         }
 
@@ -247,6 +224,6 @@ class OrderViewModelUsingUsecases(
         titleText.apply { value = Pair(item.name, changeCurrent) }
         labelText.apply { value = Pair("${item.calories} Kcal", changeCurrent) }
         descriptionText.apply { value = Pair(item.description, changeCurrent) }
-        allergiesText.apply { value = Pair(item.allergies, changeCurrent) }
+        allergiesText.apply { value = Pair(item.allergies.toString(), changeCurrent) }
     }
 }

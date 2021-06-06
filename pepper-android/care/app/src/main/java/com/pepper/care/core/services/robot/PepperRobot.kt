@@ -164,7 +164,6 @@ class PepperRobot(
     private fun setExecutor() {
         val executors: HashMap<String, QiChatExecutor> = HashMap()
         executors["navigateScreen"] = PepperQiChatExecutor(context, callback)
-        executors["navigateChoice"] = PepperQiChatExecutor(context, callback)
         executors["selectPatientBirthday"] = PepperQiChatExecutor(context, callback)
         executors["selectPatientName"] = PepperQiChatExecutor(context, callback)
         executors["selectMealItem"] = PepperQiChatExecutor(context, callback)

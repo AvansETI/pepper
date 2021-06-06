@@ -22,21 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                style="@style/Pepper_Care_Title_Text"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:gravity="center_horizontal"
-                android:lineSpacingMultiplier="1.25"
-                android:paddingHorizontal="250dp"
-                android:text="@{viewModel.inputText}"
-                android:textAlignment="center"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline12"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
             <ImageView
                 style="@style/Pepper_Care_Image"
                 android:id="@+id/imageView2"

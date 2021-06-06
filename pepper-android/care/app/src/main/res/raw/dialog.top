@@ -48,7 +48,7 @@ proposal: %IDCHECK Ben jij deze persoon ?
     u1: (~yes)  ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateScreen, nav, PATIENT) ^enableThenGoto(PATIENT)
     u1: (~repeat) ^sameProposal
 
-proposal: %PATIENT Wat fijn om je weer te zien {~name} ! ^execute(navigateChoice, navch, PATIENT) ^enableThenGoto(ORDER)
+proposal: %PATIENT Wat fijn om je weer te zien {~name} ! ^execute(navigateScreen, nav, ORDER) ^enableThenGoto(ORDER)
 
 proposal: %ORDER Vandaag staan de volgende maaltijden op het menu {^enumerate(~meals)} ^enableThenGoto(ORDERASK)
 
@@ -65,10 +65,10 @@ proposal: %ORDERFALLBACK ^empty #Fallback is nodig om de applicatie niet te late
 
 proposal: %ORDERCHECK Klopt het dat je hebt gekozen voor ~meal ?
     u1: (~no) ^execute(confirmDialogSelect, cfdlg, NO) ^enableThenGoto(ORDER)
-    u1: (~yes) ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateChoice, navch, ORDER) ^enableThenGoto(REMINDER)
+    u1: (~yes) ^execute(confirmDialogSelect, cfdlg, YES) ^execute(navigateScreen, nav, REMINDER) ^enableThenGoto(REMINDER)
     u1: (~repeat) ^sameProposal
 
-proposal: %REMINDER {~name} Dit zijn de herinneringen voor vandaag {^enumerate(~reminders)} ! ^execute(navigateChoice, navch, REMINDER) ^enableThenGoto(QUESTION)
+proposal: %REMINDER {~name} Dit zijn de herinneringen voor vandaag {^enumerate(~reminders)} ! ^execute(navigateScreen, nav, QUESTION) ^enableThenGoto(QUESTION)
 
 proposal: %QUESTION {~name} De verpleegkundige heeft de volgende vraag gesteld {~questions} ! ^enableThenGoto(QUESTIONEXPLAIN)
 

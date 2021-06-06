@@ -11,7 +11,6 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.github.chrisbanes.photoview.PhotoView
 import com.pepper.care.R
 import com.pepper.care.common.presentation.views.TextViewFactory
 import com.pepper.care.feedback.FeedbackCallback
@@ -74,14 +73,6 @@ fun setImageUrlSource(imageView: ImageView, url: String?) {
         .into(imageView)
 }
 
-@BindingAdapter("photoSource")
-fun setPhotoUrlSource(photoView: PhotoView, url: String?) {
-    if (url == null) return
-    Glide.with(photoView.context)
-        .load(url)
-        .into(photoView)
-}
-
 @BindingAdapter("isVisible")
 fun setIsVisible(view: View, isVisible: Boolean) {
     view.isVisible = isVisible
@@ -128,16 +119,16 @@ fun setSliderRange(
     val total = minMaxPair.second - minMaxPair.first
     fluidSlider.positionListener = { pos ->
         fluidSlider.bubbleText = "${minMaxPair.first + (total * pos).toInt()}"
-        feedbackCallback.onClicked(
+        feedbackCallback.onUpdate(
             fluidSlider,
             when {
-                pos >= 0.7 -> FeedbackEntity.FeedbackMessage.GOOD
+                pos > 0.7 -> FeedbackEntity.FeedbackMessage.GOOD
                 pos < 0.5 -> FeedbackEntity.FeedbackMessage.BAD
                 else -> FeedbackEntity.FeedbackMessage.OKAY
             }
         )
     }
-    fluidSlider.position = 0.75f
-    fluidSlider.startText = "${minMaxPair.first + 1}"
+    fluidSlider.position = 1f
+    fluidSlider.startText = "${minMaxPair.first}"
     fluidSlider.endText = "${minMaxPair.second}"
 }
