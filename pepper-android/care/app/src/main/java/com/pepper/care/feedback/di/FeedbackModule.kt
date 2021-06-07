@@ -1,6 +1,7 @@
 package com.pepper.care.feedback.di
 
 import com.pepper.care.common.repo.AppPreferencesRepository
+import com.pepper.care.feedback.common.usecases.AddPatientFeedbackTimestampUseCaseUsingRepository
 import com.pepper.care.feedback.common.usecases.AddPatientHealthFeedbackUseCaseUsingRepository
 import com.pepper.care.feedback.common.usecases.AddPatientGivenHealthFeedbackUseCaseUsingRepository
 import com.pepper.care.feedback.presentation.viewmodels.FeedbackViewModelUsingUsecases
@@ -18,6 +19,9 @@ val feedbackModule = module {
     }
     single {
         AddPatientGivenHealthFeedbackUseCaseUsingRepository(get())
+    }
+    single {
+        AddPatientFeedbackTimestampUseCaseUsingRepository(get())
     }
     viewModel {
         FeedbackViewModelUsingUsecases(get(), get())

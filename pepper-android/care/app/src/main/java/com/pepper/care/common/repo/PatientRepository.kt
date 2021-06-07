@@ -16,15 +16,15 @@ class PatientRepositoryImpl(
         val tempBday = "10-12-2000"
         val tempName = "Miquel"
 
-        appPreferences.updatePublishMessage(PlatformMessageBuilder.Builder()
-            .bot("1")
-            .person(PlatformMessageBuilder.PersonType.PATIENT)
-            .identification("1")
-            .message(PlatformMessageBuilder.MessageType.FETCH_NAME)
-            .data("$tempBday^$tempName")
-            .build()
-            .format()
-        )
+//        appPreferences.updatePublishMessage(PlatformMessageBuilder.Builder()
+//            .bot("1")
+//            .person(PlatformMessageBuilder.Person.PATIENT)
+//            .identification("1")
+//            .message(PlatformMessageBuilder.Task.FETCH_NAME)
+//            .data("$tempBday^$tempName")
+//            .build()
+//            .format()
+//        )
 
         return flow {
             emit(tempName)

@@ -1,17 +1,16 @@
 package com.pepper.care.feedback.common.usecases
 
-import com.pepper.care.feedback.entities.FeedbackEntity
 import com.pepper.care.feedback.repo.FeedbackRepository
 
 interface AddPatientHealthFeedbackUseCase {
-    suspend operator fun invoke(state: FeedbackEntity.FeedbackMessage)
+    suspend operator fun invoke(number: Int, patientId: String, taskId: String)
 }
 
 class AddPatientHealthFeedbackUseCaseUsingRepository(
     private val repository: FeedbackRepository
 ) : AddPatientHealthFeedbackUseCase {
 
-    override suspend fun invoke(state: FeedbackEntity.FeedbackMessage) {
-        repository.addState(state)
+    override suspend fun invoke(number: Int, patientId: String, taskId: String) {
+        repository.addState(number, patientId, taskId)
     }
 }

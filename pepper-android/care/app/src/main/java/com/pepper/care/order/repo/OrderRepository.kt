@@ -19,12 +19,12 @@ class OrderRepositoryImpl(
 ) : OrderRepository {
 
     override suspend fun fetchMeals(): Flow<List<PlatformMeal>> {
-        appPreferences.updatePublishMessage(
-            PlatformMessageBuilder.Builder()
-                .message(PlatformMessageBuilder.MessageType.FETCH_MEALS)
-                .build()
-                .format()
-        )
+//        appPreferences.updatePublishMessage(
+//            PlatformMessageBuilder.Builder()
+//                .message(PlatformMessageBuilder.MessageType.FETCH_MEALS)
+//                .build()
+//                .format()
+//        )
 
         return flow { emit(getMockMeals()) }
     }
@@ -61,13 +61,13 @@ class OrderRepositoryImpl(
     }
 
     override suspend fun addOrder(meal: String) {
-        appPreferences.updatePublishMessage(
-            PlatformMessageBuilder.Builder()
-                .person(PlatformMessageBuilder.PersonType.PATIENT)
-                .message(PlatformMessageBuilder.MessageType.PUSH_MEAL)
-                .data(meal)
-                .build()
-                .format()
-        )
+//        appPreferences.updatePublishMessage(
+//            PlatformMessageBuilder.Builder()
+//                .person(PlatformMessageBuilder.PersonType.PATIENT)
+//                .message(PlatformMessageBuilder.MessageType.PUSH_MEAL)
+//                .data(meal)
+//                .build()
+//                .format()
+//        )
     }
 }

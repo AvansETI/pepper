@@ -29,7 +29,7 @@ class PlatformMqttListenerService : LifecycleService() {
             val intent = Intent(context, PlatformMqttListenerService::class.java)
             this.clientHelper = PlatformMqttClientHelper(context)
             this.encryptionHelper = EncryptionHelper()
-            this.callback = callback
+            this.callback = MessagingHelper()  // was 'callback'
             context.startService(intent)
         }
 
@@ -71,14 +71,19 @@ class PlatformMqttListenerService : LifecycleService() {
             }
 
             override fun messageArrived(topic: String?, message: MqttMessage?) {
+                val arrived: String
+
+                if (false) {
+                    arrived = encryptionHelper.decrypt(message.toString(), EncryptionHelper.ENCRYPTION_PASSWORD)
+                } else {
+                    arrived = message.toString()
+                }
+
                 callback.onMessageReceived(
                     topic,
-                    message.toString()
-//                    encryptionHelper.decrypt(
-//                        message.toString(),
-//                        EncryptionHelper.ENCRYPTION_PASSWORD
-//                    )
+                    arrived
                 )
+
             }
 
             override fun deliveryComplete(token: IMqttDeliveryToken?) {

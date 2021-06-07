@@ -6,6 +6,7 @@ import com.pepper.care.core.services.platform.entities.PlatformReminder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.joda.time.LocalDate
+import org.joda.time.LocalDateTime
 
 interface ReminderRepository {
     suspend fun fetchReminders(): Flow<List<PlatformReminder>>
@@ -16,13 +17,13 @@ class ReminderRepositoryImpl(
 ) : ReminderRepository {
 
     override suspend fun fetchReminders(): Flow<List<PlatformReminder>> {
-        appPreferences.updatePublishMessage(
-            PlatformMessageBuilder.Builder()
-                .person(PlatformMessageBuilder.PersonType.PATIENT)
-                .message(PlatformMessageBuilder.MessageType.FETCH_REMINDERS)
-                .build()
-                .format()
-        )
+//        appPreferences.updatePublishMessage(
+//            PlatformMessageBuilder.Builder()
+//                .person(PlatformMessageBuilder.Person.PATIENT)
+//                .message(PlatformMessageBuilder.MessageType.FETCH_REMINDERS)
+//                .build()
+//                .format()
+//        )
 
         return flow { emit(getMockReminders()) }
     }
@@ -34,7 +35,7 @@ class ReminderRepositoryImpl(
                     "0",
                     "0",
                     "Om 16:00 heb je een afspraak staan met de verpleegkundige.",
-                    LocalDate.now()
+                    LocalDateTime.now()
                 )
             )
         )

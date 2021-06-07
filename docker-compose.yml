@@ -7,15 +7,15 @@ services:
         environment:
             - MONGO_INITDB_ROOT_USERNAME=pepper
             - MONGO_INITDB_ROOT_PASSWORD=pepper
-    # backend:
-    #     build: ./backend
-    #     ports:
-    #         - 6587:6587
-    #     depends_on:
-    #         - database
-    # zorgmedewerker_app:
-    #     build: ./zorgmedewerker-app
-    #     ports: 
-    #         - 6588:6588
-    #     depends_on:
-    #         - backend
+    backend:
+        build: ./backend
+        ports:
+            - 6587:6587
+        depends_on:
+            - database
+    zorgmedewerker_app:
+        build: ./zorgmedewerker-angular
+        ports: 
+            - 6588:6588
+        depends_on:
+            - backend

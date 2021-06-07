@@ -29,6 +29,7 @@ import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
 import com.pepper.care.core.services.robot.*
 import com.pepper.care.dialog.DialogRoutes
 import com.pepper.care.dialog.common.usecases.AddPatientQuestionExplanationUseCaseUsingRepository
+import com.pepper.care.feedback.common.usecases.AddPatientFeedbackTimestampUseCaseUsingRepository
 import com.pepper.care.feedback.common.usecases.AddPatientGivenHealthFeedbackUseCaseUsingRepository
 import com.pepper.care.feedback.common.usecases.AddPatientHealthFeedbackUseCaseUsingRepository
 import com.pepper.care.feedback.entities.FeedbackEntity
@@ -49,6 +50,7 @@ class MainActivity : RobotActivity() {
     private val sendMealChoice: AddPatientFoodChoiceUseCaseUsingRepository by inject()
     private val sendFeedbackState: AddPatientHealthFeedbackUseCaseUsingRepository by inject()
     private val sendFeedbackAnswer: AddPatientGivenHealthFeedbackUseCaseUsingRepository by inject()
+    private val sendFeedbackTimestamp: AddPatientFeedbackTimestampUseCaseUsingRepository by inject()
     private val sendQuestionAnswer: AddPatientQuestionExplanationUseCaseUsingRepository by inject()
     private val getPatientName: GetPatientNameUseCaseUsingRepository by inject()
     private val appPreferences: AppPreferencesRepository by inject()
@@ -209,10 +211,11 @@ class MainActivity : RobotActivity() {
 
                         dialog.setOnCancelListener {
                             lifecycleScope.launch {
-                                sendFeedbackState.invoke(message)
-                                sendFeedbackAnswer.invoke(givenFeedback)
+//                                sendFeedbackState.invoke(feedbackNumber)
+//                                sendFeedbackAnswer.invoke(givenFeedback)
                             }
                         }
+
 
                         this@MainActivity.showingDialog.postValue(dialog)
                     }

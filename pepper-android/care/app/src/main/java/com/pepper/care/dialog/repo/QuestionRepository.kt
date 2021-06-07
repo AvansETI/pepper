@@ -6,6 +6,7 @@ import com.pepper.care.core.services.platform.entities.PlatformQuestion
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.joda.time.LocalDate
+import org.joda.time.LocalDateTime
 
 interface QuestionRepository {
     suspend fun fetchQuestions() : Flow<List<PlatformQuestion>>
@@ -17,12 +18,12 @@ class QuestionRepositoryImpl(
 ) : QuestionRepository {
 
     override suspend fun fetchQuestions(): Flow<List<PlatformQuestion>> {
-        appPreferences.updatePublishMessage(
-            PlatformMessageBuilder.Builder()
-                .message(PlatformMessageBuilder.MessageType.FETCH_QUESTIONS)
-                .build()
-                .format()
-        )
+//        appPreferences.updatePublishMessage(
+//            PlatformMessageBuilder.Builder()
+//                .message(PlatformMessageBuilder.MessageType.FETCH_QUESTIONS)
+//                .build()
+//                .format()
+//        )
 
         return flow { emit(getMockQuestions()) }
     }
@@ -34,20 +35,20 @@ class QuestionRepositoryImpl(
                     "0",
                     "0",
                     "Heb je nog pijn aan je linkerbeen?",
-                    LocalDate.now()
+                    LocalDateTime.now()
                 )
             )
         )
     }
 
     override suspend fun addExplanation(string: String) {
-        appPreferences.updatePublishMessage(
-            PlatformMessageBuilder.Builder()
-                .person(PlatformMessageBuilder.PersonType.PATIENT)
-                .message(PlatformMessageBuilder.MessageType.PUSH_QUESTION_EXPLANATION)
-                .data(string)
-                .build()
-                .format()
-        )
+//        appPreferences.updatePublishMessage(
+//            PlatformMessageBuilder.Builder()
+//                .person(PlatformMessageBuilder.PersonType.PATIENT)
+//                .message(PlatformMessageBuilder.MessageType.PUSH_QUESTION_EXPLANATION)
+//                .data(string)
+//                .build()
+//                .format()
+//        )
     }
 }
