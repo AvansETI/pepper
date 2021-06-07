@@ -313,6 +313,7 @@ class MainActivity : RobotActivity() {
     }
 
     override fun onDestroy() {
+        PlatformMqttListenerService.stop(this@MainActivity)
         QiSDK.unregister(this@MainActivity, RobotManager.robot)
         super.onDestroy()
     }
