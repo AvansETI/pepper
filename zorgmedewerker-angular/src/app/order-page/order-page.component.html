@@ -4,6 +4,9 @@
             <mat-label>Maaltijden</mat-label>
         </div>
         <div>
+            <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
+            <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
+            <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
             <mat-list *ngFor="let meal of meals" role="list">
                 <mat-list-item role="listitem">
                     <mat-card>
@@ -25,32 +28,22 @@
             <mat-label>Bestellingen</mat-label>
         </div>
         <div>
-            <mat-list role="list">
-                <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
-                <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
-                <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
+            <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
+            <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
+            <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
+            <mat-list *ngFor= "let mealorder of mealOrders"role="list">
+                <mat-list-item role="listitem">
+                    <mat-card>
+                        <div>{{mealorder.id}}</div>
+                        <div>{{mealorder.patientId}}</div>
+                        <div>{{mealorder.mealId}}</div>
+                        <div>{{mealorder.timestamp}}</div>
+                    </mat-card>
+                </mat-list-item>
             </mat-list>
         </div>
+        <a class= "order_add_button" mat-raised-button (click)="openDialog()" color= "primary">Maaltijd toevoegen</a>
     </div>
-    <mat-card class="add-meal-container">
-        <div>Maaltijd toevoegen</div>
-        <mat-form-field>
-            <input matInput placeholder="Naam" [(ngModel)]="name">
-        </mat-form-field>
-        <mat-form-field>
-            <input matInput placeholder="Beschrijving" [(ngModel)]="description">
-        </mat-form-field>
-        <mat-form-field>
-            <input matInput placeholder="Calorien" [(ngModel)]="calories">
-        </mat-form-field>
-        <mat-form-field>
-            <input matInput placeholder="Allergien" [(ngModel)]="allergies">
-        </mat-form-field>
-        <mat-form-field>
-            <input matInput placeholder="Afbeelding" [(ngModel)]="image">
-        </mat-form-field>
-        <button mat-button (click)="onMealSave()">Voeg toe</button>
-    </mat-card>
     <div class="pepper_head">
         <img src="assets/pepper-head.png">
     </div>

@@ -63,3 +63,7 @@
     left: 50vw;
     width: 20vw;
 }
+
+.order_add_button{
+    float: right;
+}
