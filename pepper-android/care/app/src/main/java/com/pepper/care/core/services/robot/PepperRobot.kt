@@ -4,16 +4,14 @@ import android.util.Log
 import com.aldebaran.qi.Future
 import com.aldebaran.qi.sdk.QiContext
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks
-import com.aldebaran.qi.sdk.`object`.actuation.FreeFrame
-import com.aldebaran.qi.sdk.`object`.actuation.GoTo
-import com.aldebaran.qi.sdk.`object`.actuation.Mapping
+import com.aldebaran.qi.sdk.`object`.actuation.*
 import com.aldebaran.qi.sdk.`object`.conversation.*
 import com.aldebaran.qi.sdk.builder.*
 import com.pepper.care.R
 
 class PepperRobot(
     val callback: PepperActionCallback
-): RobotLifecycleCallbacks {
+) : RobotLifecycleCallbacks {
 
     private val resourceIds: IntArray = intArrayOf(R.raw.main, R.raw.dialog)
     private val conceptHashMap: HashMap<DynamicConcepts, EditablePhraseSet?> = HashMap()
@@ -26,12 +24,15 @@ class PepperRobot(
     private lateinit var chatBot: QiChatbot
     private lateinit var chat: Chat
 
+    private lateinit var localizingAndMapping: Future<Void>
+
     override fun onRobotFocusGained(qiContext: QiContext?) {
         Log.d(PepperRobot::class.simpleName, "onRobotFocusGained")
         context = qiContext!!
 
         /* App is focused */
         runChat()
+        runLocalize()
     }
 
     override fun onRobotFocusLost() {
@@ -46,7 +47,30 @@ class PepperRobot(
         Log.d(PepperRobot::class.simpleName, "Robot is not available: $reason")
     }
 
-    fun saveLocation(location: String){
+    fun runLocalize() {
+        // Build the action.
+        val localizeAndMap: LocalizeAndMap = LocalizeAndMapBuilder.with(context).build()
+
+        // Add a listener to get the map when localized.
+        localizeAndMap.addOnStatusChangedListener { localizationStatus ->
+            if (localizationStatus == LocalizationStatus.LOCALIZED) {
+                // Stop the action.
+                localizingAndMapping.requestCancellation()
+                // Dump the map for future use by a Localize action.
+                val explorationMap: ExplorationMap = localizeAndMap.dumpMap()
+
+                // Serialize the ExplorationMap data.
+                val mapData: String = explorationMap.serialize()
+
+                Log.d(PepperRobot::class.simpleName, "Saved map: $mapData")
+            }
+        }
+
+        // Run the action.
+        localizingAndMapping = localizeAndMap.async().run()
+    }
+
+    fun saveLocation(location: String) {
         // Get the Actuation service from the QiContext.
         val actuation = context.actuation
 
@@ -69,7 +93,7 @@ class PepperRobot(
         }
     }
 
-    fun goToLocation(location: String){
+    fun goToLocation(location: String) {
         // Get the FreeFrame from the saved locations.
         val freeFrame = savedLocations[location] ?: return
 
@@ -174,10 +198,13 @@ class PepperRobot(
         chatBot.executors = executors
     }
 
-    private fun setFutureListeners(){
+    private fun setFutureListeners() {
         future.thenConsume { chatFuture ->
             if (chatFuture.hasError()) {
-                Log.e(PepperRobot::class.simpleName,"Discussion finished with error: ${chatFuture.error}")
+                Log.e(
+                    PepperRobot::class.simpleName,
+                    "Discussion finished with error: ${chatFuture.error}"
+                )
             }
         }
     }

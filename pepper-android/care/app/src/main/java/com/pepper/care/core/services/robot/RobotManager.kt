@@ -16,4 +16,8 @@ object RobotManager {
     fun moveToLocation(string: String) {
         robot.goToLocation(string)
     }
+
+    fun localize() {
+        robot.runLocalize()
+    }
 }

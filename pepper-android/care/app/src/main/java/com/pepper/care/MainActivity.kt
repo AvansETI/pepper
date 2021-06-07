@@ -104,6 +104,9 @@ class MainActivity : RobotActivity() {
                 "goto" -> {
                     RobotManager.moveToLocation(stringArray[2])
                 }
+                "localize" -> {
+//                    RobotManager.localize()
+                }
             }
         }
     }
