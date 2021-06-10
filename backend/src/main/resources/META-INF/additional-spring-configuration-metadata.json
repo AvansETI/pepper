@@ -29,6 +29,16 @@
       "name": "encryption.enabled",
       "type": "java.lang.Boolean",
       "description": "Description for encryption.enable."
+    },
+    {
+      "name": "http.username",
+      "type": "java.lang.String",
+      "description": "Description for http.username."
+    },
+    {
+      "name": "http.password",
+      "type": "java.lang.String",
+      "description": "Description for http.password."
     }
   ]
 }

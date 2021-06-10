@@ -2,7 +2,9 @@ package com.pepper.backend.services.database;
 
 import com.pepper.backend.model.*;
 import com.pepper.backend.model.database.Response;
+import com.pepper.backend.model.database.UserResponse;
 import com.pepper.backend.repositories.database.*;
+import com.pepper.backend.services.messaging.MessageEncryptorService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,15 +21,21 @@ public class DatabaseService {
     private final QuestionRepository questionRepository;
     private final ReminderRepository reminderRepository;
     private final NextSequenceService nextSequenceService;
+    private final UserRepository userRepository;
+    private final MessageEncryptorService messageEncryptor;
 
     public DatabaseService(
             AnswerRepository answerRepository,
             FeedbackRepository feedbackRepository,
-            MealRepository mealRepository, MealOrderRepository mealOrderRepository,
+            MealRepository mealRepository,
+            MealOrderRepository mealOrderRepository,
             PatientRepository patientRepository,
             QuestionRepository questionRepository,
             ReminderRepository reminderRepository,
-            NextSequenceService nextSequenceService) {
+            NextSequenceService nextSequenceService,
+            UserRepository userRepository,
+            MessageEncryptorService messageEncryptor
+    ) {
         this.answerRepository = answerRepository;
         this.feedbackRepository = feedbackRepository;
         this.mealRepository = mealRepository;
@@ -36,6 +44,31 @@ public class DatabaseService {
         this.questionRepository = questionRepository;
         this.reminderRepository = reminderRepository;
         this.nextSequenceService = nextSequenceService;
+        this.userRepository = userRepository;
+        this.messageEncryptor = messageEncryptor;
+    }
+
+    public boolean isAuthorized(User user) {
+        for (User u : this.userRepository.findAll()) {
+            if (u.getUsername().equals(user.getUsername()) && u.getPassword().equals(user.getPassword())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public UserResponse saveUser(User user) {
+        user.setPassword(this.messageEncryptor.hash(user.getPassword()));
+
+        for (User u : this.userRepository.findAll()) {
+            if (u.getUsername().toLowerCase().equals(user.getUsername().toLowerCase())) {
+                return UserResponse.USERNAME_ALREADY_USED;
+            }
+        }
+
+        this.userRepository.save(user);
+        return UserResponse.OK;
     }
 
     public synchronized Response savePatient(Patient patient) {

@@ -9,6 +9,8 @@ export enum Person {
 }
 
 export enum Task {
+    USER,
+    
     FEEDBACK,
     FEEDBACK_ID,
     FEEDBACK_STATUS,

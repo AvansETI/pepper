@@ -1,5 +1,6 @@
 package com.pepper.backend.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,11 +19,17 @@ import org.springframework.web.filter.CorsFilter;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    @Value("${http.username}")
+    private String username;
+
+    @Value("${http.password}")
+    private String password;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("pepper")
-                .password(passwordEncoder().encode("pepper"))
+                .withUser(this.username)
+                .password(passwordEncoder().encode(this.password))
                 .roles("USER");
     }
 

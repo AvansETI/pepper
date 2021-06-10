@@ -1,0 +1,8 @@
+POST http://{{hostname}}:{{port}}/api/v1/admin/users
+Content-Type: application/json
+Authorization: Basic {{username}} {{password}}
+
+{
+  "username": "admin",
+  "password": "pass"
+}

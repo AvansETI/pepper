@@ -81,4 +81,8 @@ export class MessageEncryptorService {
     return tmp.buffer;
   }
 
+  hash(text: string): string {
+    return sha256.hex(text);
+  }
+
 }

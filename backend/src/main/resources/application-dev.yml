@@ -17,3 +17,7 @@ spring.data.mongodb:
 encryption:
   enabled: false
   password: pepper
+
+http:
+  username: pepper
+  password: pepper
