@@ -1,18 +1,16 @@
 package com.pepper.care.feedback.common.usecases
 
-import com.pepper.care.core.services.platform.entities.PlatformFeedback
 import com.pepper.care.feedback.repo.FeedbackRepository
-import java.time.LocalDateTime
 
 interface AddPatientFeedbackUseCase {
-    suspend operator fun invoke(feedback: PlatformFeedback)
+    suspend operator fun invoke(status: Int, text: String)
 }
 
 class AddPatientFeedbackUseCaseUsingRepository(
     private val repository: FeedbackRepository
 ) : AddPatientFeedbackUseCase {
 
-    override suspend fun invoke(feedback: PlatformFeedback) {
-//        repository.addTimestamp(timestamp, patientId, taskId)
+    override suspend fun invoke(status: Int, text: String) {
+        repository.sendFeedback(status, text)
     }
 }

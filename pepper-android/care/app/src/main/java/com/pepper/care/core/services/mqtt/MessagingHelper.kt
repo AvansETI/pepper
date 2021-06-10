@@ -3,10 +3,7 @@ package com.pepper.care.core.services.mqtt
 import android.util.Log
 import com.pepper.care.common.repo.AppPreferencesRepository
 import com.pepper.care.common.repo.PatientRepository
-import com.pepper.care.core.services.platform.entities.Allergy
-import com.pepper.care.core.services.platform.entities.PlatformMeal
-import com.pepper.care.core.services.platform.entities.PlatformMessage
-import com.pepper.care.core.services.platform.entities.PlatformMessageBuilder
+import com.pepper.care.core.services.platform.entities.*
 import com.pepper.care.core.services.platform.entities.PlatformMessageBuilder.Sender
 import com.pepper.care.core.services.platform.entities.PlatformMessageBuilder.Person
 import com.pepper.care.core.services.platform.entities.PlatformMessageBuilder.Task
@@ -17,16 +14,9 @@ class MessagingHelper(
     private val patientRepository: PatientRepository
 ) : MqttMessageCallbacks {
 
-    var patientGetId = ""
-    var mealGetId = ""
-    var questionGetId = ""
-    var reminderGetId = ""
-
-    val mealOrderPostId = "2001"
-    val answerPostId = "2002"
-    val feedbackPostId = "2003"
-
-    val meals: MutableList<PlatformMeal> = mutableListOf()
+    private val meals: MutableList<PlatformMeal> = mutableListOf()
+    private val questions: MutableList<PlatformQuestion> = mutableListOf()
+    private val reminders: MutableList<PlatformReminder> = mutableListOf()
 
     override suspend fun onMessageReceived(topic: String?, message: String?) {
         val platformMessage = parse(message!!) ?: return
@@ -79,8 +69,7 @@ class MessagingHelper(
                 appPreferences.updatePatientNameState(name)
             }
             Task.MEAL_ID -> {
-                val data = message.data!!
-                val ids: List<String> = data.substring(1, data.length - 1).replace(" ", "").split(",")
+                val ids: List<String> = parseIds(message.data!!)
 
                 for (id in ids) {
                     if (id != "") {
@@ -195,10 +184,56 @@ class MessagingHelper(
             Task.MEAL_ORDER_ID -> {
                 appPreferences.updateMealOrderIdState(message.taskId!!)
             }
+            Task.QUESTION_ID -> {
+                val ids: List<String> = parseIds(message.data!!)
+
+                for (id in ids) {
+                    if (id != "") {
+                        appPreferences.updatePublishMessage(
+                            PlatformMessageBuilder.Builder()
+                                .task(Task.QUESTION)
+                                .taskId(id)
+                                .build()
+                        )
+                    }
+                }
+            }
+            Task.QUESTION_TEXT -> {
+                questions.add(PlatformQuestion(message.taskId!!, message.personId!!, message.data!!))
+                appPreferences.updateQuestionsState(questions)
+            }
+            Task.REMINDER_ID -> {
+                val ids: List<String> = parseIds(message.data!!)
+
+                for (id in ids) {
+                    if (id != "") {
+                        appPreferences.updatePublishMessage(
+                            PlatformMessageBuilder.Builder()
+                                .task(Task.REMINDER)
+                                .taskId(id)
+                                .build()
+                        )
+                    }
+                }
+            }
+            Task.REMINDER_THING -> {
+                reminders.add(PlatformReminder(message.taskId!!, message.personId!!, message.data!!))
+                appPreferences.updateRemindersState(reminders)
+            }
+            Task.ANSWER_ID -> {
+                appPreferences.updateAnswerIdState(message.taskId!!)
+            }
+            Task.FEEDBACK_ID -> {
+                appPreferences.updateFeedbackIdState(message.taskId!!)
+            }
             else -> {
                 Log.e(MessagingHelper::class.simpleName, "Unknown task command")
             }
         }
+    }
+
+    private fun parseIds(data: String): List<String> {
+        return data.substring(1, data.length - 1).replace(" ", "").split(",")
     }
 
 }

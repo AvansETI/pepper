@@ -73,7 +73,6 @@ class OrderRepositoryImpl(
     }
 
     override suspend fun addOrder(name: String) {
-
         var taskId = "-2"
         appPreferences.updateMealOrderIdState(taskId)
 
@@ -119,4 +118,5 @@ class OrderRepositoryImpl(
             )
         }
     }
+
 }

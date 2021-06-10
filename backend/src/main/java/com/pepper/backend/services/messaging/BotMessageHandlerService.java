@@ -292,7 +292,6 @@ public class BotMessageHandlerService {
         }
 
         this.send(Person.PATIENT, reminder.getPatientId(), Task.REMINDER_THING, reminder.getId(), reminder.getThing());
-        this.send(Person.PATIENT, reminder.getPatientId(), Task.REMINDER_TIMESTAMP, reminder.getId(), String.valueOf(reminder.getTimestamp().toEpochSecond(ZoneOffset.UTC)));
     }
 
     public void sendQuestion(Question question) {
@@ -301,7 +300,6 @@ public class BotMessageHandlerService {
         }
 
         this.send(Person.PATIENT, question.getPatientId(), Task.QUESTION_TEXT, question.getId(), question.getText());
-        this.send(Person.PATIENT, question.getPatientId(), Task.QUESTION_TIMESTAMP, question.getId(), String.valueOf(question.getTimestamp().toEpochSecond(ZoneOffset.UTC)));
     }
 
     public void sendPatient(Patient patient) {

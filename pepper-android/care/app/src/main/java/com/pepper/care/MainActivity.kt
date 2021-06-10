@@ -219,25 +219,11 @@ class MainActivity : RobotActivity() {
                             null
                         )
 
-//                        var patientId = "-1"
-//                        appPreferences.patientIdFlow.asLiveData().observeForever {
-//                            patientId = it
-//                        }
-
-//                        val feedback = PlatformFeedback(
-//                            "-1",
-//                            patientId,
-//                            "$feedbackNumber",
-//                            givenFeedback,
-//                            LocalDateTime.now()
-//                        )
-//
-//                        dialog.setOnCancelListener {
-//                            lifecycleScope.launch {
-//                                sendFeedback.invoke(feedback)
-//                            }
-//                        }
-
+                        dialog.setOnCancelListener {
+                            lifecycleScope.launch {
+                                sendFeedback.invoke(feedbackNumber, givenFeedback)
+                            }
+                        }
 
                         this@MainActivity.showingDialog.postValue(dialog)
                     }
