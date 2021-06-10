@@ -3,8 +3,10 @@
     <mat-toolbar color="primary">
       <span>Pepper Care</span>
       <span style="flex:auto;"></span>
+      <button *ngIf="loggedIn" mat-button (click)="onLogout()">Uitloggen</button>
       <mat-slide-toggle [(ngModel)] = "isDarkTheme" labelPosition = "before" (change)= "storeThemeSelection()">
-        <span class="material-icons">bedtime</span></mat-slide-toggle>
+        <span class="material-icons">bedtime</span>
+      </mat-slide-toggle>
     </mat-toolbar>
   </div>
   <router-outlet></router-outlet>
