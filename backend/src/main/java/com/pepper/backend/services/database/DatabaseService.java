@@ -83,7 +83,7 @@ public class DatabaseService {
         Set<String> ids = new HashSet<>();
 
         for (Patient patient : this.patientRepository.findAll()) {
-            if (patient.getBirthdate().equals(birthdate) && patient.getName().equals(name)) {
+            if ((patient.getBirthdate()).equals(birthdate) && (patient.getName().toLowerCase()).equals(name.toLowerCase())) {
                 ids.add(patient.getId());
             }
         }

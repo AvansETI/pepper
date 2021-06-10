@@ -1,10 +1,11 @@
 package com.pepper.care
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -21,25 +22,24 @@ import com.aldebaran.qi.sdk.design.activity.conversationstatus.SpeechBarDisplayS
 import com.example.awesomedialog.*
 import com.pepper.care.common.utility.AnimationUtil
 import com.pepper.care.common.repo.AppPreferencesRepository
-import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
-import com.pepper.care.common.utility.DialogCallback
+import com.pepper.care.common.usecases.GetPatientUseCaseUsingRepository
 import com.pepper.care.common.utility.DialogUtil
 import com.pepper.care.core.services.mqtt.MqttMessageCallbacks
 import com.pepper.care.core.services.mqtt.PlatformMqttListenerService
 import com.pepper.care.core.services.robot.*
 import com.pepper.care.dialog.DialogRoutes
 import com.pepper.care.dialog.common.usecases.AddPatientQuestionExplanationUseCaseUsingRepository
-import com.pepper.care.feedback.common.usecases.AddPatientFeedbackTimestampUseCaseUsingRepository
-import com.pepper.care.feedback.common.usecases.AddPatientGivenHealthFeedbackUseCaseUsingRepository
-import com.pepper.care.feedback.common.usecases.AddPatientHealthFeedbackUseCaseUsingRepository
+import com.pepper.care.feedback.common.usecases.AddPatientFeedbackUseCaseUsingRepository
 import com.pepper.care.feedback.entities.FeedbackEntity
 import com.pepper.care.info.presentation.InfoSliderActivity
 import com.pepper.care.order.common.usecases.AddPatientFoodChoiceUseCaseUsingRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.joda.time.LocalDate
+import org.joda.time.format.DateTimeFormat
 import org.koin.android.ext.android.inject
-import java.util.*
 
 
 @ExperimentalStdlibApi
@@ -48,14 +48,15 @@ import java.util.*
 class MainActivity : RobotActivity() {
 
     private val sendMealChoice: AddPatientFoodChoiceUseCaseUsingRepository by inject()
-    private val sendFeedbackState: AddPatientHealthFeedbackUseCaseUsingRepository by inject()
-    private val sendFeedbackAnswer: AddPatientGivenHealthFeedbackUseCaseUsingRepository by inject()
-    private val sendFeedbackTimestamp: AddPatientFeedbackTimestampUseCaseUsingRepository by inject()
+    private val sendFeedback: AddPatientFeedbackUseCaseUsingRepository by inject()
     private val sendQuestionAnswer: AddPatientQuestionExplanationUseCaseUsingRepository by inject()
-    private val getPatientName: GetPatientNameUseCaseUsingRepository by inject()
+    private val getPatient: GetPatientUseCaseUsingRepository by inject()
     private val appPreferences: AppPreferencesRepository by inject()
 
     private val showingDialog: MutableLiveData<AlertDialog> = MutableLiveData()
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private var patientBirthDate: LocalDate = LocalDate.now()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +91,7 @@ class MainActivity : RobotActivity() {
     }
 
     private val messageCallbacks = object : MqttMessageCallbacks {
-        override fun onMessageReceived(topic: String?, message: String?) {
+        override suspend fun onMessageReceived(topic: String?, message: String?) {
             Log.d(
                 MainActivity::class.simpleName,
                 "Received to following message: '${message!!}' from ${topic!!}"
@@ -111,6 +112,7 @@ class MainActivity : RobotActivity() {
     }
 
     private val actionCallback: PepperActionCallback = object : PepperActionCallback {
+        @RequiresApi(Build.VERSION_CODES.O)
         override fun onRobotAction(action: PepperAction, string: String?) {
             runOnUiThread {
                 when (action) {
@@ -119,19 +121,27 @@ class MainActivity : RobotActivity() {
                         screenNavigationHandler(DialogRoutes.valueOf(string))
                     }
                     PepperAction.SELECT_PATIENT_BIRTHDAY -> {
-                        val patientBday = string!!
-                        Log.d(MainActivity::class.simpleName, "Patient birthday: $patientBday")
+                        val dateString = string!!
+
+                        patientBirthDate =
+                            LocalDate.parse(dateString, DateTimeFormat.forPattern("ddMMyyyy"))
+                        Log.d(MainActivity::class.simpleName, "Patient birthday: $patientBirthDate")
                     }
                     PepperAction.SELECT_PATIENT_NAME -> {
                         val patientName = string!!
+
                         Log.d(MainActivity::class.simpleName, "Patient name: $patientName")
 
-                        this@MainActivity.lifecycleScope.launch {
-                            getPatientName.invoke().asLiveData().observeForever {
+                        lifecycleScope.launch {
+                            val name = getPatient.invoke(patientName, patientBirthDate).value
+
+                            if (name == "NONE") {
+                                this@MainActivity.screenNavigationHandler(DialogRoutes.STANDBY)
+                            } else {
                                 this@MainActivity.showingDialog.postValue(
                                     DialogUtil.buildDialog(
                                         this@MainActivity,
-                                        it,
+                                        name,
                                         DialogRoutes.IDNAME,
                                         null
                                     )
@@ -209,12 +219,24 @@ class MainActivity : RobotActivity() {
                             null
                         )
 
-                        dialog.setOnCancelListener {
-                            lifecycleScope.launch {
-//                                sendFeedbackState.invoke(feedbackNumber)
-//                                sendFeedbackAnswer.invoke(givenFeedback)
-                            }
-                        }
+//                        var patientId = "-1"
+//                        appPreferences.patientIdFlow.asLiveData().observeForever {
+//                            patientId = it
+//                        }
+
+//                        val feedback = PlatformFeedback(
+//                            "-1",
+//                            patientId,
+//                            "$feedbackNumber",
+//                            givenFeedback,
+//                            LocalDateTime.now()
+//                        )
+//
+//                        dialog.setOnCancelListener {
+//                            lifecycleScope.launch {
+//                                sendFeedback.invoke(feedback)
+//                            }
+//                        }
 
 
                         this@MainActivity.showingDialog.postValue(dialog)

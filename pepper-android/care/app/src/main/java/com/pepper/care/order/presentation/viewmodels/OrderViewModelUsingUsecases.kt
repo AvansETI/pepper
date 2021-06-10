@@ -8,11 +8,10 @@ import com.aldebaran.qi.sdk.`object`.conversation.Phrase
 import com.pepper.care.R
 import com.pepper.care.common.ClickCallback
 import com.pepper.care.common.UpdateNotifierCallback
-import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
+import com.pepper.care.common.usecases.GetPatientUseCaseUsingRepository
 import com.pepper.care.core.services.platform.entities.Allergy
 import com.pepper.care.core.services.robot.DynamicConcepts
 import com.pepper.care.core.services.robot.RobotManager
-import com.pepper.care.dialog.DialogConstants
 import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_ERROR
 import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
 import com.pepper.care.order.common.view.ErrorSliderItem
@@ -25,7 +24,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class OrderViewModelUsingUsecases(
-    private val getName: GetPatientNameUseCaseUsingRepository,
+    private val get: GetPatientUseCaseUsingRepository,
     private val getPlatformMealsUseCaseUsingRepository: GetPlatformMealsUseCaseUsingRepository
 ) : ViewModel(), OrderViewModel {
 
@@ -111,13 +110,12 @@ class OrderViewModelUsingUsecases(
 
     private fun fetchPatientDetails() {
         viewModelScope.launch {
-            getName.invoke().asLiveData().observeForever {
-                fetchedName.apply { value = it }
-                RobotManager.addDynamicContents(
-                    DynamicConcepts.NAME,
-                    listOf(Phrase(it))
-                )
-            }
+        val name = get.invoke().value
+            fetchedName.apply { value = name }
+            RobotManager.addDynamicContents(
+                DynamicConcepts.NAME,
+                listOf(Phrase(name))
+            )
         }
     }
 

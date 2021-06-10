@@ -74,4 +74,14 @@ export class DoctorPageComponent implements OnInit {
     this.question = '';
   }
 
+  onDebug(): void {
+    let allergies: Set<Allergy> = new Set<Allergy>()
+    allergies.add(Allergy.DIABETES)
+
+    let birthdate: Date = new Date()
+    birthdate.setFullYear(2000, 11, 25)
+
+    this.messageHandler.sendPatient({ id: '-1', name: 'Dirk', birthdate: birthdate, allergies: allergies})
+  }
+
 }

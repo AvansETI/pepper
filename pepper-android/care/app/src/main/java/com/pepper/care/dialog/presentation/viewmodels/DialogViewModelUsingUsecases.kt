@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.aldebaran.qi.sdk.`object`.conversation.Phrase
-import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
+import com.pepper.care.common.repo.AppPreferencesRepository
+import com.pepper.care.common.usecases.GetPatientUseCaseUsingRepository
 import com.pepper.care.core.services.robot.DynamicConcepts
 import com.pepper.care.core.services.robot.RobotManager
 import com.pepper.care.dialog.DialogConstants.DIALOG_NO_QUESTIONS
@@ -16,7 +17,7 @@ import com.pepper.care.dialog.common.usecases.GetDailyRemindersUseCaseUsingRepos
 import kotlinx.coroutines.launch
 
 class DialogViewModelUsingUsecases(
-    private val getName: GetPatientNameUseCaseUsingRepository,
+    private val get: GetPatientUseCaseUsingRepository,
     private val getReminders: GetDailyRemindersUseCaseUsingRepository,
     private val getQuestions: GetDailyQuestionsUseCaseUsingRepository
 ) : ViewModel(), DialogViewModel {
@@ -74,17 +75,17 @@ class DialogViewModelUsingUsecases(
     }
 
     private fun fetchPatientName(text: String?) {
-        viewModelScope.launch {
-            getName.invoke().asLiveData().observeForever {
-                RobotManager.addDynamicContents(
-                    DynamicConcepts.NAME,
-                    listOf(Phrase(it))
-                )
 
-                if (text != null) {
-                    bottomText.apply {
-                        value = "$text, $it!"
-                    }
+        viewModelScope.launch {
+            val name = get.invoke().value
+            RobotManager.addDynamicContents(
+                DynamicConcepts.NAME,
+                listOf(Phrase(name))
+            )
+
+            if (text != null) {
+                bottomText.apply {
+                    value = "$text, $name!"
                 }
             }
         }

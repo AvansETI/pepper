@@ -4,14 +4,44 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import java.io.IOException
 
 class AppPreferencesRepository(val context: Context) {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = APP_PREFERENCES_NAME)
+
+    private val _patientIdState = MutableStateFlow<String>("-2")
+    val patientIdState: StateFlow<String> = _patientIdState
+
+    fun updatePatientIdState(id: String) {
+        _patientIdState.value = id
+    }
+
+    private val _patientNameState = MutableStateFlow<String>("NONE")
+    val patientNameState: StateFlow<String> = _patientNameState
+
+    fun updatePatientNameState(name: String) {
+        _patientNameState.value = name
+    }
+
+
+    suspend fun updatePatientId(value: String) {
+        context.dataStore.edit { preferences ->
+            preferences[PATIENT_ID] = value
+        }
+    }
+
+    val patientIdFlow: Flow<String> = context.dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }.map {
+            it[PATIENT_ID] ?: "-2"
+        }
 
     suspend fun updatePatientName(value: String) {
         context.dataStore.edit { preferences ->
@@ -116,6 +146,7 @@ class AppPreferencesRepository(val context: Context) {
         }
 
     companion object {
+        private val PATIENT_ID = stringPreferencesKey("patient_id")
         private val PATIENT_NAME = stringPreferencesKey("patient_name")
         private val MEALS = stringPreferencesKey("meals")
         private val REMINDERS = stringPreferencesKey("reminders")
