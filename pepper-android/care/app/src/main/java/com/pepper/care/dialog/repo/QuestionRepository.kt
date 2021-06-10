@@ -33,7 +33,7 @@ class QuestionRepositoryImpl(
                 .build()
         )
 
-        delay(2000)
+        delay(1000)
 
         return appPreferences.questionsState
     }
@@ -59,7 +59,7 @@ class QuestionRepositoryImpl(
         } catch (e: IndexOutOfBoundsException){
             null
         }
-        
+
         val patientId = appPreferences.patientIdState.value
 
         if (questionId != null) {

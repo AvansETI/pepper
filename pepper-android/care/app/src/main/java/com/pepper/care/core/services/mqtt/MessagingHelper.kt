@@ -63,10 +63,17 @@ class MessagingHelper(
             Task.PATIENT_ID -> {
                 val id = message.data!!
                 appPreferences.updatePatientIdState(id)
+
+                appPreferences.updatePublishMessage(
+                    PlatformMessageBuilder.Builder()
+                        .person(Person.PATIENT)
+                        .personId(id)
+                        .task(Task.PATIENT)
+                        .build()
+                )
             }
             Task.PATIENT_NAME -> {
-                val name = message.data!!
-                appPreferences.updatePatientNameState(name)
+                appPreferences.updatePatientNameState(message.data!!)
             }
             Task.MEAL_ID -> {
                 val ids: List<String> = parseIds(message.data!!)

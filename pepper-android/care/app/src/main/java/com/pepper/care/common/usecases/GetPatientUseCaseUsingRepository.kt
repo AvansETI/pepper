@@ -15,12 +15,11 @@ class GetPatientUseCaseUsingRepository(
 ) : GetPatientUseCase {
 
     override suspend fun invoke(name: String?, birthDate: LocalDate?) : StateFlow<String> {
-        if (name == null || birthDate == null) {
+        if (name == null && birthDate == null) {
             return patientRepository.fetchName()
         }
 
-        val id = patientRepository.fetchId(name, birthDate).value
-        return patientRepository.fetchName(id)
+        return patientRepository.fetchName(name!!, birthDate!!)
     }
 
 }

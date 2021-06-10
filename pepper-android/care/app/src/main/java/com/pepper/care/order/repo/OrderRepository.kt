@@ -35,7 +35,7 @@ class OrderRepositoryImpl(
                 .build()
         )
 
-        delay(3000)
+        delay(1500)
 
         return appPreferences.mealsState
     }
