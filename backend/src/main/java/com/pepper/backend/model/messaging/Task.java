@@ -1,6 +1,7 @@
 package com.pepper.backend.model.messaging;
 
 public enum Task {
+    UNDEFINED,
 
     FEEDBACK,
     FEEDBACK_ID,

@@ -1,10 +1,7 @@
 package com.pepper.care.core.services.platform.entities
 
-import org.joda.time.LocalDate
-
 data class PlatformReminder(
-    val id: String,
-    val patientId: String,
-    val thing: String,
-    val timestamp: LocalDate
+    var id: String?,
+    var patientId: String?,
+    var thing: String?,
 ) : PlatformEntity()

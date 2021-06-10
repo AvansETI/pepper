@@ -235,7 +235,7 @@ public class BotMessageHandlerService {
                 this.sendPatient(this.databaseService.findPatient(message.getPersonId()));
             }
             case PATIENT_ID -> {
-                LOG.info("Get patients id request");
+                LOG.info("Get patients id request: " + message);
 
                 if (!message.getPersonId().equals("-1")) {
                     break;
@@ -292,7 +292,6 @@ public class BotMessageHandlerService {
         }
 
         this.send(Person.PATIENT, reminder.getPatientId(), Task.REMINDER_THING, reminder.getId(), reminder.getThing());
-        this.send(Person.PATIENT, reminder.getPatientId(), Task.REMINDER_TIMESTAMP, reminder.getId(), String.valueOf(reminder.getTimestamp().toEpochSecond(ZoneOffset.UTC)));
     }
 
     public void sendQuestion(Question question) {
@@ -301,7 +300,6 @@ public class BotMessageHandlerService {
         }
 
         this.send(Person.PATIENT, question.getPatientId(), Task.QUESTION_TEXT, question.getId(), question.getText());
-        this.send(Person.PATIENT, question.getPatientId(), Task.QUESTION_TIMESTAMP, question.getId(), String.valueOf(question.getTimestamp().toEpochSecond(ZoneOffset.UTC)));
     }
 
     public void sendPatient(Patient patient) {
@@ -310,8 +308,6 @@ public class BotMessageHandlerService {
         }
 
         this.send(Person.PATIENT, patient.getId(), Task.PATIENT_NAME, patient.getId(), patient.getName());
-        this.send(Person.PATIENT, patient.getId(), Task.PATIENT_BIRTHDATE, patient.getId(), String.valueOf(patient.getBirthdate().toEpochDay()));
-        this.send(Person.PATIENT, patient.getId(), Task.PATIENT_ALLERGIES, patient.getId(), String.valueOf(patient.getAllergies() == null ? new HashSet<>() : patient.getAllergies()));
     }
 
     public void sendIds(Person person, String personId, Task task, String taskId, Set<String> ids) {

@@ -3,6 +3,7 @@
         <div>
             <mat-label>Patiëntenlijst</mat-label>
         </div>
+        <button mat-button (click)="onDebug()">Debug</button>
         <div>
             <mat-list>
                 <mat-list-item *ngFor="let patient of patients" (click)="onClicked(patient.id)">

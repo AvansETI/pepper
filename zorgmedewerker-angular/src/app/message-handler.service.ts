@@ -107,7 +107,7 @@ export class MessageHandlerService {
             });
           }
         } else {
-          this.patientPostId = message.taskId;
+          this.patientPostId = message.personId;
         }
 
         break;
@@ -118,7 +118,7 @@ export class MessageHandlerService {
       }
       case Task.PATIENT_BIRTHDATE: {
         const date = new Date(0);
-        date.setDate(message.data as unknown as number);
+        date.setTime((message.data as unknown as number) * (1000 * 3600 * 24));
 
         this.addPatient({id: message.personId, name: null, birthdate: date, allergies: null});
         break;
@@ -595,7 +595,7 @@ export class MessageHandlerService {
 
   async sendPatient(patient: Patient) {
     this.patientPostId = '-1';
-    this.send('1', Person.PATIENT, patient.id, Task.PATIENT_NAME, this.patientPostId, patient.name);
+    this.send('1', Person.PATIENT, this.patientPostId, Task.PATIENT_NAME, '-1', patient.name);
 
     for (let i = 0; i < 100; i++) {
       await this.sleep(10);
@@ -610,8 +610,9 @@ export class MessageHandlerService {
     })
 
     if (this.patientPostId !== '-1') {
-      this.send('1', Person.PATIENT, patient.id, Task.PATIENT_BIRTHDATE, this.patientPostId, (Date.parse(patient.birthdate.toString()) / 1000).toString());
-      this.send('1', Person.PATIENT, patient.id, Task.PATIENT_ALLERGIES, this.patientPostId, `[${Array.from(temp).join(', ')}]`);
+      const days = Math.floor(patient.birthdate.valueOf() / (1000 * 3600 * 24))
+      this.send('1', Person.PATIENT, this.patientPostId, Task.PATIENT_BIRTHDATE, '-1', days.toString());
+      this.send('1', Person.PATIENT, this.patientPostId, Task.PATIENT_ALLERGIES, '-1' , `[${Array.from(temp).join(', ')}]`);
     }
   }
 
@@ -651,7 +652,7 @@ export class MessageHandlerService {
     }
 
     if (this.questionPostId !== '-1') {
-      this.send('1', Person.PATIENT, question.patientId, Task.QUESTION_TIMESTAMP, this.questionPostId, (Date.parse(question.timestamp.toString()) / 1000).toString());
+      this.send('1', Person.PATIENT, question.patientId, Task.QUESTION_TIMESTAMP, this.questionPostId, (Math.floor(question.timestamp.valueOf() / 1000)).toString());
     }
 
   }
@@ -668,7 +669,7 @@ export class MessageHandlerService {
     }
 
     if (this.reminderPostId !== '-1') {
-      this.send('1', Person.PATIENT, reminder.patientId, Task.REMINDER_TIMESTAMP, this.reminderPostId, (Date.parse(reminder.timestamp.toString()) / 1000).toString());
+      this.send('1', Person.PATIENT, reminder.patientId, Task.REMINDER_TIMESTAMP, this.reminderPostId, (Math.floor(reminder.timestamp.valueOf() / 1000)).toString());
     }
   }
 

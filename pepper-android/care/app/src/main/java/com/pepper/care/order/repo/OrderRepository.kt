@@ -4,30 +4,42 @@ import com.pepper.care.common.repo.AppPreferencesRepository
 import com.pepper.care.core.services.platform.entities.Allergy
 import com.pepper.care.core.services.platform.entities.PlatformMeal
 import com.pepper.care.core.services.platform.entities.PlatformMessageBuilder
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
+import org.joda.time.Instant
+import org.joda.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.roundToInt
 
 interface OrderRepository {
-    suspend fun fetchMeals(): Flow<List<PlatformMeal>>
-    suspend fun addOrder(meal: String)
+    suspend fun fetchMeals(): StateFlow<List<PlatformMeal>>
+    suspend fun addOrder(name: String)
 }
 
 class OrderRepositoryImpl(
     private val appPreferences: AppPreferencesRepository
 ) : OrderRepository {
 
-    override suspend fun fetchMeals(): Flow<List<PlatformMeal>> {
+    override suspend fun fetchMeals(): StateFlow<List<PlatformMeal>> {
+        val id = appPreferences.patientIdState.value
+
         appPreferences.updatePublishMessage(
             PlatformMessageBuilder.Builder()
-                .message(PlatformMessageBuilder.MessageType.FETCH_MEALS)
+                .person(PlatformMessageBuilder.Person.PATIENT)
+                .personId(id)
+                .task(PlatformMessageBuilder.Task.MEAL_ID)
+                .taskId("1")
                 .build()
-                .format()
         )
 
-        return flow { emit(getMockMeals()) }
+        delay(1500)
+
+        return appPreferences.mealsState
     }
+
 
     private fun getMockMeals(): ArrayList<PlatformMeal> {
         return ArrayList<PlatformMeal>(
@@ -60,14 +72,51 @@ class OrderRepositoryImpl(
         )
     }
 
-    override suspend fun addOrder(meal: String) {
-        appPreferences.updatePublishMessage(
-            PlatformMessageBuilder.Builder()
-                .person(PlatformMessageBuilder.PersonType.PATIENT)
-                .message(PlatformMessageBuilder.MessageType.PUSH_MEAL)
-                .data(meal)
-                .build()
-                .format()
-        )
+    override suspend fun addOrder(name: String) {
+        var taskId = "-2"
+        appPreferences.updateMealOrderIdState(taskId)
+
+        val meals: List<PlatformMeal> = appPreferences.mealsState.value
+        val patientId = appPreferences.patientIdState.value
+
+        var id: String? = null
+        for (meal in meals) {
+            if (meal.name.equals(name, ignoreCase = true)) {
+                id = meal.id
+            }
+        }
+
+        if (id != null) {
+            appPreferences.updatePublishMessage(
+                PlatformMessageBuilder.Builder()
+                    .person(PlatformMessageBuilder.Person.PATIENT)
+                    .personId(patientId)
+                    .task(PlatformMessageBuilder.Task.MEAL_ORDER_MEAL_ID)
+                    .taskId("-1")
+                    .data(id)
+                    .build()
+            )
+
+            for (i in 0..100) {
+                taskId = appPreferences.mealOrderIdState.value
+
+                if (taskId != "-2") {
+                    break
+                }
+
+                delay(20)
+            }
+
+            appPreferences.updatePublishMessage(
+                PlatformMessageBuilder.Builder()
+                    .person(PlatformMessageBuilder.Person.PATIENT)
+                    .personId(patientId)
+                    .task(PlatformMessageBuilder.Task.MEAL_ORDER_TIMESTAMP)
+                    .taskId(taskId)
+                    .data("${(Instant.now().millis / 1000.0).toInt()}")
+                    .build()
+            )
+        }
     }
+
 }

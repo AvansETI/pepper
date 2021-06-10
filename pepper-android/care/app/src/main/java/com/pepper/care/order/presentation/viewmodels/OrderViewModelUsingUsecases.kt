@@ -8,11 +8,11 @@ import com.aldebaran.qi.sdk.`object`.conversation.Phrase
 import com.pepper.care.R
 import com.pepper.care.common.ClickCallback
 import com.pepper.care.common.UpdateNotifierCallback
-import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
+import com.pepper.care.common.usecases.GetPatientUseCaseUsingRepository
 import com.pepper.care.core.services.platform.entities.Allergy
+import com.pepper.care.core.services.platform.entities.PlatformMeal
 import com.pepper.care.core.services.robot.DynamicConcepts
 import com.pepper.care.core.services.robot.RobotManager
-import com.pepper.care.dialog.DialogConstants
 import com.pepper.care.dialog.DialogConstants.DIALOG_MOCK_ERROR
 import com.pepper.care.order.common.usecases.GetPlatformMealsUseCaseUsingRepository
 import com.pepper.care.order.common.view.ErrorSliderItem
@@ -25,7 +25,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class OrderViewModelUsingUsecases(
-    private val getName: GetPatientNameUseCaseUsingRepository,
+    private val get: GetPatientUseCaseUsingRepository,
     private val getPlatformMealsUseCaseUsingRepository: GetPlatformMealsUseCaseUsingRepository
 ) : ViewModel(), OrderViewModel {
 
@@ -60,39 +60,40 @@ class OrderViewModelUsingUsecases(
         fetchPatientDetails()
         showProgressView(true)
         showElements(false)
+
         viewModelScope.launch {
-            getPlatformMealsUseCaseUsingRepository.invoke().asLiveData().observeForever{
-                if (it.isNotEmpty()) {
-                    val newList: ArrayList<SliderAdapterItem> = ArrayList()
+            val meals: List<PlatformMeal> = getPlatformMealsUseCaseUsingRepository.invoke().value
 
-                    it.forEach { item ->
-                        newList.add(
-                            MealSliderItem(
-                                item.id!!,
-                                item.name!!,
-                                item.description!!,
-                                item.allergies!!,
-                                item.calories!!,
-                                item.image!!,
-                                false
-                            )
+            if (meals.isNotEmpty()) {
+                val newList: ArrayList<SliderAdapterItem> = ArrayList()
+
+                meals.forEach { item ->
+                    newList.add(
+                        MealSliderItem(
+                            item.id!!,
+                            item.name!!,
+                            item.description!!,
+                            item.allergies!!,
+                            item.calories!!,
+                            item.image!!,
+                            false
                         )
-                    }
-
-                    val randomItem = newList.random() as MealSliderItem
-                    randomItem.isFavorite = true
-                    RobotManager.addDynamicContents(DynamicConcepts.FAV, Collections.singletonList(Phrase(randomItem.name)))
-
-                    addDynamicContents(newList)
-                    recyclerList.postValue(newList)
-                    showElements(true)
-                } else {
-                    recyclerList.value =
-                        arrayListOf(ErrorSliderItem(ErrorSliderItem.ErrorText.NO_MEALS_RESULTS_FOUND))
-                    showElements(false)
+                    )
                 }
-                showProgressView(false)
+
+                val randomItem = newList.random() as MealSliderItem
+                randomItem.isFavorite = true
+                RobotManager.addDynamicContents(DynamicConcepts.FAV, Collections.singletonList(Phrase(randomItem.name)))
+
+                addDynamicContents(newList)
+                recyclerList.postValue(newList)
+                showElements(true)
+            } else {
+                recyclerList.value =
+                    arrayListOf(ErrorSliderItem(ErrorSliderItem.ErrorText.NO_MEALS_RESULTS_FOUND))
+                showElements(false)
             }
+            showProgressView(false)
         }
     }
 
@@ -111,13 +112,12 @@ class OrderViewModelUsingUsecases(
 
     private fun fetchPatientDetails() {
         viewModelScope.launch {
-            getName.invoke().asLiveData().observeForever {
-                fetchedName.apply { value = it }
-                RobotManager.addDynamicContents(
-                    DynamicConcepts.NAME,
-                    listOf(Phrase(it))
-                )
-            }
+        val name = get.invoke().value
+            fetchedName.apply { value = name }
+            RobotManager.addDynamicContents(
+                DynamicConcepts.NAME,
+                listOf(Phrase(name))
+            )
         }
     }
 

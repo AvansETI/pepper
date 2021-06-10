@@ -5,10 +5,12 @@ import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import com.pepper.care.common.repo.AppPreferencesRepository
 import com.pepper.care.feedback.presentation.viewmodels.FeedbackViewModelUsingUsecases
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.launch
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended
 import org.eclipse.paho.client.mqttv3.MqttMessage
@@ -19,6 +21,7 @@ import org.koin.android.ext.android.inject
 class PlatformMqttListenerService : LifecycleService() {
 
     private val appPreferences: AppPreferencesRepository by inject()
+    private val messagingHelper: MessagingHelper by inject()
 
     companion object {
         lateinit var clientHelper: PlatformMqttClientHelper
@@ -71,14 +74,21 @@ class PlatformMqttListenerService : LifecycleService() {
             }
 
             override fun messageArrived(topic: String?, message: MqttMessage?) {
-                callback.onMessageReceived(
-                    topic,
-                    message.toString()
-//                    encryptionHelper.decrypt(
-//                        message.toString(),
-//                        EncryptionHelper.ENCRYPTION_PASSWORD
-//                    )
-                )
+                val arrived: String
+
+                if (false) {
+                    arrived = encryptionHelper.decrypt(message.toString(), EncryptionHelper.ENCRYPTION_PASSWORD)
+                } else {
+                    arrived = message.toString()
+                }
+
+                lifecycleScope.launch {
+                    messagingHelper.onMessageReceived(
+                        topic,
+                        arrived
+                    )
+                }
+
             }
 
             override fun deliveryComplete(token: IMqttDeliveryToken?) {

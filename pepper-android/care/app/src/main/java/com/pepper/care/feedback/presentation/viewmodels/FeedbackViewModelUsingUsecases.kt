@@ -1,27 +1,27 @@
 package com.pepper.care.feedback.presentation.viewmodels
 
+import android.os.Build
 import android.util.Log
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.aldebaran.qi.sdk.`object`.conversation.Phrase
 import com.pepper.care.common.repo.AppPreferencesRepository
-import com.pepper.care.common.usecases.GetPatientNameUseCaseUsingRepository
+import com.pepper.care.common.usecases.GetPatientUseCaseUsingRepository
 import com.pepper.care.core.services.robot.DynamicConcepts
 import com.pepper.care.core.services.robot.RobotManager
 import com.pepper.care.feedback.FeedbackCallback
 import com.pepper.care.feedback.FeedbackConstants.FEEDBACK_MAX_RANGE
 import com.pepper.care.feedback.FeedbackConstants.FEEDBACK_MIN_RANGE
-import com.pepper.care.feedback.common.usecases.AddPatientGivenHealthFeedbackUseCaseUsingRepository
-import com.pepper.care.feedback.common.usecases.AddPatientHealthFeedbackUseCaseUsingRepository
 import com.pepper.care.feedback.entities.FeedbackEntity
 import com.ramotion.fluidslider.FluidSlider
 import kotlinx.coroutines.launch
 
 class FeedbackViewModelUsingUsecases(
-    private val getName: GetPatientNameUseCaseUsingRepository,
+    private val get: GetPatientUseCaseUsingRepository,
     private val appPreferences: AppPreferencesRepository
 ) : ViewModel(), FeedbackViewModel {
 
@@ -34,6 +34,7 @@ class FeedbackViewModelUsingUsecases(
     override val givenFeedbackType: MutableLiveData<FeedbackEntity.FeedbackMessage> =
         MutableLiveData(FeedbackEntity.FeedbackMessage.GOOD)
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onStart() {
         fetchPatientDetails()
         appPreferences.feedbackSliderFlow.asLiveData().observeForever {
@@ -54,15 +55,15 @@ class FeedbackViewModelUsingUsecases(
             }
         }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchPatientDetails() {
         viewModelScope.launch {
-            getName.invoke().asLiveData().observeForever {
-                fetchedName.apply { value = it }
-                RobotManager.addDynamicContents(
-                    DynamicConcepts.NAME,
-                    listOf(Phrase(it))
-                )
-            }
+        val name = get.invoke().value
+            fetchedName.apply { value = name }
+            RobotManager.addDynamicContents(
+                DynamicConcepts.NAME,
+                listOf(Phrase(name))
+            )
         }
     }
 }
