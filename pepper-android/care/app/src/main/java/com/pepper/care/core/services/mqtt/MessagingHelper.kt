@@ -192,6 +192,9 @@ class MessagingHelper(
 
                 appPreferences.updateMealsState(meals)
             }
+            Task.MEAL_ORDER_ID -> {
+                appPreferences.updateMealOrderIdState(message.taskId!!)
+            }
             else -> {
                 Log.e(MessagingHelper::class.simpleName, "Unknown task command")
             }

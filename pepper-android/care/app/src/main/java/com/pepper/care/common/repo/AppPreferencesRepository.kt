@@ -27,41 +27,6 @@ class AppPreferencesRepository(val context: Context) {
         _patientNameState.value = name
     }
 
-
-//    suspend fun updatePatientId(value: String) {
-//        context.dataStore.edit { preferences ->
-//            preferences[PATIENT_ID] = value
-//        }
-//    }
-//
-//    val patientIdFlow: Flow<String> = context.dataStore.data
-//        .catch { exception ->
-//            if (exception is IOException) {
-//                emit(emptyPreferences())
-//            } else {
-//                throw exception
-//            }
-//        }.map {
-//            it[PATIENT_ID] ?: "-2"
-//        }
-//
-//    suspend fun updatePatientName(value: String) {
-//        context.dataStore.edit { preferences ->
-//            preferences[PATIENT_NAME] = value
-//        }
-//    }
-
-//    val patientNameFlow: Flow<String> = context.dataStore.data
-//        .catch { exception ->
-//            if (exception is IOException) {
-//                emit(emptyPreferences())
-//            } else {
-//                throw exception
-//            }
-//        }.map {
-//            it[PATIENT_NAME] ?: "NONE"
-//        }
-
     private val _mealsState = MutableStateFlow<List<PlatformMeal>>(emptyList())
     val mealsState: StateFlow<List<PlatformMeal>> = _mealsState
 
@@ -69,22 +34,12 @@ class AppPreferencesRepository(val context: Context) {
         _mealsState.value = meals
     }
 
-//    suspend fun updateMeals(value: String) {
-//        context.dataStore.edit { preferences ->
-//            preferences[MEALS] = value
-//        }
-//    }
-//
-//    val mealsFlow: Flow<String> = context.dataStore.data
-//        .catch { exception ->
-//            if (exception is IOException) {
-//                emit(emptyPreferences())
-//            } else {
-//                throw exception
-//            }
-//        }.map {
-//            it[MEALS] ?: "NONE"
-//        }
+    private val _mealOrderIdState = MutableStateFlow<String>("-2")
+    val mealOrderIdState: StateFlow<String> = _mealOrderIdState
+
+    fun updateMealOrderIdState(id: String) {
+        _mealOrderIdState.value = id
+    }
 
     suspend fun updateReminders(value: String) {
         context.dataStore.edit { preferences ->
@@ -155,9 +110,6 @@ class AppPreferencesRepository(val context: Context) {
         }
 
     companion object {
-//        private val PATIENT_ID = stringPreferencesKey("patient_id")
-//        private val PATIENT_NAME = stringPreferencesKey("patient_name")
-//        private val MEALS = stringPreferencesKey("meals")
         private val REMINDERS = stringPreferencesKey("reminders")
         private val QUESTIONS = stringPreferencesKey("questions")
         private val PUBLISH_MESSAGE = stringPreferencesKey("publish_message")
