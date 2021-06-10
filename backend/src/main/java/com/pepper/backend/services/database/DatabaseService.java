@@ -155,12 +155,23 @@ public class DatabaseService {
         Patient patient = this.patientRepository.findById(patientId).orElse(null);
 
         if (patient != null) {
+
             for (Meal meal : this.mealRepository.findAll()) {
-                for (Allergy allergyMeal : meal.getAllergies()) {
-                    if (!patient.getAllergies().contains(allergyMeal)) {
-                        ids.add(meal.getId());
+
+                boolean contains = false;
+                for (Allergy allergy : patient.getAllergies()) {
+
+                    if (meal.getAllergies().contains(allergy)) {
+                        contains = true;
+                        break;
                     }
+
                 }
+
+                if (!contains) {
+                    ids.add(meal.getId());
+                }
+
             }
         }
 

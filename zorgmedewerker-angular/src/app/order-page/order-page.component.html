@@ -4,9 +4,6 @@
             <mat-label>Maaltijden</mat-label>
         </div>
         <div>
-            <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
-            <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
-            <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
             <mat-list *ngFor="let meal of meals" role="list">
                 <mat-list-item role="listitem">
                     <mat-card>
@@ -20,6 +17,7 @@
             </mat-list>
         </div>
         <div>
+            <a class= "order_add_button" mat-raised-button (click)="openDialog()" color= "primary">Maaltijd toevoegen</a>
             <a class= "order_button" mat-raised-button routerLink="/doctor-page-component" color= "primary">Patiëntinformatie</a>
         </div>
     </div>
@@ -28,9 +26,6 @@
             <mat-label>Bestellingen</mat-label>
         </div>
         <div>
-            <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
-            <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
-            <mat-list-item role="listitem"><mat-card>Simple card</mat-card></mat-list-item>
             <mat-list *ngFor= "let mealorder of mealOrders"role="list">
                 <mat-list-item role="listitem">
                     <mat-card>
@@ -42,7 +37,7 @@
                 </mat-list-item>
             </mat-list>
         </div>
-        <a class= "order_add_button" mat-raised-button (click)="openDialog()" color= "primary">Maaltijd toevoegen</a>
+    
     </div>
     <div class="pepper_head">
         <img src="assets/pepper-head.png">

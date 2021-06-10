@@ -3,12 +3,13 @@ package com.pepper.care.core.services.mqtt
 import android.util.Log
 import com.pepper.care.common.repo.AppPreferencesRepository
 import com.pepper.care.common.repo.PatientRepository
+import com.pepper.care.core.services.platform.entities.Allergy
+import com.pepper.care.core.services.platform.entities.PlatformMeal
 import com.pepper.care.core.services.platform.entities.PlatformMessage
 import com.pepper.care.core.services.platform.entities.PlatformMessageBuilder
 import com.pepper.care.core.services.platform.entities.PlatformMessageBuilder.Sender
 import com.pepper.care.core.services.platform.entities.PlatformMessageBuilder.Person
 import com.pepper.care.core.services.platform.entities.PlatformMessageBuilder.Task
-import org.koin.java.KoinJavaComponent.inject
 import java.lang.Exception
 
 class MessagingHelper(
@@ -24,6 +25,8 @@ class MessagingHelper(
     val mealOrderPostId = "2001"
     val answerPostId = "2002"
     val feedbackPostId = "2003"
+
+    val meals: MutableList<PlatformMeal> = mutableListOf()
 
     override suspend fun onMessageReceived(topic: String?, message: String?) {
         val platformMessage = parse(message!!) ?: return
@@ -75,11 +78,124 @@ class MessagingHelper(
                 val name = message.data!!
                 appPreferences.updatePatientNameState(name)
             }
+            Task.MEAL_ID -> {
+                val data = message.data!!
+                val ids: List<String> = data.substring(1, data.length - 1).replace(" ", "").split(",")
+
+                for (id in ids) {
+                    if (id != "") {
+                        appPreferences.updatePublishMessage(
+                            PlatformMessageBuilder.Builder()
+                                .task(Task.MEAL)
+                                .taskId(id)
+                                .build()
+                        )
+                    }
+                }
+            }
+            Task.MEAL_NAME -> {
+                val id = message.taskId!!
+                val name = message.data!!
+
+                var foundMeal = false
+                for (meal in meals) {
+                    if (meal.id == id) {
+                        foundMeal = true
+                        meal.name = name
+                    }
+                }
+
+                if (!foundMeal) {
+                    meals.add(PlatformMeal(id, name, null, null, null, null))
+                }
+
+                appPreferences.updateMealsState(meals)
+            }
+            Task.MEAL_DESCRIPTION -> {
+                val id = message.taskId!!
+                val description = message.data!!
+
+                var foundMeal = false
+                for (meal in meals) {
+                    if (meal.id == id) {
+                        foundMeal = true
+                        meal.description = description
+                    }
+                }
+
+                if (!foundMeal) {
+                    meals.add(PlatformMeal(id, null, description, null, null, null))
+                }
+
+                appPreferences.updateMealsState(meals)
+            }
+            Task.MEAL_CALORIES -> {
+                val id = message.taskId!!
+                val calories = message.data!!
+
+                var foundMeal = false
+                for (meal in meals) {
+                    if (meal.id == id) {
+                        foundMeal = true
+                        meal.calories = calories
+                    }
+                }
+
+                if (!foundMeal) {
+                    meals.add(PlatformMeal(id, null, null, null, calories, null))
+                }
+
+                appPreferences.updateMealsState(meals)
+            }
+            Task.MEAL_ALLERGIES -> {
+                val data = message.data!!
+                val allergiesList: List<String> = data.substring(1, data.length - 1).replace(" ", "").split(",")
+                val allergies: MutableSet<Allergy> = mutableSetOf()
+
+                for (allergy in allergiesList) {
+                    if (allergy != "") {
+                        allergies.add(Allergy.valueOf(allergy))
+                    }
+                }
+
+                val id = message.taskId!!
+
+                var foundMeal = false
+                for (meal in meals) {
+                    if (meal.id == id) {
+                        foundMeal = true
+                        meal.allergies = allergies
+                    }
+                }
+
+                if (!foundMeal) {
+                    meals.add(PlatformMeal(id, null, null, allergies, null, null))
+                }
+
+                appPreferences.updateMealsState(meals)
+            }
+            Task.MEAL_IMAGE -> {
+                val id = message.taskId!!
+                val image = message.data!!
+
+                var foundMeal = false
+                for (meal in meals) {
+                    if (meal.id == id) {
+                        foundMeal = true
+                        meal.image = image
+                    }
+                }
+
+                if (!foundMeal) {
+                    meals.add(PlatformMeal(id, null, null, null, null, image))
+                }
+
+                appPreferences.updateMealsState(meals)
+            }
             else -> {
                 Log.e(MessagingHelper::class.simpleName, "Unknown task command")
             }
         }
     }
-
 
 }

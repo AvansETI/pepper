@@ -1,11 +1,6 @@
 package com.pepper.care.common.repo
 
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.lifecycle.asLiveData
 import com.pepper.care.core.services.platform.entities.PlatformMessageBuilder
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import org.joda.time.LocalDate

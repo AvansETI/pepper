@@ -1,9 +1,11 @@
 package com.pepper.care.common.repo
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
+import com.pepper.care.core.services.platform.entities.PlatformMeal
 import kotlinx.coroutines.flow.*
 import java.io.IOException
 
@@ -26,56 +28,63 @@ class AppPreferencesRepository(val context: Context) {
     }
 
 
-    suspend fun updatePatientId(value: String) {
-        context.dataStore.edit { preferences ->
-            preferences[PATIENT_ID] = value
-        }
+//    suspend fun updatePatientId(value: String) {
+//        context.dataStore.edit { preferences ->
+//            preferences[PATIENT_ID] = value
+//        }
+//    }
+//
+//    val patientIdFlow: Flow<String> = context.dataStore.data
+//        .catch { exception ->
+//            if (exception is IOException) {
+//                emit(emptyPreferences())
+//            } else {
+//                throw exception
+//            }
+//        }.map {
+//            it[PATIENT_ID] ?: "-2"
+//        }
+//
+//    suspend fun updatePatientName(value: String) {
+//        context.dataStore.edit { preferences ->
+//            preferences[PATIENT_NAME] = value
+//        }
+//    }
+
+//    val patientNameFlow: Flow<String> = context.dataStore.data
+//        .catch { exception ->
+//            if (exception is IOException) {
+//                emit(emptyPreferences())
+//            } else {
+//                throw exception
+//            }
+//        }.map {
+//            it[PATIENT_NAME] ?: "NONE"
+//        }
+
+    private val _mealsState = MutableStateFlow<List<PlatformMeal>>(emptyList())
+    val mealsState: StateFlow<List<PlatformMeal>> = _mealsState
+
+    fun updateMealsState(meals: List<PlatformMeal>) {
+        _mealsState.value = meals
     }
 
-    val patientIdFlow: Flow<String> = context.dataStore.data
-        .catch { exception ->
-            if (exception is IOException) {
-                emit(emptyPreferences())
-            } else {
-                throw exception
-            }
-        }.map {
-            it[PATIENT_ID] ?: "-2"
-        }
-
-    suspend fun updatePatientName(value: String) {
-        context.dataStore.edit { preferences ->
-            preferences[PATIENT_NAME] = value
-        }
-    }
-
-    val patientNameFlow: Flow<String> = context.dataStore.data
-        .catch { exception ->
-            if (exception is IOException) {
-                emit(emptyPreferences())
-            } else {
-                throw exception
-            }
-        }.map {
-            it[PATIENT_NAME] ?: "NONE"
-        }
-
-    suspend fun updateMeals(value: String) {
-        context.dataStore.edit { preferences ->
-            preferences[MEALS] = value
-        }
-    }
-
-    val mealsFlow: Flow<String> = context.dataStore.data
-        .catch { exception ->
-            if (exception is IOException) {
-                emit(emptyPreferences())
-            } else {
-                throw exception
-            }
-        }.map {
-            it[MEALS] ?: "NONE"
-        }
+//    suspend fun updateMeals(value: String) {
+//        context.dataStore.edit { preferences ->
+//            preferences[MEALS] = value
+//        }
+//    }
+//
+//    val mealsFlow: Flow<String> = context.dataStore.data
+//        .catch { exception ->
+//            if (exception is IOException) {
+//                emit(emptyPreferences())
+//            } else {
+//                throw exception
+//            }
+//        }.map {
+//            it[MEALS] ?: "NONE"
+//        }
 
     suspend fun updateReminders(value: String) {
         context.dataStore.edit { preferences ->
@@ -146,9 +155,9 @@ class AppPreferencesRepository(val context: Context) {
         }
 
     companion object {
-        private val PATIENT_ID = stringPreferencesKey("patient_id")
-        private val PATIENT_NAME = stringPreferencesKey("patient_name")
-        private val MEALS = stringPreferencesKey("meals")
+//        private val PATIENT_ID = stringPreferencesKey("patient_id")
+//        private val PATIENT_NAME = stringPreferencesKey("patient_name")
+//        private val MEALS = stringPreferencesKey("meals")
         private val REMINDERS = stringPreferencesKey("reminders")
         private val QUESTIONS = stringPreferencesKey("questions")
         private val PUBLISH_MESSAGE = stringPreferencesKey("publish_message")

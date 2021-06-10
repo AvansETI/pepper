@@ -42,22 +42,7 @@ export class OrderPageComponent implements OnInit {
   formatAllergies(allergies: Set<Allergy>): string {
     return Array.from(allergies).join(', ').toLowerCase()
   }
-
-  onMealSave(): void {
-    let temp = new Set<Allergy>()
-    temp.add(Allergy.DIABETES)
-    temp.add(Allergy.CELERY)
-    temp.add(Allergy.EGGS)
-
-    this.messageHandler.sendMeal({id: '-1', name: this.name, description: this.description, calories: this.calories, allergies: temp, image: this.image});
-    this.messageHandler.requestMeals();
-
-    this.name = '';
-    this.description = '';
-    this.calories = ''
-    this.allergies = '';
-    this.image = '';
-  }
+  
 }
 
 @Component({
@@ -72,19 +57,15 @@ export class DialogDataExampleDialog {
   allergies = '';
   image = '';
 
-  meals: Meal[] = [];
-  mealOrders: MealOrder[] = [];
-
   constructor(private messageHandler: MessageHandlerService, private dialog: MatDialog) {
-    this.messageHandler.getMealEmitter().subscribe((meals) => { this.meals = meals })
-    this.messageHandler.getMealOrderEmitter().subscribe((mealOrders) => this.mealOrders = mealOrders);
+    
   }
 
   onMealSave(): void {
     let temp = new Set<Allergy>()
-    temp.add(Allergy.DIABETES)
-    temp.add(Allergy.CELERY)
+    temp.add(Allergy.GLUTEN)
     temp.add(Allergy.EGGS)
+    temp.add(Allergy.LACTOSE)
 
     this.messageHandler.sendMeal({id: '-1', name: this.name, description: this.description, calories: this.calories, allergies: temp, image: this.image});
     this.messageHandler.requestMeals();

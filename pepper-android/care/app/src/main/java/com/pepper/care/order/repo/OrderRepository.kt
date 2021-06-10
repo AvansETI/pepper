@@ -4,13 +4,15 @@ import com.pepper.care.common.repo.AppPreferencesRepository
 import com.pepper.care.core.services.platform.entities.Allergy
 import com.pepper.care.core.services.platform.entities.PlatformMeal
 import com.pepper.care.core.services.platform.entities.PlatformMessageBuilder
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import java.util.*
 import kotlin.collections.ArrayList
 
 interface OrderRepository {
-    suspend fun fetchMeals(): Flow<List<PlatformMeal>>
+    suspend fun fetchMeals(): StateFlow<List<PlatformMeal>>
     suspend fun addOrder(meal: String)
 }
 
@@ -18,16 +20,23 @@ class OrderRepositoryImpl(
     private val appPreferences: AppPreferencesRepository
 ) : OrderRepository {
 
-    override suspend fun fetchMeals(): Flow<List<PlatformMeal>> {
-//        appPreferences.updatePublishMessage(
-//            PlatformMessageBuilder.Builder()
-//                .message(PlatformMessageBuilder.MessageType.FETCH_MEALS)
-//                .build()
-//                .format()
-//        )
+    override suspend fun fetchMeals(): StateFlow<List<PlatformMeal>> {
+        val id = appPreferences.patientIdState.value
 
-        return flow { emit(getMockMeals()) }
+        appPreferences.updatePublishMessage(
+            PlatformMessageBuilder.Builder()
+                .person(PlatformMessageBuilder.Person.PATIENT)
+                .personId(id)
+                .task(PlatformMessageBuilder.Task.MEAL_ID)
+                .taskId("1")
+                .build()
+        )
+
+        delay(3000)
+
+        return appPreferences.mealsState
     }
+
 
     private fun getMockMeals(): ArrayList<PlatformMeal> {
         return ArrayList<PlatformMeal>(
