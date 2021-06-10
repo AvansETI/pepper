@@ -92,6 +92,20 @@ public class StaffMessageHandlerService {
     public void handleStaffMessage(Message message) {
 
         switch (message.getTask()) {
+            case USER -> {
+                LOG.info("New user login");
+
+                String[] credentials = message.getData().split("%");
+
+                boolean authorized = this.databaseService.isAuthorized(
+                        User.builder()
+                            .username(credentials[0])
+                            .password(credentials[1])
+                            .build()
+                );
+
+                this.send(Person.NONE, "-1", Task.USER, message.getTaskId(), String.valueOf(authorized));
+            }
             case PATIENT -> {
                 LOG.info("Get patient request");
 

@@ -1,28 +1,25 @@
 <body class="login_page">
     <div class="login_roundcircle">
-        <div>
-        <mat-form-field appearance="legacy">
-            <mat-label>Enter your username</mat-label>
-            <input matInput type="text">
-        </mat-form-field>
+        <div (keydown.enter)="onLogin()">
+            <mat-form-field appearance="legacy" class="form">
+                <mat-label>Gebruikersnaam</mat-label>
+                <input matInput type="text" [(ngModel)]="username" />
+            </mat-form-field>
+        </div>
+        <div (keydown.enter)="onLogin()">
+            <mat-form-field appearance="legacy" class="form">
+                <mat-label>Wachtwoord</mat-label>
+                <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="password" />
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field> 
         </div>
         <div>
-        <mat-form-field appearance="legacy">
-            <mat-label>Enter your password</mat-label>
-            <input matInput [type]="hide ? 'password' : 'text'">
-            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-              <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-            </button>
-        </mat-form-field> 
+            <button mat-button color= "primary" (click)="onLogin()">Inloggen</button>
         </div>
         <div>
-        <mat-form-field appearance="legacy">
-            <mat-label>Enter your doktor-id</mat-label>
-            <input matInput type="number">
-        </mat-form-field>
-        </div>
-        <div>
-        <a class= "login_button" mat-raised-button routerLink="/doctor-page-component" color= "primary">Login</a>
+            <div *ngIf="error">{{errorText}}</div>
         </div>
     </div>
     <div class="pepper_head">

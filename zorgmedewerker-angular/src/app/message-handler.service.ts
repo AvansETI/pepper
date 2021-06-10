@@ -13,6 +13,7 @@ import { MealOrder } from 'src/model/meal-order';
 import { Reminder } from 'src/model/reminder';
 import { Feedback } from 'src/model/feedback';
 import { Answer } from 'src/model/answer';
+import { User } from 'src/model/user';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,7 @@ export class MessageHandlerService {
   private webSocketSubscription: Subscription;
 
   // Event emitters
+  private loginEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   private patientEmitter: EventEmitter<Patient[]> = new EventEmitter<Patient[]>();
   private mealEmitter: EventEmitter<Meal[]> = new EventEmitter<Meal[]>();
   private mealOrderEmitter: EventEmitter<MealOrder[]> = new EventEmitter<MealOrder[]>();
@@ -95,7 +97,10 @@ export class MessageHandlerService {
   handleStaffMessage(message: Message): void {
 
     switch(Task[message.task] as unknown as Task) {
-
+      case Task.USER: {
+        this.loginEmitter.emit(message.data === 'true');
+        break;
+      }
       case Task.PATIENT_ID: {
 
         if (message.taskId === this.patientGetId) {
@@ -524,6 +529,10 @@ export class MessageHandlerService {
     return this.feedbacks.find((feedback) => feedback.id === id);
   }
 
+  getLoginEmitter(): EventEmitter<boolean> {
+    return this.loginEmitter;
+  }
+
   getPatientEmitter(): EventEmitter<Patient[]> {
     return this.patientEmitter;
   }
@@ -671,6 +680,10 @@ export class MessageHandlerService {
     if (this.reminderPostId !== '-1') {
       this.send('1', Person.PATIENT, reminder.patientId, Task.REMINDER_TIMESTAMP, this.reminderPostId, (Math.floor(reminder.timestamp.valueOf() / 1000)).toString());
     }
+  }
+
+  sendUser(user: User) {
+    this.send('1', Person.NONE, '-1', Task.USER, '1', `${user.username}%${user.password}`);
   }
 
   async sleep(millis: number): Promise<void> {

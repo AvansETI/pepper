@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { MessageHandlerService } from './message-handler.service';
 
 @Component({
@@ -10,10 +11,10 @@ export class AppComponent {
 
   isDarkTheme: boolean = false;
   title = 'zorgmedewerker-angular';
+  loggedIn = false;
 
-
-  constructor(private messageHandler: MessageHandlerService) {
-    
+  constructor(private messageHandler: MessageHandlerService, private router: Router) {
+    this.messageHandler.getLoginEmitter().subscribe((authorized) => { this.loggedIn = authorized })
   }
 
   ngOnInit(): void {
@@ -27,5 +28,10 @@ export class AppComponent {
 
   storeThemeSelection(): void {
     localStorage.setItem('theme', this.isDarkTheme ? "Dark" : "Light");
+  }
+
+  onLogout(): void {
+    this.loggedIn = false;
+    this.router.navigate(['']);
   }
 }

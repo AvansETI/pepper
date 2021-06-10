@@ -6,8 +6,8 @@ import { OrderPageComponent } from './order-page/order-page.component';
 
 const routes: Routes = [ 
   { path: '', component: LoginPageComponent },
-  { path: 'doctor-page-component', component: DoctorPageComponent },
-  { path: 'order-page-component', component: OrderPageComponent },
+  { path: 'patients', component: DoctorPageComponent },
+  { path: 'meals', component: OrderPageComponent }
 ];
 
 @NgModule({

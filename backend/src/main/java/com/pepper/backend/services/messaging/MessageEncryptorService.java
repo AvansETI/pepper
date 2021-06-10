@@ -1,5 +1,6 @@
 package com.pepper.backend.services.messaging;
 
+import com.google.common.hash.Hashing;
 import org.springframework.stereotype.Service;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -68,6 +69,10 @@ public class MessageEncryptorService {
         byte[] nonce = new byte[numBytes];
         new SecureRandom().nextBytes(nonce);
         return nonce;
+    }
+
+    public String hash(String text) {
+        return Hashing.sha256().hashString(text, StandardCharsets.UTF_8).toString();
     }
 
 }
