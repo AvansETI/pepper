@@ -7,10 +7,29 @@ services:
         environment:
             - MONGO_INITDB_ROOT_USERNAME=pepper
             - MONGO_INITDB_ROOT_PASSWORD=pepper
+    mosquitto:
+        image: eclipse-mosquitto:2.0
+        ports:
+            - 1801:1883
+        volumes:
+            - ./mosquitto:/mosquitto/
     backend:
         build: ./backend
         ports:
             - 6587:6587
+        environment:
+            - MQTT_HOST=tcp://mosquitto:1883
+            - MQTT_USERNAME=pepper
+            - MQTT_PASSWORD=pepper
+            - MQTT_TOPIC=pepper-zorg-ti
+            - SPRING_DATA_MONGODB_HOST=database
+            - SPRING_DATA_MONGODB_PORT=27017
+            - SPRING_DATA_MONGODB_USERNAME=pepper
+            - SPRING_DATA_MONGODB_PASSWORD=pepper
+            - ENCRYPTION_ENABLED=true
+            - ENCRYPTION_PASSWORD=pepper
+            - HTTP_USERNAME=pepper
+            - HTTP_PASSWORD=pepper
         depends_on:
             - database
     zorgmedewerker_app:

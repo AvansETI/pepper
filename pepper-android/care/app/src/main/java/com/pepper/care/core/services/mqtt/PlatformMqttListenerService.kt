@@ -46,13 +46,13 @@ class PlatformMqttListenerService : LifecycleService() {
         super.onCreate()
         setMqttCallBack()
         appPreferences.publishMessageFlow.asLiveData().observeForever {
-            clientHelper.publish(
-                it, 0
-//                encryptionHelper.encrypt(
-//                    it!!,
-//                    EncryptionHelper.ENCRYPTION_PASSWORD
-//                ), 0
-            )
+            val message = if (PlatformMqttConstants.MQTT_DEFAULT_ENCRYPTION_ENABLED) {
+                encryptionHelper.encrypt(it!!, PlatformMqttConstants.MQTT_DEFAULT_ENCRYPTION_PASSWORD)
+            } else {
+                it!!
+            }
+
+            clientHelper.publish(message, 0)
         }
     }
 
@@ -74,12 +74,10 @@ class PlatformMqttListenerService : LifecycleService() {
             }
 
             override fun messageArrived(topic: String?, message: MqttMessage?) {
-                val arrived: String
-
-                if (false) {
-                    arrived = encryptionHelper.decrypt(message.toString(), EncryptionHelper.ENCRYPTION_PASSWORD)
+                val arrived = if (PlatformMqttConstants.MQTT_DEFAULT_ENCRYPTION_ENABLED) {
+                    encryptionHelper.decrypt(message.toString(), PlatformMqttConstants.MQTT_DEFAULT_ENCRYPTION_PASSWORD)
                 } else {
-                    arrived = message.toString()
+                    message.toString()
                 }
 
                 lifecycleScope.launch {
