@@ -1,0 +1,29 @@
+<h1 mat-dialog-title>Maaltijd toevoegen</h1>
+<div mat-dialog-content>
+    <p>
+        <mat-form-field>
+            <input matInput placeholder="Naam" [(ngModel)]="name">
+        </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field>
+            <input matInput placeholder="Beschrijving" [(ngModel)]="description">
+        </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field>
+            <input matInput placeholder="Calorien" [(ngModel)]="calories">
+        </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field>
+            <input matInput placeholder="Allergien" [(ngModel)]="allergies">
+        </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field>
+            <input matInput placeholder="Afbeelding" [(ngModel)]="image">
+        </mat-form-field>
+    </p>
+    <button mat-raised-button color="primary" (click)="onMealSave()">Voeg toe</button>
+</div>

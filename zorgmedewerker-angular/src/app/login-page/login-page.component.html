@@ -1,0 +1,32 @@
+<body class="login_page">
+    <div class="login_roundcircle">
+        <div (keydown.enter)="onLogin()">
+            <mat-form-field appearance="legacy" class="form">
+                <mat-label>Gebruikersnaam</mat-label>
+                <input matInput type="text" [(ngModel)]="username" />
+            </mat-form-field>
+        </div>
+        <div (keydown.enter)="onLogin()">
+            <mat-form-field appearance="legacy" class="form">
+                <mat-label>Wachtwoord</mat-label>
+                <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="password" />
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field> 
+        </div>
+        <div>
+            <button mat-button color= "primary" (click)="onLogin()">Inloggen</button>
+        </div>
+        <div>
+            <div *ngIf="error">{{errorText}}</div>
+        </div>
+    </div>
+    <div class="pepper_head">
+        <img src="assets/pepper-head.png">
+    </div>
+    <div class="avans_logo">
+        <img src="assets/logo-white-2.png">
+    </div>
+</body>
+ 

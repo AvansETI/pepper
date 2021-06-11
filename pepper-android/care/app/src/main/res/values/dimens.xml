@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="left_offset">61dp</dimen>
+    <dimen name="card_width">300dp</dimen>
+    <dimen name="card_height">200dp</dimen>
+    <dimen name="card_gap">8dp</dimen>
+    <dimen name="icon_size">24dp</dimen>
+    <dimen name="max_text_width">600sp</dimen>
+</resources>

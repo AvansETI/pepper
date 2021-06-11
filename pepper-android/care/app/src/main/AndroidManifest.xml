@@ -2,21 +2,44 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pepper.care">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-feature android:name="com.softbank.hardware.pepper" />
+
     <application
+        android:name=".core.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Care">
-        <activity android:name=".MainActivity">
+        android:theme="@style/Theme_Care">
+        <activity android:name=".info.presentation.InfoSliderActivity" />
+
+        <activity
+            android:name=".SplashScreenActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme_Splash_Screen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustNothing">
+        </activity>
+
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
+        <service android:name=".core.services.mqtt.PlatformMqttListenerService"/>
+
     </application>
 
-    <uses-feature android:name="com.softbank.hardware.pepper"/>
 </manifest>

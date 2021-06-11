@@ -1,0 +1,45 @@
+.login_page {
+    width: 100vw;
+    height: 93.2vh;
+    background: url('../../assets/background-pepper3.png') no-repeat;
+    background-size: 100vw 93.2vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login_roundcircle {
+    padding: 20px;
+    width: 20vw;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.login_roundcircle div {
+    text-align: center;
+}
+
+.pepper_head {
+    text-align: left;
+}
+
+.pepper_head img {
+    max-height: 7.5vh;
+    max-width: 7.5vw;
+    position: absolute;
+    left: 1%;
+    bottom: 0.5%;
+}
+
+.avans_logo img {
+    max-height: 8vh;
+    max-width: 8vw;
+    position: absolute;
+    right: 0.5%;
+    bottom: 2%;
+}
+
+.form {
+    width: 10vw;
+}

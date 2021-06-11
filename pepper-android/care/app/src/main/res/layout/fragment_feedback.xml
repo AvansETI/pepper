@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.pepper.care.feedback.presentation.viewmodels.FeedbackViewModel" />
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.pepper.care.feedback.presentation.viewmodels.FeedbackViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                style="@style/Pepper_Care_Title_Text"
+                android:id="@+id/text_view_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@{viewModel.headerText}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Hoe voelt u zich momenteel?" />
+
+            <com.ramotion.fluidslider.FluidSlider
+                android:id="@+id/feedback_slider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="128dp"
+                app:bar_color="@color/colorAccent"
+                app:imageCallback="@{viewModel.imageListener}"
+                app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                app:layout_constraintStart_toStartOf="@+id/guideline4"
+                app:layout_constraintTop_toBottomOf="@+id/text_view_id"
+                app:setSliderRange="@{viewModel.sliderRange}"
+                app:size="small" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/mood_circle"
+                style="@style/Pepper_Care_Image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:paddingHorizontal="250dp"
+                android:paddingTop="32dp"
+                android:paddingBottom="60dp"
+                android:src="@color/transparent"
+                app:colorMoodSource="@{viewModel.givenFeedbackType}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                app:layout_constraintStart_toStartOf="@+id/guideline4"
+                app:layout_constraintTop_toBottomOf="@+id/feedback_slider" />
+
+            <ImageView
+                android:id="@+id/icon_overlay_img"
+                style="@style/Pepper_Care_Image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="60dp"
+                android:padding="15dp"
+                android:paddingTop="32dp"
+                android:scaleType="fitCenter"
+                android:src="@color/transparent"
+                app:iconSource="@{viewModel.givenFeedbackType}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                app:layout_constraintStart_toStartOf="@+id/guideline4"
+                app:layout_constraintTop_toBottomOf="@+id/feedback_slider" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="30dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="30dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+</layout>

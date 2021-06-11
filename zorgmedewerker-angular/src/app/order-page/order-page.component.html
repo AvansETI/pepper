@@ -1,0 +1,48 @@
+<body class="order_page">
+    <div class="order_nondetail">
+        <div>
+            <mat-label>Maaltijden</mat-label>
+        </div>
+        <div>
+            <mat-list *ngFor="let meal of meals" role="list">
+                <mat-list-item role="listitem">
+                    <mat-card>
+                        <div>{{meal.name}}</div>
+                        <div>{{meal.description}}</div>
+                        <div>{{meal.calories}}</div>
+                        <div>{{formatAllergies(meal.allergies)}}</div>
+                        <div>{{meal.image}}</div>
+                    </mat-card>
+                </mat-list-item>
+            </mat-list>
+        </div>
+        <div>
+            <a class= "order_add_button" mat-raised-button (click)="openDialog()" color= "primary">Maaltijd toevoegen</a>
+            <a class= "order_button" mat-raised-button routerLink="/patients" color= "primary">Patiëntinformatie</a>
+        </div>
+    </div>
+    <div class="order_detail">
+        <div>
+            <mat-label>Bestellingen</mat-label>
+        </div>
+        <div>
+            <mat-list *ngFor= "let mealorder of mealOrders"role="list">
+                <mat-list-item role="listitem">
+                    <mat-card>
+                        <div>{{mealorder.id}}</div>
+                        <div>{{mealorder.patientId}}</div>
+                        <div>{{mealorder.mealId}}</div>
+                        <div>{{mealorder.timestamp}}</div>
+                    </mat-card>
+                </mat-list-item>
+            </mat-list>
+        </div>
+    
+    </div>
+    <div class="pepper_head">
+        <img src="assets/pepper-head.png">
+    </div>
+    <div class="avans_logo">
+        <img src="assets/logo-white-2.png">
+    </div>
+</body>

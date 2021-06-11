@@ -1,0 +1,73 @@
+<body class="doctor_page">
+    <div class="doctor_nondetail">
+        <div>
+            <mat-label>Patiëntenlijst</mat-label>
+        </div>
+        <button mat-button (click)="onDebug()">Debug</button>
+        <div>
+            <mat-list>
+                <mat-list-item *ngFor="let patient of patients" (click)="onClicked(patient.id)">
+                    <mat-card>
+                        <div>{{patient.id}} - {{patient.name}}</div>
+                    </mat-card>
+                </mat-list-item>
+            </mat-list>
+        </div>
+        <div>
+            <a class= "order_button" mat-raised-button routerLink="/meals" color= "primary">Bestellingen</a>
+        </div>
+    </div>
+    <div class="doctor_detail">
+        <div>
+            <mat-label>Patientinformatie</mat-label>
+        </div>
+        <div *ngIf="selectedPatient !== null">
+            <mat-list>
+                <mat-list-item>
+                    <mat-card>
+                        <div>{{selectedPatient.name}}</div>
+                        <div>{{formatDate(selectedPatient.birthdate)}}</div>
+                        <div>{{formatAllergies(selectedPatient.allergies)}}</div>
+                    </mat-card>
+                </mat-list-item>
+            </mat-list>
+
+            <button mat-button (click)="onTest(selectedPatient.id)">Test</button>
+            <mat-card>
+                <div>Questions</div>
+                <div *ngFor="let question of questions">
+                    <div>{{question.id}} {{question.text}} {{formatTimestamp(question.timestamp)}}</div>
+                </div>
+            </mat-card>
+            <mat-card>
+                <div>Answers</div>
+                <div *ngFor="let answer of answers">
+                    <div>{{answer.questionId}} {{answer.text}} {{formatTimestamp(answer.timestamp)}}</div>
+                </div>
+            </mat-card>
+            <mat-card>
+                <div>Reminders</div>
+                <div *ngFor="let reminder of reminders">
+                    <div>{{reminder.thing}} {{formatTimestamp(reminder.timestamp)}}</div>
+                </div>
+            </mat-card>
+            <mat-card>
+                <div>Feedback</div>
+                <div *ngFor="let feedback of feedbacks">
+                    <div>{{feedback.status}} {{feedback.explanation}} {{formatTimestamp(feedback.timestamp)}}</div>
+                </div>
+            </mat-card>
+
+            <mat-form-field>
+                <input matInput placeholder="Vraag aan de patient" [(ngModel)]="question">
+            </mat-form-field>
+            <button mat-button (click)="onSend(selectedPatient.id)">Verstuur</button>
+        </div>
+    </div>
+    <div class="pepper_head">
+        <img src="assets/pepper-head.png">
+    </div>
+    <div class="avans_logo">
+        <img src="assets/logo-white-2.png">
+    </div>
+</body>

@@ -1,0 +1,23 @@
+server.port: 6587
+
+mqtt:
+  host: tcp://localhost:1801
+  username: pepper
+  password: pepper
+  topic: pepper-zorg-ti
+
+spring.data.mongodb:
+  host: localhost
+  port: 27003
+  database: pepper
+  authentication-database: admin
+  username: pepper
+  password: pepper
+
+encryption:
+  enabled: true
+  password: pepper
+
+http:
+  username: pepper
+  password: pepper

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.pepper.care.order.presentation.viewmodels.OrderViewModel" />
+        <import type="android.view.View" />
+
+        <variable
+            name="adapter"
+            type="com.pepper.care.order.common.view.SliderAdapter" />
+
+        <variable
+            name="viewModel"
+            type="com.pepper.care.order.presentation.viewmodels.OrderViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:clipChildren="false">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginTop="60dp">
+
+                <FrameLayout
+                    android:id="@+id/meal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@+id/frameLayout">
+
+                    <TextSwitcher
+                        android:id="@+id/meal_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/left_offset"
+                        app:isOpposite="@{viewModel.isOpposite}"
+                        app:switcherText="@{viewModel.titleText}"
+                        app:switcherResource="@{viewModel.switcherTitleResource}"/>
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/frameLayout"
+                    android:layout_width="85dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/side_label"
+                    android:layout_centerVertical="true"
+                    app:isVisible="@{viewModel.isLoadedSuccessfully}">
+
+                    <TextSwitcher
+                        android:id="@+id/label_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        app:isOpposite="@{viewModel.isOpposite}"
+                        app:switcherText="@{viewModel.labelText}"
+                        app:switcherResource="@{viewModel.switcherLabelResource}"/>
+
+                </FrameLayout>
+
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                style="@style/Pepper_Care_Card_Slider"
+                android:id="@+id/meal_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/card_height"
+                android:layout_marginTop="6dp"
+                android:layout_marginStart="19dp"
+                android:clipChildren="false"
+                android:overScrollMode="never"
+                app:scrollListener="@{viewModel.recyclerScrollListener}"
+                app:isVisible="@{viewModel.recyclerVisibility}"
+                app:adapter="@{adapter}"
+                app:items="@{viewModel.recyclerList}"
+                app:cardHelper="@{viewModel.cardSnapHelper}"
+                app:notifier="@{viewModel.notifyCallback}"
+                app:layoutManager="com.ramotion.cardslider.CardSliderLayoutManager" />
+
+            <FrameLayout
+                android:layout_width="@dimen/max_text_width"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                app:isVisible="@{viewModel.isLoadedSuccessfully}">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="30dp"
+                    android:src="@drawable/ic_meal"
+                    android:scaleType="fitCenter"/>
+
+                <TextSwitcher
+                    android:id="@+id/meal_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/left_offset"
+                    app:isOpposite="@{viewModel.isOpposite}"
+                    app:switcherText="@{viewModel.descriptionText}"
+                    app:switcherResource="@{viewModel.switcherDescriptionResource}"/>
+
+            </FrameLayout>
+
+            <RelativeLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="@dimen/max_text_width"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                app:isVisible="@{viewModel.isLoadedSuccessfully}">
+
+                <FrameLayout
+                    android:id="@+id/meal_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_size"
+                        android:layout_height="@dimen/icon_size"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="30dp"
+                        android:src="@drawable/ic_peanut"
+                        android:scaleType="fitCenter"/>
+
+                    <TextSwitcher
+                        android:id="@+id/meal_allergies"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/left_offset"
+                        app:isOpposite="@{viewModel.isOpposite}"
+                        app:switcherText="@{viewModel.allergiesText}"
+                        app:switcherResource="@{viewModel.switcherAllergiesResource}"/>
+
+                </FrameLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                style="@style/Pepper_Care_Image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleX="0.55"
+                android:scaleY="0.55"
+                android:translationY="75sp"
+                android:translationX="-55sp"
+                android:src="@drawable/order_tip_cloud"
+                app:isVisible="@{viewModel.hintVisibility}"
+                app:layout_constraintBottom_toTopOf="@+id/guideline8"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline9" />
+
+            <ImageView
+                style="@style/Pepper_Care_Image"
+                android:id="@+id/meal_logo"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/chef_logo_shadow"
+                android:translationY="-10sp"
+                android:translationX="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline9"
+                app:layout_constraintTop_toTopOf="@+id/guideline8" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_end="181dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="200dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+</layout>
