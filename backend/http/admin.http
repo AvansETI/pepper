@@ -3,6 +3,6 @@ Content-Type: application/json
 Authorization: Basic {{username}} {{password}}
 
 {
-  "username": "admin",
-  "password": "pass"
+  "username": "pepper",
+  "password": "pepper"
 }

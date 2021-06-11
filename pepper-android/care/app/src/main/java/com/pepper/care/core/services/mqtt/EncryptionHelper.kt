@@ -16,7 +16,6 @@ import javax.crypto.spec.SecretKeySpec
 class EncryptionHelper {
 
     companion object{
-        const val ENCRYPTION_PASSWORD = "pepper"
         private const val ENCRYPTION_ERROR_TEXT = "ERROR"
         private const val ENCRYPT_ALGO = "AES/GCM/NoPadding"
         private const val TAG_LENGTH_BIT = 128 // must be one of {128, 120, 112, 104, 96}
