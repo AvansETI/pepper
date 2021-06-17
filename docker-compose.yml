@@ -19,9 +19,9 @@ services:
         ports:
             - 6587:6587
         environment:
-            - MQTT_HOST=tcp://mosquitto:1883
-            - MQTT_USERNAME=pepper
-            - MQTT_PASSWORD=pepper
+            - MQTT_HOST=tcp://git.jijbentzacht.nl
+            - MQTT_USERNAME=drpepper
+            - MQTT_PASSWORD=securityBEtheKEY
             - MQTT_TOPIC=pepper-zorg-ti
             - SPRING_DATA_MONGODB_HOST=database
             - SPRING_DATA_MONGODB_PORT=27017
