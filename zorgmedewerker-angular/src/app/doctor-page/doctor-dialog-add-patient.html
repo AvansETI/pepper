@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Patiënt aanmaken</h1>
+<div mat-dialog-content>
+    <p>
+        <mat-form-field>
+            <input matInput placeholder="Naam" [(ngModel)]="name">
+        </mat-form-field>
+    </p>
+    <button mat-raised-button (click)="addPatient()">Patient toevoegen</button>
+</div>

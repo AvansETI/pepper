@@ -58,6 +58,10 @@ export class OrderPageComponent implements OnInit {
     this.allergies = '';
     this.image = '';
   }
+
+  onClicked(id: string): void {
+    this.name;
+  }
 }
 
 @Component({
@@ -93,6 +97,6 @@ export class DialogDataExampleDialog {
     this.description = '';
     this.calories = ''
     this.allergies = '';
-    this.image = '';
+    this.image = ''; 
   }
 }
