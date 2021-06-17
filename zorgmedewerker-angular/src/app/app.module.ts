@@ -5,7 +5,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login-page/login-page.component';
-import { DoctorPageComponent } from './doctor-page/doctor-page.component';
+import { DoctorPageComponent, DialogQuestion} from './doctor-page/doctor-page.component';
 import { OrderPageComponent,  DialogDataExampleDialog } from './order-page/order-page.component';
 
 
@@ -18,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule} from '@angular/material/dialog';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 
 import { BrowserAnimationsModule}  from '@angular/platform-browser/animations';
@@ -29,6 +30,7 @@ import { BrowserAnimationsModule}  from '@angular/platform-browser/animations';
     DoctorPageComponent,
     OrderPageComponent,
     DialogDataExampleDialog,
+    DialogQuestion,
     
   ],
   imports: [
@@ -44,7 +46,8 @@ import { BrowserAnimationsModule}  from '@angular/platform-browser/animations';
     MatListModule,
     MatCardModule,
     FormsModule,
-    MatDialogModule
+    MatDialogModule,
+    ScrollingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
