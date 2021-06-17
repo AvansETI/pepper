@@ -3,7 +3,6 @@
         <div>
             <mat-label>Patiëntenlijst</mat-label>
         </div>
-        <button mat-button (click)="onDebug()">Debug</button>
         <div>
             <mat-list>
                 <mat-list-item *ngFor="let patient of patients" (click)="onClicked(patient.id)">
@@ -32,7 +31,7 @@
                 </mat-list-item>
             </mat-list>
 
-            <button mat-button (click)="onTest(selectedPatient.id)">Test</button>
+            <button mat-button (click)="onRefresh(selectedPatient.id)">Test</button>
             <mat-card>
                 <div>Questions</div>
                 <div *ngFor="let question of questions">
@@ -58,13 +57,15 @@
                 </div>
             </mat-card>
 
-            <mat-form-field>
+            <!-- <mat-form-field>
                 <input matInput placeholder="Vraag aan de patient" [(ngModel)]="question">
             </mat-form-field>
-            <button mat-button (click)="onSend(selectedPatient.id)">Verstuur</button>
+            <button mat-button (click)="onSend(selectedPatient.id)">Verstuur</button> -->
+            <a class= "order_add_button" mat-raised-button (click)="openQuestionDialog(selectedPatient.id)" color= "primary">Vraag toevoegen</a>
+            <a class= "order_add_button" mat-raised-button (click)="openReminderDialog(selectedPatient.id)" color= "primary">Reminder toevoegen</a>
         </div>
     </div>
-    <a class= "order_add_button" mat-raised-button (click)="openDialog()" color= "primary">Maaltijd toevoegen</a>
+    <a class= "order_add_button" mat-raised-button (click)="openPatientDialog()" color= "primary">Patient toevoegen</a>
     <div class="pepper_head">
         <img src="assets/pepper-head.png">
     </div>

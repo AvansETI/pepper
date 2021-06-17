@@ -5,5 +5,15 @@
             <input matInput placeholder="Naam" [(ngModel)]="name">
         </mat-form-field>
     </p>
+    <p>
+        <mat-form-field>
+            <input matInput placeholder="Birthdate" [(ngModel)]="birthdate">
+        </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field>
+            <input matInput placeholder="Allergies" [(ngModel)]="allergies">
+        </mat-form-field>
+    </p>
     <button mat-raised-button (click)="addPatient()">Patient toevoegen</button>
 </div>

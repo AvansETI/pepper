@@ -5,8 +5,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login-page/login-page.component';
-import { DoctorPageComponent, DialogQuestion} from './doctor-page/doctor-page.component';
-import { OrderPageComponent,  DialogDataExampleDialog } from './order-page/order-page.component';
+import { DoctorPageComponent, DialogAddPatient, DialogAddQuestion, DialogAddReminder} from './doctor-page/doctor-page.component';
+import { OrderPageComponent,  DialogAddMeal } from './order-page/order-page.component';
 
 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -29,9 +29,10 @@ import { BrowserAnimationsModule}  from '@angular/platform-browser/animations';
     LoginPageComponent,
     DoctorPageComponent,
     OrderPageComponent,
-    DialogDataExampleDialog,
-    DialogQuestion,
-    
+    DialogAddMeal,
+    DialogAddPatient,
+    DialogAddQuestion,
+    DialogAddReminder
   ],
   imports: [
     BrowserModule,

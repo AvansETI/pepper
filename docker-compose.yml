@@ -27,16 +27,16 @@ services:
             - SPRING_DATA_MONGODB_PORT=27017
             - SPRING_DATA_MONGODB_USERNAME=pepper
             - SPRING_DATA_MONGODB_PASSWORD=pepper
-            - ENCRYPTION_ENABLED=true
+            - ENCRYPTION_ENABLED=false
             - ENCRYPTION_PASSWORD=pepper
             - HTTP_USERNAME=pepper
             - HTTP_PASSWORD=pepper
         depends_on:
             - database
-    zorgmedewerker_app:
-        build: ./zorgmedewerker-angular
-        # image: woutstev/pepper-zorg_zorgmedewerker_app:1.0
-        ports: 
-            - 6588:6588
-        depends_on:
-            - backend
+    # zorgmedewerker_app:
+    #     build: ./zorgmedewerker-angular
+    #     # image: woutstev/pepper-zorg_zorgmedewerker_app:1.0
+    #     ports: 
+    #         - 6588:6588
+    #     depends_on:
+    #         - backend

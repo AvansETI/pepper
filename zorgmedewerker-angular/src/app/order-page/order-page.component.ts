@@ -28,7 +28,7 @@ export class OrderPageComponent implements OnInit {
 
   openDialog() {
 
-    const dialogRef = this.dialog.open(DialogDataExampleDialog);
+    const dialogRef = this.dialog.open(DialogAddMeal);
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
@@ -68,7 +68,7 @@ export class OrderPageComponent implements OnInit {
   selector: 'app-order-page',
   templateUrl: './order-dialog.html',
 })
-export class DialogDataExampleDialog {
+export class DialogAddMeal {
 
   name = '';
   description = '';

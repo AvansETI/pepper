@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Reminder aanmaken</h1>
+<div mat-dialog-content>
+    <p>
+        <mat-form-field>
+            <input matInput placeholder="Reminder voor patient" [(ngModel)]="thing">
+        </mat-form-field>
+    </p>
+    <button mat-raised-button (click)="onSave()">Reminder toevoegen</button>
+</div>
