@@ -48,6 +48,16 @@ public class DatabaseService {
         this.messageEncryptor = messageEncryptor;
     }
 
+    public void testSavePatient(Patient patient) {
+        patient.setId(this.nextSequenceService.getNextSequence("patient"));
+        this.patientRepository.save(patient);
+    }
+
+    public void testSaveMeal(Meal meal) {
+        meal.setId(this.nextSequenceService.getNextSequence("meal"));
+        this.mealRepository.save(meal);
+    }
+
     public boolean isAuthorized(User user) {
         for (User u : this.userRepository.findAll()) {
             if (u.getUsername().equals(user.getUsername()) && u.getPassword().equals(user.getPassword())) {
