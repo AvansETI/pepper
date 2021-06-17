@@ -6,3 +6,11 @@ Authorization: Basic {{username}} {{password}}
   "username": "pepper",
   "password": "pepper"
 }
+
+###
+
+GET http://{{hostname}}:{{port}}/api/v1/admin/test
+Content-Type: application/json
+Authorization: Basic {{username}} {{password}}
+
+###

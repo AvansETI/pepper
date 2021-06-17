@@ -121,10 +121,11 @@ class MainActivity : RobotActivity() {
                         screenNavigationHandler(DialogRoutes.valueOf(string))
                     }
                     PepperAction.SELECT_PATIENT_BIRTHDAY -> {
-                        val dateString = string!!
+                        var dateString = string!!
+                        dateString = dateString.replace(" ", "")
 
                         patientBirthDate =
-                            LocalDate.parse(dateString, DateTimeFormat.forPattern("ddMMyyyy"))
+                            LocalDate.parse(dateString, DateTimeFormat.forPattern("dd/MM/yyyy"))
                         Log.d(MainActivity::class.simpleName, "Patient birthday: $patientBirthDate")
                     }
                     PepperAction.SELECT_PATIENT_NAME -> {
