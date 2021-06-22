@@ -1,9 +1,10 @@
 server.port: 6587
 
 mqtt:
-  host: tcp://git.jijbentzacht.nl
-  username: drpepper
-  password: securityBEtheKEY
+  host: localhost
+  port: 1801
+  username: pepper
+  password: pepper
   topic: pepper-zorg-ti
 
 spring.data.mongodb:

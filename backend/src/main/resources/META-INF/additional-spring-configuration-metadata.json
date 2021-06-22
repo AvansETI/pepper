@@ -39,6 +39,11 @@
       "name": "http.password",
       "type": "java.lang.String",
       "description": "Description for http.password."
+    },
+    {
+      "name": "mqtt.port",
+      "type": "java.lang.String",
+      "description": "Description for mqtt.port."
     }
   ]
 }

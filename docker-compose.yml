@@ -7,21 +7,22 @@ services:
         environment:
             - MONGO_INITDB_ROOT_USERNAME=pepper
             - MONGO_INITDB_ROOT_PASSWORD=pepper
-    # mosquitto:
-    #     image: eclipse-mosquitto:2.0
-    #     ports:
-    #         - 1801:1883
-    #     volumes:
-    #         - ./mosquitto:/mosquitto/
+    mosquitto:
+        image: eclipse-mosquitto:2.0
+        ports:
+            - 1801:1883
+        volumes:
+            - ./mosquitto:/mosquitto/
     backend:
         build: ./backend
         # image: woutstev/pepper-zorg_backend:1.0
         ports:
             - 6587:6587
         environment:
-            - MQTT_HOST=tcp://git.jijbentzacht.nl
-            - MQTT_USERNAME=drpepper
-            - MQTT_PASSWORD=securityBEtheKEY
+            - MQTT_HOST=mosquitto
+            - MQTT_PORT=1883
+            - MQTT_USERNAME=pepper
+            - MQTT_PASSWORD=pepper
             - MQTT_TOPIC=pepper-zorg-ti
             - SPRING_DATA_MONGODB_HOST=database
             - SPRING_DATA_MONGODB_PORT=27017

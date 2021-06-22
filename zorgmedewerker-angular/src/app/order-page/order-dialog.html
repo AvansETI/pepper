@@ -1,29 +1,87 @@
 <h1 mat-dialog-title>Maaltijd toevoegen</h1>
-<div mat-dialog-content>
-    <p>
-        <mat-form-field>
-            <input matInput placeholder="Naam" [(ngModel)]="name">
-        </mat-form-field>
-    </p>
-    <p>
-        <mat-form-field>
-            <input matInput placeholder="Beschrijving" [(ngModel)]="description">
-        </mat-form-field>
-    </p>
-    <p>
-        <mat-form-field>
-            <input matInput placeholder="Calorien" [(ngModel)]="calories">
-        </mat-form-field>
-    </p>
-    <p>
-        <mat-form-field>
-            <input matInput placeholder="Allergien" [(ngModel)]="allergies">
-        </mat-form-field>
-    </p>
-    <p>
-        <mat-form-field>
-            <input matInput placeholder="Afbeelding" [(ngModel)]="image">
-        </mat-form-field>
-    </p>
-    <button mat-raised-button color="primary" (click)="onMealSave()">Voeg toe</button>
+<div mat-dialog-content class="all-content">
+    <div class="forms">
+        <div class="forms-left">
+            <p>
+                <mat-form-field>
+                    <input matInput placeholder="Naam" [(ngModel)]="name">
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field>
+                    <input matInput placeholder="Beschrijving" [(ngModel)]="description">
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field>
+                    <input matInput placeholder="Caloriën" [(ngModel)]="calories">
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field>
+                    <input matInput placeholder="Afbeelding" [(ngModel)]="image">
+                </mat-form-field>
+            </p>
+        </div>
+        <div class="forms-right">
+            <section [formGroup]="allergies">
+                <h4>Allergiën:</h4>
+                <p>
+                    <mat-checkbox formControlName="gluten" color="primary" ngDefaultControl>Gluten</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="diabetes" color="primary" ngDefaultControl>Diabetes</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="lactose" color="primary" ngDefaultControl>Lactose</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="eggs" color="primary" ngDefaultControl>Eieren</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="celery" color="primary" ngDefaultControl>Selderij</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="nuts" color="primary" ngDefaultControl>Noten</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="soy" color="primary" ngDefaultControl>Soja</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="wheat" color="primary" ngDefaultControl>Graan</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="fish" color="primary" ngDefaultControl>Vis</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="shellfish" color="primary" ngDefaultControl>Schelpdieren</mat-checkbox>
+                </p>
+
+            </section>
+        </div>
+    </div>
+
+    <div>
+        <button mat-raised-button color="primary" (click)="onMealSave()">Toevoegen</button>
+    </div>
 </div>
+
+<style>
+    .all-content {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .forms {
+        display: flex;
+        flex-direction: row;
+    }
+    
+    .forms-left {
+        padding-right: 1vw;
+    }
+    
+    .forms-right {
+        padding-left: 1vw;
+    }
+</style>
