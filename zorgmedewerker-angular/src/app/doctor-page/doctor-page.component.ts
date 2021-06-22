@@ -49,11 +49,7 @@ export class DoctorPageComponent implements OnInit {
   }
 
   openPatientDialog(): void {
-    const dialogRef = this.dialog.open(DialogAddPatient);
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
+    this.dialog.open(DialogAddPatient);
   }
 
   openQuestionDialog(): void {
