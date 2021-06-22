@@ -13,6 +13,9 @@ public class BotCommunicationController implements MqttCallbackExtended {
     @Value("${mqtt.host}")
     private String host;
 
+    @Value("${mqtt.port}")
+    private String port;
+
     @Value("${mqtt.topic}")
     private String topic;
 
@@ -31,8 +34,9 @@ public class BotCommunicationController implements MqttCallbackExtended {
 
     @PostConstruct
     public void connect() {
+        String serverUri = "tcp://" + this.host + ":" + this.port;
         try {
-            this.client = new MqttAsyncClient(this.host, "client-1");
+            this.client = new MqttAsyncClient(serverUri, "client-1");
             this.client.setCallback(this);
             this.client.connect(this.getOptions());
         } catch (MqttException e) {

@@ -8,6 +8,7 @@ import com.pepper.care.core.services.mqtt.PlatformMqttConstants.MQTT_DEFAULT_CON
 import com.pepper.care.core.services.mqtt.PlatformMqttConstants.MQTT_DEFAULT_CONNECTION_TIMEOUT
 import com.pepper.care.core.services.mqtt.PlatformMqttConstants.MQTT_DEFAULT_HOST
 import com.pepper.care.core.services.mqtt.PlatformMqttConstants.MQTT_DEFAULT_PASSWORD
+import com.pepper.care.core.services.mqtt.PlatformMqttConstants.MQTT_DEFAULT_PORT
 import com.pepper.care.core.services.mqtt.PlatformMqttConstants.MQTT_DEFAULT_TOPIC
 import com.pepper.care.core.services.mqtt.PlatformMqttConstants.MQTT_DEFAULT_USERNAME
 import org.eclipse.paho.android.service.MqttAndroidClient
@@ -18,7 +19,7 @@ class PlatformMqttClientHelper(
 ) {
     private val clientId: String = MqttClient.generateClientId()
     var client: MqttAndroidClient
-    val serverUri = MQTT_DEFAULT_HOST
+    val serverUri = "tcp://$MQTT_DEFAULT_HOST:$MQTT_DEFAULT_PORT"
 
     init {
         client = MqttAndroidClient(context, serverUri, clientId)

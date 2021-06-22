@@ -3,7 +3,8 @@ import { Meal } from 'src/model/meal';
 import { Allergy } from 'src/model/allergy';
 import { MealOrder } from 'src/model/meal-order';
 import { MessageHandlerService } from '../message-handler.service';
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-order-page',
@@ -27,12 +28,7 @@ export class OrderPageComponent implements OnInit {
   }
 
   openDialog() {
-
-    const dialogRef = this.dialog.open(DialogAddMeal);
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
+    this.dialog.open(DialogAddMeal);
   }
 
   ngOnInit(): void {
@@ -40,27 +36,10 @@ export class OrderPageComponent implements OnInit {
   }
 
   formatAllergies(allergies: Set<Allergy>): string {
+    if (allergies === null) {
+      return '';
+    }
     return Array.from(allergies).join(', ').toLowerCase()
-  }
-
-  onMealSave(): void {
-    let temp = new Set<Allergy>()
-    temp.add(Allergy.DIABETES)
-    temp.add(Allergy.CELERY)
-    temp.add(Allergy.EGGS)
-
-    this.messageHandler.sendMeal({id: '-1', name: this.name, description: this.description, calories: this.calories, allergies: temp, image: this.image});
-    this.messageHandler.requestMeals();
-
-    this.name = '';
-    this.description = '';
-    this.calories = ''
-    this.allergies = '';
-    this.image = '';
-  }
-
-  onClicked(id: string): void {
-    this.name;
   }
 }
 
@@ -73,26 +52,71 @@ export class DialogAddMeal {
   name = '';
   description = '';
   calories = ''
-  allergies = '';
   image = '';
+  allergies: FormGroup;
 
-  constructor(private messageHandler: MessageHandlerService, private dialog: MatDialog) {
-    
+  constructor(private messageHandler: MessageHandlerService, fb: FormBuilder, private dialogRef: MatDialogRef<DialogAddMeal>) {
+    this.allergies = fb.group({
+      gluten: false,
+      diabetes: false,
+      lactose: false,
+      eggs: false,
+      celery: false,
+      nuts: false,
+      soy: false,
+      wheat: false,
+      fish: false,
+      shellfish: false
+    });
   }
 
   onMealSave(): void {
-    let temp = new Set<Allergy>()
-    temp.add(Allergy.GLUTEN)
-    temp.add(Allergy.EGGS)
-    temp.add(Allergy.LACTOSE)
+    if (this.name !== '' && this.description !== '' && this.calories !== '' && this.image !== '') {
+      let allergies = new Set<Allergy>()
 
-    this.messageHandler.sendMeal({id: '-1', name: this.name, description: this.description, calories: this.calories, allergies: temp, image: this.image});
-    this.messageHandler.requestMeals();
+      if (this.allergies.value.gluten) {
+        allergies.add(Allergy.GLUTEN);
+      }
 
-    this.name = '';
-    this.description = '';
-    this.calories = ''
-    this.allergies = '';
-    this.image = ''; 
+      if (this.allergies.value.diabetes) {
+        allergies.add(Allergy.DIABETES);
+      }
+
+      if (this.allergies.value.lactose) {
+        allergies.add(Allergy.LACTOSE);
+      }
+
+      if (this.allergies.value.eggs) {
+        allergies.add(Allergy.EGGS);
+      }
+
+      if (this.allergies.value.celery) {
+        allergies.add(Allergy.CELERY);
+      }
+
+      if (this.allergies.value.nuts) {
+        allergies.add(Allergy.NUTS);
+      }
+
+      if (this.allergies.value.soy) {
+        allergies.add(Allergy.SOY);
+      }
+
+      if (this.allergies.value.wheat) {
+        allergies.add(Allergy.WHEAT);
+      }
+
+      if (this.allergies.value.fish) {
+        allergies.add(Allergy.FISH);
+      }
+
+      if (this.allergies.value.shellfish) {
+        allergies.add(Allergy.SHELLFISH);
+      }
+
+      this.messageHandler.sendMeal({ id: '-1', name: this.name, description: this.description, calories: this.calories, allergies: allergies, image: this.image });
+      this.dialogRef.close();
+    }
+
   }
 }

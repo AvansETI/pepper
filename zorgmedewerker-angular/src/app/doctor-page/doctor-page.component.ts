@@ -6,7 +6,8 @@ import { Feedback } from 'src/model/feedback';
 import { Answer } from 'src/model/answer';
 import { Question } from 'src/model/question';
 import { MessageHandlerService } from 'src/app/message-handler.service';
-import { MatDialog, MatDialogConfig, MatDialogRef } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-doctor-page',
@@ -36,7 +37,7 @@ export class DoctorPageComponent implements OnInit {
   }
 
   ngAfterContentInit(): void {
-    
+
   }
 
   onClicked(id: string): void {
@@ -55,19 +56,23 @@ export class DoctorPageComponent implements OnInit {
     });
   }
 
-  openQuestionDialog(patientId: string): void {
+  openQuestionDialog(): void {
     const dialogRef = this.dialog.open(DialogAddQuestion);
 
     dialogRef.afterClosed().subscribe(result => {
-      this.onQuestionSend(result);
+      if (result !== undefined) {
+        this.onQuestionSend(result);
+      }
     });
   }
 
-  openReminderDialog(patientId: string): void {
+  openReminderDialog(): void {
     const dialogRef = this.dialog.open(DialogAddReminder);
 
     dialogRef.afterClosed().subscribe(result => {
-      this.onReminderSend(result);
+      if (result !== undefined) {
+        this.onReminderSend(result);
+      }
     });
   }
 
@@ -75,14 +80,14 @@ export class DoctorPageComponent implements OnInit {
     if (d === null) {
       return 'ERROR';
     }
-    return ("0" + d.getDate()).slice(-2) + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + d.getFullYear() + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+    return ("0" + d.getDate()).slice(-2) + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + d.getFullYear() + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
   }
 
   formatDate(d: Date): string {
     if (d === null) {
       return 'ERROR';
     }
-    return ("0" + d.getDate()).slice(-2) + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + d.getFullYear();
+    return ("0" + d.getDate()).slice(-2) + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + d.getFullYear();
   }
 
   onRefresh(patientId: string): void {
@@ -104,20 +109,76 @@ export class DoctorPageComponent implements OnInit {
 
 @Component({
   selector: 'app-doctor-page',
-  templateUrl: './doctor-dialog-add-patient.html',
+  templateUrl: './doctor-dialog-add-patient.html'
 })
 export class DialogAddPatient {
-
   name: string = '';
   birthdate: string = '';
-  allergies: string = '';
 
-  constructor(private messageHandler: MessageHandlerService, private dialog: MatDialog) {
+  allergies: FormGroup;
 
+  constructor(private messageHandler: MessageHandlerService, fb: FormBuilder, private dialogRef: MatDialogRef<DialogAddPatient>) {
+    this.allergies = fb.group({
+      gluten: false,
+      diabetes: false,
+      lactose: false,
+      eggs: false,
+      celery: false,
+      nuts: false,
+      soy: false,
+      wheat: false,
+      fish: false,
+      shellfish: false
+    });
   }
-  
+
   addPatient(): void {
-    this.messageHandler.sendPatient({id: '-1' , name: this.name , birthdate: new Date(), allergies: new Set<Allergy>()});
+    if (this.name !== '' && this.birthdate !== '') {
+      let allergies = new Set<Allergy>();
+
+      if (this.allergies.value.gluten) {
+        allergies.add(Allergy.GLUTEN);
+      }
+
+      if (this.allergies.value.diabetes) {
+        allergies.add(Allergy.DIABETES);
+      }
+
+      if (this.allergies.value.lactose) {
+        allergies.add(Allergy.LACTOSE);
+      }
+
+      if (this.allergies.value.eggs) {
+        allergies.add(Allergy.EGGS);
+      }
+
+      if (this.allergies.value.celery) {
+        allergies.add(Allergy.CELERY);
+      }
+
+      if (this.allergies.value.nuts) {
+        allergies.add(Allergy.NUTS);
+      }
+
+      if (this.allergies.value.soy) {
+        allergies.add(Allergy.SOY);
+      }
+
+      if (this.allergies.value.wheat) {
+        allergies.add(Allergy.WHEAT);
+      }
+
+      if (this.allergies.value.fish) {
+        allergies.add(Allergy.FISH);
+      }
+
+      if (this.allergies.value.shellfish) {
+        allergies.add(Allergy.SHELLFISH);
+      }
+
+      this.messageHandler.sendPatient({ id: '-1', name: this.name, birthdate: new Date(this.birthdate), allergies: allergies });
+      this.dialogRef.close();
+    }
   }
 
 }
@@ -133,7 +194,7 @@ export class DialogAddQuestion {
   constructor(private dialogRef: MatDialogRef<DialogAddQuestion>) {
 
   }
-  
+
   onSave(): void {
     if (this.question !== '') {
       this.dialogRef.close(this.question);
@@ -150,10 +211,10 @@ export class DialogAddReminder {
 
   thing: string = '';
 
-  constructor(private dialogRef: MatDialogRef<DialogAddQuestion>) {
+  constructor(private dialogRef: MatDialogRef<DialogAddReminder>) {
 
   }
-  
+
   onSave(): void {
     if (this.thing !== '') {
       this.dialogRef.close(this.thing);

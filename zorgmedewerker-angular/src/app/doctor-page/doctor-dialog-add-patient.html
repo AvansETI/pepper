@@ -1,19 +1,82 @@
 <h1 mat-dialog-title>Patiënt aanmaken</h1>
-<div mat-dialog-content>
-    <p>
-        <mat-form-field>
-            <input matInput placeholder="Naam" [(ngModel)]="name">
-        </mat-form-field>
-    </p>
-    <p>
-        <mat-form-field>
-            <input matInput placeholder="Birthdate" [(ngModel)]="birthdate">
-        </mat-form-field>
-    </p>
-    <p>
-        <mat-form-field>
-            <input matInput placeholder="Allergies" [(ngModel)]="allergies">
-        </mat-form-field>
-    </p>
-    <button mat-raised-button (click)="addPatient()">Patient toevoegen</button>
+<div mat-dialog-content class="all-content">
+    <div class="forms">
+        <div class="forms-left">
+            <p>
+                <mat-form-field>
+                    <input matInput placeholder="Naam" [(ngModel)]="name">
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field appearance="fill">
+                    <mat-label>Kies geboortedatum</mat-label>
+                    <input matInput [matDatepicker]="picker" [(ngModel)]="birthdate">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+            </p>
+        </div>
+        <div class="forms-right">
+
+            <section [formGroup]="allergies">
+                <h4>Selecteer allergiën:</h4>
+                <p>
+                    <mat-checkbox formControlName="gluten" ngDefaultControl>Gluten</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="diabetes" ngDefaultControl>Diabetes</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="lactose" ngDefaultControl>Lactose</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="eggs" ngDefaultControl>Eieren</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="celery" ngDefaultControl>Selderij</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="nuts" ngDefaultControl>Noten</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="soy" ngDefaultControl>Soja</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="wheat" ngDefaultControl>Graan</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="fish" ngDefaultControl>Vis</mat-checkbox>
+                </p>
+                <p>
+                    <mat-checkbox formControlName="shellfish" ngDefaultControl>Schelpdieren</mat-checkbox>
+                </p>
+
+            </section>
+        </div>
+    </div>
+    <div>
+        <button mat-raised-button color="primary" (click)="addPatient()">Voeg toe</button>
+    </div>
+
 </div>
+
+
+<style>
+    .all-content {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .forms {
+        display: flex;
+        flex-direction: row;
+    }
+    
+    .forms-left {
+        padding-right: 1vw;
+    }
+    
+    .forms-right {
+        padding-left: 1vw;
+    }
+</style>
