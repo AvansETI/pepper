@@ -3,9 +3,9 @@
         <div>
             <mat-label>Patiëntenlijst</mat-label>
         </div>
-        <div>
-            <mat-list>
-                <mat-list-item *ngFor="let patient of patients" (click)="onClicked(patient.id)">
+        <div class="cardList">
+            <mat-list *ngFor="let patient of patients" >
+                <mat-list-item class="card" (click)="onClicked(patient.id)">
                     <mat-card>
                         <div>{{patient.id}} - {{patient.name}}</div>
                     </mat-card>
@@ -59,8 +59,8 @@
             <a class="order_add_button" mat-raised-button (click)="openQuestionDialog()" color="primary">Vraag stellen</a>
             <a class="order_add_button" mat-raised-button (click)="openReminderDialog()" color="primary">Reminder toevoegen</a>
         </div>
+        <a class="patient_add_button" mat-raised-button (click)="openPatientDialog()" color="primary">Patient toevoegen</a>
     </div>
-    <a class="order_add_button" mat-raised-button (click)="openPatientDialog()" color="primary">Patient toevoegen</a>
     <div class="pepper_head">
         <img src="assets/pepper-head.png">
     </div>

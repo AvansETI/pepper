@@ -25,6 +25,7 @@ export class OrderPageComponent implements OnInit {
   constructor(private messageHandler: MessageHandlerService, private dialog: MatDialog) {
     this.messageHandler.getMealEmitter().subscribe((meals) => { this.meals = meals })
     this.messageHandler.getMealOrderEmitter().subscribe((mealOrders) => this.mealOrders = mealOrders);
+
   }
 
   openDialog() {
