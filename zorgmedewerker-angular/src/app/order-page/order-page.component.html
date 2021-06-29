@@ -3,41 +3,49 @@
         <div>
             <mat-label>Maaltijden</mat-label>
         </div>
-        <div>
+        <div class="cardList">
             <mat-list *ngFor="let meal of meals" role="list">
-                <mat-list-item role="listitem">
+                <mat-list-item class="card" role="listitem">
                     <mat-card>
-                        <div>{{meal.name}}</div>
-                        <div>{{meal.description}}</div>
-                        <div>{{meal.calories}}</div>
-                        <div>{{formatAllergies(meal.allergies)}}</div>
-                        <div>{{meal.image}}</div>
+                        <mat-card-title>
+                            <div>{{meal.name}}</div>
+                        </mat-card-title>
+                        <mat-card-content>
+                            <div>Beschrijving maaltijd: {{meal.description}}</div>
+                            <div>Naam maaltijd: {{meal.name}}</div>
+                            <div>Maaltijd ID: {{meal.id}}</div>
+                            <div>Caloriën: {{meal.calories}}</div>
+                            <div>Allergien: {{formatAllergies(meal.allergies)}}</div>
+                        </mat-card-content>
                     </mat-card>
                 </mat-list-item>
             </mat-list>
         </div>
         <div>
-            <a class= "order_add_button" mat-raised-button (click)="openDialog()" color= "primary">Maaltijd toevoegen</a>
-            <a class= "order_button" mat-raised-button routerLink="/patients" color= "primary">Patiëntinformatie</a>
+            <a class="order_button" mat-raised-button routerLink="/patients" color="primary">Patiëntinformatie</a>
+            <a class="order_add_button" mat-raised-button (click)="openDialog()" color="primary">Maaltijd toevoegen</a>
         </div>
     </div>
     <div class="order_detail">
         <div>
             <mat-label>Bestellingen</mat-label>
         </div>
-        <div>
-            <mat-list *ngFor= "let mealorder of mealOrders"role="list">
-                <mat-list-item role="listitem">
+        <div class="mealorderList">
+            <mat-list *ngFor="let mealorder of mealOrders" role="list">
+                <mat-list-item class="mealorder" role="listitem">
                     <mat-card>
-                        <div>{{mealorder.id}}</div>
-                        <div>{{mealorder.patientId}}</div>
-                        <div>{{mealorder.mealId}}</div>
-                        <div>{{mealorder.timestamp}}</div>
+                        <mat-card-title>
+                            <div>{{mealorder.patientId}}</div>
+                        </mat-card-title>
+                        <mat-card-content>
+                            <div>Bestelling ID: {{mealorder.id}}</div>
+                            <div>Maaltijd ID: {{mealorder.mealId}}</div>
+                            <div>Bestelling Tijd: {{mealorder.timestamp}}</div>
+                        </mat-card-content>
                     </mat-card>
                 </mat-list-item>
             </mat-list>
         </div>
-    
     </div>
     <div class="pepper_head">
         <img src="assets/pepper-head.png">

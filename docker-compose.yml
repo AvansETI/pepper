@@ -15,10 +15,12 @@ services:
             - ./mosquitto:/mosquitto/
     backend:
         build: ./backend
+        # image: woutstev/pepper-zorg_backend:1.0
         ports:
             - 6587:6587
         environment:
-            - MQTT_HOST=tcp://mosquitto:1883
+            - MQTT_HOST=mosquitto
+            - MQTT_PORT=1883
             - MQTT_USERNAME=pepper
             - MQTT_PASSWORD=pepper
             - MQTT_TOPIC=pepper-zorg-ti
@@ -34,6 +36,7 @@ services:
             - database
     zorgmedewerker_app:
         build: ./zorgmedewerker-angular
+        # image: woutstev/pepper-zorg_zorgmedewerker_app:1.0
         ports: 
             - 6588:6588
         depends_on:

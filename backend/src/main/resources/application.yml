@@ -1,7 +1,8 @@
 server.port: 6587
 
 mqtt:
-  host: tcp://localhost:1801
+  host: localhost
+  port: 1801
   username: pepper
   password: pepper
   topic: pepper-zorg-ti

@@ -28,24 +28,26 @@
 .doctor_nondetail{
     padding: 20px;
     position: absolute;
-    top: 30%;
+    top: 20%;
     left: 10%;
-    height: 50vh;
-    /* bring your own prefixes */
+    height: 60vh;
+    width: 18vw;
     border: 2px solid #c7c9c8;
     border-radius: 18px;
+    margin-top: 10px;
 }
 
 
 .doctor_detail{
     padding: 20px;
     position: absolute;
-    top: 30%;
-    left: 30%;
+    top: 20%;
+    right: 10%;
     width: 50vw;
-    /* bring your own prefixes */
+    height: 60vh;
     border: 2px solid #c7c9c8;
     border-radius: 18px;
+    margin-top: 10px;
 }
 
 .doctor_nondetail div {
@@ -54,4 +56,27 @@
 
 .doctor_detail div {
    text-align: center;
+}
+
+.cardList{
+    height: 60vh;
+    width: 18vw;
+    overflow: auto;
+}
+
+
+.patient_add_button{
+    float: right;
+}
+
+.cardList{
+    height: 60vh;
+    width: 18vw;
+    overflow: auto;
+}
+
+.card{
+    margin-top: 1px;
+    margin-bottom: 1px;
+    padding: 10px;
 }

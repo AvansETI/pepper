@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Maaltijd toevoegen</h1>
+<h1 mat-dialog-title>Patiënt aanmaken</h1>
 <div mat-dialog-content class="all-content">
     <div class="forms">
         <div class="forms-left">
@@ -8,22 +8,16 @@
                 </mat-form-field>
             </p>
             <p>
-                <mat-form-field>
-                    <input matInput placeholder="Beschrijving" [(ngModel)]="description">
-                </mat-form-field>
-            </p>
-            <p>
-                <mat-form-field>
-                    <input matInput placeholder="Caloriën" [(ngModel)]="calories">
-                </mat-form-field>
-            </p>
-            <p>
-                <mat-form-field>
-                    <input matInput placeholder="Afbeelding" [(ngModel)]="image">
+                <mat-form-field appearance="fill">
+                    <mat-label>Geboortedatum</mat-label>
+                    <input matInput [matDatepicker]="picker" [(ngModel)]="birthdate">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
             </p>
         </div>
         <div class="forms-right">
+
             <section [formGroup]="allergies">
                 <h4>Allergiën:</h4>
                 <p>
@@ -60,11 +54,12 @@
             </section>
         </div>
     </div>
-
     <div>
-        <button mat-raised-button color="primary" (click)="onMealSave()">Toevoegen</button>
+        <button mat-raised-button color="primary" (click)="addPatient()">Toevoegen</button>
     </div>
+
 </div>
+
 
 <style>
     .all-content {

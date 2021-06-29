@@ -2,7 +2,8 @@ package com.pepper.care.core.services.mqtt
 
 object PlatformMqttConstants {
     const val MQTT_DEFAULT_TOPIC: String = "pepper-zorg-ti"
-    const val MQTT_DEFAULT_HOST: String = "tcp://10.0.2.2:1801"
+    const val MQTT_DEFAULT_HOST: String = "81.30.77.160"
+    const val MQTT_DEFAULT_PORT: String = "1801"
     const val MQTT_DEFAULT_USERNAME: String = "pepper"
     const val MQTT_DEFAULT_PASSWORD: String = "pepper"
     const val MQTT_DEFAULT_ENCRYPTION_ENABLED: Boolean = true
